@@ -2,8 +2,8 @@ import setuptools
 
 setuptools.setup(
 
-    name="Zones_EA",
-    version="0.0.1",
+    name="ZONES",
+    version="0.0.2",
     author="Noel M nguemechieu",
     author_email="nguemechieu@live.com",
     description="Trade management software for MetaTrader",
@@ -11,9 +11,9 @@ setuptools.setup(
     keywords=['run', 'open', 'trade'],
     url="https://github.com/nguemechieu/Zones_EA",
     include_package_data=True,
-    package_dir={'Zones_EA': 'src'},
+    package_dir={'ZONES': 'src'},
 
-    packages=['Zones_EA'],
+    packages=['ZONES'],
 
     license='LICENSE-MIT',
     classifiers=[

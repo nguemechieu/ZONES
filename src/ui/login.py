@@ -1,13 +1,12 @@
 import tkinter
-from tkinter import Button, messagebox
+from tkinter import messagebox
 
 
 class Login(tkinter.Frame):
-    def __init__(self, controller):
+    def __init__(self, parent,controller):
         super().__init__()
-        self.parent = self.master
         self.controller = controller
-
+        self.parent = parent
         self.error_label = None
         self.frames = {}
         self.error = tkinter.StringVar()
@@ -28,11 +27,12 @@ class Login(tkinter.Frame):
         self.login_button.grid(row=4, column=2)
 
         self.register_button = tkinter.Button(self.master, text="Register",
-                                              command=lambda: self.controller.show_pages(page='Register'))
+                                              command=lambda: self.controller.show_pages(param='Register'))
         self.register_button.grid(row=4, column=0)
 
         self.forgot_password_button = tkinter.Button(self.master, text="Forgot Password",
-                                                     command=lambda: self.controller.show_pages(page='ForgotPassword'))
+                                                     command=lambda: self.controller.show_pages(
+                                                                                                param='ForgotPassword'))
         self.forgot_password_button.grid(row=5, column=1)
 
         self.username_entry.focus_set()

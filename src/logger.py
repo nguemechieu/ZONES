@@ -3,8 +3,6 @@ from datetime import datetime
 from logging import Logger
 from typing import Callable
 
-logging_enabled = False
-
 
 class LoggerManager:
     """Manages loggers of the entire sdk."""
@@ -13,11 +11,8 @@ class LoggerManager:
     def use_logging():
         """Enables using Logging logger with extended log levels for debugging instead of
         print functions. Note that Logging configuration is performed by the user."""
-        global logging_enabled
-        logging_enabled = True
 
-    @staticmethod
-    def get_logger(category):
+    def get_logger(self, category, logging_enabled):
         """Creates a new logger for specified category.
 
         Args:
@@ -63,5 +58,6 @@ class NativeLogger(Logger):
     def _log(self, level: str, msg, args, exc_info=None, extra=None, stack_info: bool = None,
              stacklevel: int = None) -> None:
         if isinstance(msg, Callable):
-            msg = msg
+            msg = msg.__name__
+            args = (msg,) + args
         print(f'[{datetime.now().isoformat()}] {msg}', *args)

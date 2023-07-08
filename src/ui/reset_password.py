@@ -1,7 +1,10 @@
 import tkinter
+
+
 class ResetPassword(tkinter.Frame):
-    def __init__(self, controller):
+    def __init__(self,parent, controller):
         super().__init__()
+        self.master = parent
         self.back = None
         self.reset = None
         self.parent = self.master
@@ -26,9 +29,8 @@ class ResetPassword(tkinter.Frame):
 
         self.confirm_password_entry = tkinter.Entry(self.parent, textvariable=self.confirm_password, show="*",
                                                     bg="white", fg="black")
-        
+
         self.reset_button = tkinter.Button(self.parent, text="Reset", bg="white", fg="black",
                                            command=lambda: self.reset)
 
         self.back_button = tkinter.Button(self.parent, text="Back", bg="white", fg="black", command=lambda: self.back)
-

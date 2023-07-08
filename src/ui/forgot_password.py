@@ -3,11 +3,11 @@ from tkinter import messagebox
 
 
 class ForgotPassword(tkinter.Frame):
-    def __init__(self, controller):
-        super().__init__()
+    def __init__(self, parent, controller):
+        super().__init__(parent)
 
         self.controller = controller
-        self.parent = self.master
+        self.parent = parent
 
         self.title = tkinter.Label(self.parent, text="Forgot Password")
         self.email_label = tkinter.Label(self.parent, text="Email")
@@ -17,7 +17,7 @@ class ForgotPassword(tkinter.Frame):
         self.email_button = tkinter.Button(self.parent, text="SUBMIT", command=lambda: self.submit())
         self.email_button.grid(row=3, column=2)
         self.go_back_button = tkinter.Button(self.parent, text="GO BACK",
-                                             command=lambda: self.controller.show_pages(page='Login'))
+                                             command=lambda: self.controller.show_pages('Login'))
         self.go_back_button.grid(row=3, column=0)
         self.go_back_button.focus()
 

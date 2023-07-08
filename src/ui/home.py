@@ -3,18 +3,16 @@ import tkinter
 import pandas as pd
 
 from src.modules.DwxZmqReporting import DwxZmqReporting
-from src.ui.register import Register
+
 from src.zmq_connector import DwxZeromqConnector
 
 
 class CandlestickChart(object):
-    def __init__(self,  controller):
-
+    def __init__(self, controller):
         self.data = None
         self.reporting = None
 
         self.controller = controller
-
 
         # read data from zeromq
         self.read_data()
@@ -66,23 +64,21 @@ class CandlestickChart(object):
 
 
 class Home(tkinter.Frame):
-    def __init__(self, controller):
+    def __init__(self, parent,controller):
         super().__init__()
-        self.parent = self.master
+
         self.controller = controller
+        self.master = parent
 
         # create Menu Bar
 
         self.menu_bar = tkinter.Menu(self.master)
 
-
-
-
         # Binding to events using Zeromq
         self.zones_connect = DwxZeromqConnector(_client_id='dwx-zeromq', _monitor=True)
         self.zones_connect._dwx_zmq_heartbeat_()
         self.reporting = DwxZmqReporting(_zmq=self.zones_connect)
-        self.zones_connect._DWX_MTX_GET_ALL_OPEN_TRADES_()
+        self.zones_connect._get_all_open_orders_()
         self.zones_connect.get_account_info()
 
     def logout(self):

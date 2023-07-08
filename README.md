@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-# ZONES
-=======
-# Zones EA
+# ZONES 
 
      copyright (c) 2022 - 2023  
 
@@ -64,4 +61,3 @@ Here is a ready docker Wine:   [click here](https://hub.docker.com/docker-wine/n
 -     docker login 
 -     docker pull zones_ea
 -     docker run -d zones_ea
->>>>>>> 9c912e3 (new)
