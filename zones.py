@@ -50,7 +50,7 @@ class App(tkinter.Tk):
 
         self.db = Db()
         self.trades = Trade()
-
+        self.go_back=tkinter.Button(self, text="Go Back", command=lambda: self.controller.show_pages("Home"))
         self.menubar = tkinter.Menu(self.master)
         self.file_menu = tkinter.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="File", menu=self.file_menu)
@@ -73,13 +73,15 @@ class App(tkinter.Tk):
         self.trade_menu = tkinter.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="Trade", menu=self.trade_menu)
         self.trade_menu.add_command(label="Trade", command=lambda: self.show_pages("Trade"))
-
         self.trade_menu.add_separator()
 
         self.news_menu = tkinter.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="News", menu=self.news_menu)
         self.news_menu.add_command(label="News", command=lambda: self.controller.show_pages("News"))
-
+        self.news_menu.add_separator()
+        self.about_menu = tkinter.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label="About", menu=self.about_menu)
+        self.about_menu.add_command(label="About", command=lambda: self.controller.show_pages("About"))
 
         self.trade_menu.add_separator()
 
