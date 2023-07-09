@@ -3,11 +3,15 @@ from tkinter import Label, Entry, Button, messagebox
 
 
 class Register(tkinter.Frame):
-    def __init__(self, parent,controller):
+    def __init__(self, parent, controller):
 
-        super().__init__()
+        tkinter.Frame.__init__(self, parent)
         self.controller = controller
         self.master = parent
+        self.grid(padx=300, pady=100)
+        self.label = Label(self.master, text="Registration", font=50)
+        self.label.grid(row=0, column=0, columnspan=2)
+
         self.usernames = tkinter.StringVar()
         self.usernames.set("Enter Username")
         self.password = tkinter.StringVar()
@@ -33,75 +37,79 @@ class Register(tkinter.Frame):
         self.zip_code = tkinter.StringVar()
         self.zip_code.set("Enter Zip Code")
         self.username_label = Label(self.master, text="Username", bg="#6699ff", fg="white")
-        self.username_label.grid(row=0, column=0)
+        self.username_label.grid(row=1, column=0)
         self.username_entry = Entry(self.master, textvariable=self.usernames)
-        self.username_entry.grid(row=0, column=1)
+        self.username_entry.grid(row=1, column=1)
         self.password_label = Label(self.master, text="Password", bg="#6699ff", fg="white")
-        self.password_label.grid(row=1, column=0)
+        self.password_label.grid(row=2, column=0)
         self.password_entry = Entry(self.master, textvariable=self.password, show="*")
-        self.password_entry.grid(row=1, column=1)
+        self.password_entry.grid(row=2, column=1)
         self.confirm_password_label = Label(self.master, text="Confirm Password", bg="#6699ff", fg="white")
-        self.confirm_password_label.grid(row=2, column=0)
+        self.confirm_password_label.grid(row=3, column=0)
         self.confirm_password_entry = Entry(self.master, textvariable=self.confirm_password, show="*")
-        self.confirm_password_entry.grid(row=2, column=1)
+        self.confirm_password_entry.grid(row=3, column=1)
         self.first_name_label = Label(self.master, text="First Name", bg="#6699ff", fg="white")
-        self.first_name_label.grid(row=3, column=0)
+        self.first_name_label.grid(row=4, column=0)
         self.first_name_entry = Entry(self.master, textvariable=self.first_name)
-        self.first_name_entry.grid(row=3, column=1)
+        self.first_name_entry.grid(row=4, column=1)
         self.last_name_label = Label(self.master, text="Last Name", bg="#6699ff", fg="white")
-        self.last_name_label.grid(row=4, column=0)
+        self.last_name_label.grid(row=5, column=0)
         self.last_name_entry = Entry(self.master, textvariable=self.last_name)
-        self.last_name_entry.grid(row=4, column=1)
+        self.last_name_entry.grid(row=5, column=1)
         self.email_label = Label(self.master, text="Email", bg="#6699ff", fg="white")
-        self.email_label.grid(row=5, column=0)
+        self.email_label.grid(row=6, column=0)
         self.email_entry = Entry(self.master, textvariable=self.email)
-        self.email_entry.grid(row=5, column=1)
+        self.email_entry.grid(row=6, column=1)
         self.phone_number_label = Label(self.master, text="Phone Number", bg="#6699ff", fg="white")
-        self.phone_number_label.grid(row=6, column=0)
+        self.phone_number_label.grid(row=7, column=0)
         self.phone_number_entry = Entry(self.master, textvariable=self.phone_number)
-        self.phone_number_entry.grid(row=6, column=1)
+        self.phone_number_entry.grid(row=7, column=1)
         self.address_label = Label(self.master, text="Address", bg="#6699ff", fg="white")
-        self.address_label.grid(row=7, column=0)
+        self.address_label.grid(row=8, column=0)
         self.address_entry = Entry(self.master, textvariable=self.address)
-        self.address_entry.grid(row=7, column=1)
+        self.address_entry.grid(row=8, column=1)
         self.city_label = Label(self.master, text="City", bg="#6699ff", fg="white")
-        self.city_label.grid(row=8, column=0)
+        self.city_label.grid(row=9, column=0)
         self.city_entry = Entry(self.master, textvariable=self.city)
-        self.city_entry.grid(row=8, column=1)
+        self.city_entry.grid(row=9, column=1)
         self.state_label = Label(self.master, text="State", bg="#6699ff", fg="white")
-        self.state_label.grid(row=9, column=0)
+        self.state_label.grid(row=10, column=0)
         self.state_entry = Entry(self.master, textvariable=self.state)
-        self.state_entry.grid(row=9, column=1)
+        self.state_entry.grid(row=10, column=1)
         self.zip_code_label = Label(self.master, text="Zip Code", bg="#6699ff", fg="white")
-        self.zip_code_label.grid(row=10, column=0)
+        self.zip_code_label.grid(row=11, column=0)
         self.zip_code_entry = Entry(self.master, textvariable=self.zip_code)
-        self.zip_code_entry.grid(row=10, column=1)
+        self.zip_code_entry.grid(row=11, column=1)
         self.country_label = Label(self.master, text="Country", bg="#6699ff", fg="white")
-        self.country_label.grid(row=11, column=0)
+        self.country_label.grid(row=12, column=0)
         self.country_entry = Entry(self.master, textvariable=self.country)
-        self.country_entry.grid(row=11, column=1)
-        self.register_button = Button(self.master, text="REGISTER", bg="#6699ff", fg="white",
-                                      command=self.register_user)
-        self.register_button.grid(row=12, column=2)
+        self.country_entry.grid(row=12, column=1)
+        self.register_button = Button(self.master, text="SUBMIT",
+                                      command=self.register_user(
+                                          self.usernames.get(),
+                                          self.password.get(),
+                                          self.first_name.get(),
+                                          self.last_name.get(),
+                                          self.email.get(),
+                                          self.phone_number.get(),
+                                          self.address.get(),
+                                          self.city.get(),
+                                          self.state.get(),
+                                          self.zip_code.get(),
+                                          self.country.get(),
+                                          self.confirm_password.get()
+                                      ))
+        self.register_button.grid(row=13, column=2)
 
-        self.back_button = Button(self.master, text="GO BACK", bg="#6699ff", fg="white",
+        self.back_button = Button(self.master, text="GO BACK",
                                   command=lambda: self.controller.show_pages("Login"))
-        self.back_button.grid(row=12, column=1)
+        self.back_button.grid(row=13, column=0)
 
-    def register_user(self):
+    def register_user(
+            self, username, password, first_name, last_name, email, phone, address, city, state, zip_code,
 
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-        first_name = self.first_name_entry.get()
-        last_name = self.last_name_entry.get()
-        email = self.email_entry.get()
-        phone = self.phone_number_entry.get()
-        confirm_password = self.confirm_password_entry.get()
-        address = self.address_entry.get()
-        city = self.city_entry.get()
-        state = self.state_entry.get()
-        zip_code = self.zip_code_entry.get()
-        country = self.country_entry.get()
+            country, confirm_password
+    ):
 
         if username == "" or password == "" or first_name == "" or last_name == "" or email == "" or phone == "":
             messagebox.showerror("Error", "All fields are required{0}".format((
@@ -124,31 +132,19 @@ class Register(tkinter.Frame):
             messagebox.showerror("Error", "Passwords do not match")
         try:
 
-            # Create table users if it doesn't exist'
-
-            self.controller.db.cur.execute("USE " + self.controller.db.database)
-
-            self.controller.db.cur.execute("CREATE TABLE IF NOT EXISTS users (username VARCHAR(255),"
-                                           "password VARCHAR(255), firstname VARCHAR(255),"
-                                           "last_name VARCHAR(255),email VARCHAR(255),"
-
-
-                                           "phone VARCHAR(255) ,"
-                                           "_id INTEGER PRIMARY KEY AUTO_INCREMENT),"
-                                           "FOREIGN KEY (username) REFERENCES users(username) ON")
+            # Create table users if it doesn't exist
 
             result = self.controller.db.cur.execute(
-                "INSERT INTO users (username, password, firstname, last_name, email, phone) VALUES (%s, %s, %s, %s, "
-                "%s, %s)",
-                (username, password, first_name, last_name, email, phone)
+                "INSERT INTO " + self.controller.db.database + "_users (username, password, first_name, last_name, "
+                                                               "email, phone,"
+                                                               " ) VALUES (%s, %s, %s, %s,"
+                                                               "%s, %s)",
+                (username, password, first_name, last_name, email, phone
+                 )
             )
 
-            self.controller.db.conn.commit()
-
             if result > 0:
-
                 # Get the id of the new user
-
                 self.controller.db.cur.execute("SELECT _id FROM users WHERE username = %s", (username,
                                                                                              ))
                 user_id = self.controller.db.cur.fetchone()

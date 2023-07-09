@@ -1,13 +1,15 @@
-import os
 import xml.etree.ElementTree as ET
-from datetime import *
+import datetime
+import os
 
 import requests
-from dateutil.parser import *
-from dateutil.relativedelta import *
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
+
+from src.trade import Trade
 
 
-class NewsEvent:
+class NewsEvent(object):
 
     def __init__(self,
                  url: str = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml?version'
@@ -29,14 +31,15 @@ class NewsEvent:
                 The FF calendar will be saved in an XML file in subfolder ./News/       !!! take care
                 If ./News does not exist, it will be created
         """
-        self.forecast = None
+
         self.previous = None
-        self.number_of_items = None
+        self.forecasts = None
+        self.number_of_items = 0
         self.url = url
         self.update_in_minutes = update_in_minutes
         self.minutes_before_news = minutes_before_news
         self.minutes_after_news = minutes_after_news
-        self.lastUpdate = datetime.now()
+        self.lastUpdate = datetime.datetime.now()
         self.base_date = 0
         self.quote_date = 0
         self.currency_date = 0
@@ -46,33 +49,35 @@ class NewsEvent:
         self.times = []
         self.impacts = []
         self.news_items = []
+        self.forecast = []
+        self.previous = []
         self.gmt_offset = gmt_offset
         self.retrieve_url()
+        self.instrument_list = Trade().get_instrument_list()
 
     # this routine will be called internally
     def retrieve_url(self):
 
         # check if news directory exists
         isdir = os.path.isdir('./News')
-        if not isdir:
+        if isdir is False:
             os.makedirs('./News')
 
         keyfile = requests.get(self.url)
         xml_file = './News/news_' + str(self.lastUpdate.day) + '.xml'
 
         if xml_file in os.listdir('./News'):
-
             open(xml_file, 'wb').write(keyfile.content)
-
         else:
             with open(xml_file, 'wb') as f:
                 f.write(keyfile.content)
-
         self.titles.clear()
         self.countries.clear()
         self.dates.clear()
         self.times.clear()
         self.impacts.clear()
+        self.forecast.clear()
+        self.previous.clear()
         self.news_items.clear()
 
         tree = ET.parse(xml_file)
@@ -88,30 +93,37 @@ class NewsEvent:
         for text in root.iter('impact'):
             self.impacts.append(text.text)
 
+        for text in root.iter('forecast'):
+            self.forecast.append(text.text)
+
+        for text in root.iter('previous'):
+            self.previous.append(text.text)
+
+        self.number_of_items = len(self.titles)
+        self.lastUpdate = datetime.datetime.now()
+
         for index in range(0, len(self.titles), 1):
             # make date first
             _date = parse(self.dates[index] + ' ' + self.times[index])
             _date = _date - relativedelta(hours=-self.gmt_offset)
             self.news_items.append((self.countries[index], _date, self.titles[index], self.impacts[index]))
-
-        self.lastUpdate = datetime.now()
+        self.lastUpdate = datetime.datetime.now()
 
     def check_currency(self,
                        currency: str = 'EUR'):
-
         """
-            Check comming news for a currency.
+            Check upcoming news for a currency.
 
             Args:
                 currency:   currency name to check for
                             AUD|CAD|CHF|EUR|GBP|JPY|NZD|USD
             Returns:
-                bool: True(if news in defined periode), else False
+                bool: True(if news in defined period), else False
                 title: description of news item
                 impact: news impact on currency (high, medium or low)
         """
         # check for updating the calendar`
-        diff = datetime.now() - self.lastUpdate
+        diff = datetime.datetime.now() - self.lastUpdate
         diff = diff.total_seconds()
         if diff > self.update_in_minutes * 60:
             self.retrieve_url()
@@ -120,7 +132,7 @@ class NewsEvent:
             if self.news_items[index][0] == currency:
                 # check time
                 if ((self.news_items[index][
-                         1].timestamp() - self.minutes_before_news * 60) < datetime.now().timestamp() < (
+                         1].timestamp() - self.minutes_before_news * 60) < datetime.datetime.now().timestamp() < (
                         self.news_items[index][1].timestamp() + self.minutes_after_news * 60)):
                     self.currency_date = self.news_items[index][1].timestamp() - self.minutes_before_news * 60
                     return True, str(self.news_items[index][2]), str(self.news_items[index][3])
@@ -130,7 +142,7 @@ class NewsEvent:
     def check_instrument(self,
                          instrument: str = 'EURUSD'):
         """
-            Check comming news for an instrument.
+            Check coming news for an instrument.
 
             Args:
                 instrument: instrument name to check for
@@ -141,7 +153,7 @@ class NewsEvent:
                 impact: news impact on currency (high, medium or low)
         """
         # check for updating the calendar`
-        diff = datetime.now() - self.lastUpdate
+        diff = datetime.datetime.now() - self.lastUpdate
         diff = diff.total_seconds()
         if diff > self.update_in_minutes * 60:
             self.retrieve_url()
@@ -171,7 +183,7 @@ class NewsEvent:
         if result_1 and result_2:
             if impact_1 == 'High' and (impact_2 == 'Low' or impact_2 == 'Medium' or impact_2 == 'Holiday'):
                 return True, title_1, impact_1
-            if impact_1 == 'Medìum' and (impact_2 == 'Low' or impact_2 == 'Holiday'):
+            if impact_1 == 'Medium' and (impact_2 == 'Low' or impact_2 == 'Holiday'):
                 return True, title_1, impact_1
             if impact_2 == 'High' and (impact_1 == 'Low' or impact_1 == 'Medium' or impact_1 == 'Holiday'):
                 return True, title_2, impact_2
@@ -185,7 +197,7 @@ class NewsEvent:
         return False, '', ''
 
     def get_next_x_news_items(self,
-                              number_of_items: int = 5) -> dict:
+                              number_of_items: int = 7) -> dict:
 
         self.number_of_items = number_of_items
         if self.number_of_items > 10:
@@ -202,14 +214,16 @@ class NewsEvent:
                                                         index '0' --> 'number_of_items'
         """
         # check for updating the calendar`
-        diff = datetime.now() - self.lastUpdate
+        diff = datetime.datetime.now() - self.lastUpdate
         diff = diff.total_seconds()
         if diff > self.update_in_minutes * 60:
             self.retrieve_url()
 
         # loop through news_items list
-        news_items = {}
-        _date = datetime.now()
+        news_items = {
+
+        }
+        _date = datetime.datetime.now()
         counter = 0
         for index in range(0, len(self.news_items) - 1, 1):
             if counter >= self.number_of_items:

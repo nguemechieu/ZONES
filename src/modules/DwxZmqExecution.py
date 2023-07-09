@@ -64,8 +64,8 @@ class DwxZmqExecution(object):
                 break
 
         # If data received, return DataFrame
-        if self._zmq._valid_response_('zmq') and _check in self._zmq._get_response_().keys():
-            return self._zmq._get_response_()
+        if self._zmq._valid_response_('zmq') and _check in self._zmq._get_response_.keys():
+            return self._zmq._get_response_
 
         # Default
         return None

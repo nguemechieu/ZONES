@@ -1,11 +1,10 @@
 import smtplib
 import tkinter
-
 from datetime import datetime
 from email.mime.text import MIMEText
 from tkinter import filedialog, RAISED, BOTTOM
 # NOEL M NGUEMECHIEU
-# https://github.com/nguemechieu/telegramMt4Trader
+# https://github.com/nguemechieu/zones
 from src.db import Db
 from src.trade import Trade
 from src.ui.News import News
@@ -37,84 +36,43 @@ class App(tkinter.Tk):
 
     def __init__(self):
         tkinter.Tk.__init__(self)
+
         self.controller = self
         self.parent = self.master
         self.frames = {}
+        self.pages = {}
         self.filename = None
         self.Messagebox = None
-        self.geometry("1530x780")
-        self.title("ZONES EA   |MT4 Trader " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+        self.title("ZONES   |MT4 Trader " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         self.resizable(width=True, height=True)
+
         self.iconbitmap(r"src\Images\zones_ea.ico")
-        self.configure(background="lightblue", relief=RAISED, border=2, bg="lightblue")
-
+        self.image = tkinter.PhotoImage(file=r"src\Images\zones_ea.png")
+        self.background_label = tkinter.Label(self, image=self.image, bg="#004d99")
+        self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        self.configure(background="gray", relief=RAISED, border=9, bg="#004d99")
         self.db = Db()
-        self.trades = Trade()
-        self.go_back=tkinter.Button(self, text="Go Back", command=lambda: self.controller.show_pages("Home"))
-        self.menubar = tkinter.Menu(self.master)
-        self.file_menu = tkinter.Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="File", menu=self.file_menu)
-        self.file_menu.add_command(label="Open", command=lambda: self.open_file())
-        self.file_menu.add_command(label="Save", command=lambda: self.save_file())
-        self.file_menu.add_separator()
-        self.file_menu.add_command(label="open an account", command=lambda :self.show_pages("Login"))
-        self.file_menu.add_separator()
-        self.file_menu.add_command(label="Exit", command=self.quit)
-        self.file_menu.add_separator()
-        self.file_menu.add_command(label="connect", command=lambda: self.connect())
-        self.login = tkinter.Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="Login", menu=self.login)
-        self.login.add_command(label="Login", command=lambda: self.show_pages("Login"))
-        self.login.add_command(label="Register", command=lambda: self.show_pages("Register"))
-        self.service_menu = tkinter.Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="Services", menu=self.service_menu)
-        self.service_menu.add_command(label="Service", command=lambda: self.show_pages("Service"))
-        self.service_menu.add_separator()
-        self.trade_menu = tkinter.Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="Trade", menu=self.trade_menu)
-        self.trade_menu.add_command(label="Trade", command=lambda: self.show_pages("Trade"))
-        self.trade_menu.add_separator()
+        print("users :" + str(self.db.get_all_users()))
 
-        self.news_menu = tkinter.Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="News", menu=self.news_menu)
-        self.news_menu.add_command(label="News", command=lambda: self.controller.show_pages("News"))
-        self.news_menu.add_separator()
-        self.about_menu = tkinter.Menu(self.menubar, tearoff=0)
-        self.menubar.add_cascade(label="About", menu=self.about_menu)
-        self.about_menu.add_command(label="About", command=lambda: self.controller.show_pages("About"))
-
-        self.trade_menu.add_separator()
-
-
-        self.help_menu = tkinter.Menu(self.menubar, tearoff=0)
-
-        self.menubar.add_cascade(label="Help", menu=self.help_menu)
-        self.file_menu.add_separator()
-        self.file_menu.add_command(label="Exit", command=self.quit)
-        self.config(menu=self.menubar)
-
-        self.frame = tkinter.Frame(self.master, relief=RAISED, border=2, bg="lightblue")
         self.iconbitmap(r"src\images\zones_ea.ico")
-        # self.master.iconphoto(True, tkinter.PhotoImage(file=r"src\images\zones_ea.ico"))
-        self.frame.pack(fill=tkinter.BOTH, expand=1)
+        self.frame = Login(self, self.controller)
+        self.geometry("1530*800")
         self.mainloop()
 
     def show_pages(self, param):
-
         self.delete_frame()
         for _frame in self.winfo_children():
             _frame.destroy()
-
         self.title(
-            "ZONES EA  |       AI POWERED MT4 Trader |    " + param + " Copyright " + datetime.strftime(datetime.now(),
-                                                                                                        "%Y")
+            "ZONES   |       AI POWERED MT4 Trader |    -->" + param + " | " + datetime.strftime(datetime.now(),
+                                                                                                 "%Y")
             + ", NGUEMECHIEU NOEL  MARTIAL")
         if param in ['Login', 'Register', 'ForgotPassword', 'ResetPassword', 'Home', 'About', 'News']:
-            frames = [Service, Login, Register, ForgotPassword, ResetPassword, Home, About, News
-                      ]
+            frames = [Service, Login, Register, ForgotPassword, ResetPassword, Home, About, News]
             for frame in frames:
                 if param == frame.__name__:
-                    frame = frame( self,self.controller)
+                    frame = frame(self, self.controller)
                     frame.tkraise()
 
     def delete_frame(self):
@@ -151,6 +109,9 @@ class App(tkinter.Tk):
                 self.show_pages("Login")
             except Exception as e:
                 self.show_error(str(e))
+
+    def exit(self):
+        self.master.destroy()
 
 
 if __name__ == '__main__':

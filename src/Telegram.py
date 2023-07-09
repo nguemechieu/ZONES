@@ -34,16 +34,10 @@ class TelegramBot(object):
         print(response.data.decode('utf-8'))
 
     def send_message(self, chat_id: int, message_text: str):
-        parse_mode = 'markdown'
-
-        reply_markup = None
 
         data = {
             'chat_id': chat_id,
-            'text': message_text,
-            'message_thread_id': None,
-            'parse_mode': parse_mode,
-            'reply_markup': reply_markup
+            'text': message_text
         }
         response = self.http.request('POST', self.url + '/sendMessage', body=json.dumps(data))
         return json.loads(response.data.decode('utf-8'))

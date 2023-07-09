@@ -3,12 +3,13 @@ import tkinter
 
 class ResetPassword(tkinter.Frame):
     def __init__(self,parent, controller):
-        super().__init__()
+        tkinter.Frame.__init__(self, parent)
         self.master = parent
         self.back = None
         self.reset = None
         self.parent = self.master
         self.controller = controller
+        self.grid(padx=400, pady=100)
 
         self.email = tkinter.StringVar()
         self.password = tkinter.StringVar()

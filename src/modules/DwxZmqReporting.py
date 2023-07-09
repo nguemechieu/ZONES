@@ -48,7 +48,7 @@ class DwxZmqReporting(object):
         # If data received, return DataFrame
         if self._zmq._valid_response_('zmq'):
 
-            _response = self._zmq._get_response_()
+            _response = self._zmq._get_response_
 
             if ('_trades' in _response.keys()
                     and len(_response['_trades']) > 0):
@@ -59,14 +59,39 @@ class DwxZmqReporting(object):
         # Default
         return DataFrame()
 
-    ##########################################################################
-    def _dwx_mtx_get_trade_signal_(self, _symbol):
+
+
+    def get_data(self):
+
+
+        pass
+
+    def get_signal(self, symbol):
+
         # Reset data output
 
         # While loop start time reference
         _ws = to_datetime('now')
-        pass
 
-    def get_data(self):
+        # While data not received, sleep until timeout
+        while not self._zmq._valid_response_('zmq'):
 
-        pass
+            sleep(0.1)
+
+            if (to_datetime('now') - _ws).total_seconds() > (0.1 * 10):
+                break
+
+        # If data received, return DataFrame
+        if self._zmq._valid_response_('zmq'):
+
+            _response = self._zmq._get_response_
+
+            if ('_signals' in _response.keys()
+                    and len(_response['_signals']) > 0):
+                _df = DataFrame(data=_response['_signals'].values(),
+                                index=_response['_signals'].keys())
+                return _df[_df['_symbol'] == symbol]
+
+        # Default
+        return DataFrame()
+

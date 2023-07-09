@@ -1,13 +1,14 @@
+import tkinter
+
 from configparser import ConfigParser
 from sqlite3 import connect
 from tkinter import Message
 
 import MySQLdb
-
-
 class Db(object):
     def __init__(self):
         # Create mysql connection
+        self.users = None
         self.config = ConfigParser()
         self.config.add_section('mysql')
         self.config.read(filenames="config.ini")
@@ -17,20 +18,25 @@ class Db(object):
         self.database = self.config.get(section='mysql', option='database')
         self.port = self.config.get(section='mysql', option='port')
         self.conn = MySQLdb.connect(host=self.host, user=self.user, passwd=self.password, db='')
+
+        if self.conn is None:
+            print("Error: unable to connect to MySQL server.")
+            tkinter.Message(text="Error: unable to connect to MySQL server.")
+            return
         self.cur = self.conn.cursor()
         self.cur.execute("CREATE  DATABASE IF NOT EXISTS "+self.database)
         self.cur.execute("USE "+self.database)
-        self.cur.execute('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTO_INCREMENT, username TEXT, '
-                         'email TEXT, phone TEXT, password TEXT)')
-        self.cur.execute('CREATE TABLE IF NOT EXISTS zones (id INTEGER PRIMARY KEY AUTO_INCREMENT, name TEXT, '
-                         'latitude REAL, longitude REAL)')
+        self.cur.execute("CREATE TABLE IF NOT EXISTS "+self.database+"_users (id INT NOT NULL AUTO_INCREMENT PRIMARY "
+                                                                     "KEY, username VARCHAR(255) NOT NULL, email "
+                                                                     "VARCHAR("
+                                                                     "255) NOT NULL, phone VARCHAR(255) NOT NULL, "
+                                                                     "password VARCHAR(255) NOT NULL)")
+
 
     def get_all_users(self):
-        self.cur.execute('SELECT * FROM users ORDER BY id ASC')
-        users = self.cur.fetchall()
-        self.cur.close()
-        self.conn.close()
-        return users
+        self.cur.execute('SELECT * FROM '+ self.database+'_users ORDER BY id ASC')
+        self.users = self.cur.fetchall()
+        return self.users
 
     def find_user_by_password(self, password):
         self.cur.execute('SELECT * FROM users WHERE password=?', password)
