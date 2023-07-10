@@ -31,7 +31,11 @@ def send_email(subject: str = "", body: str = "", sender: str = "",
         smtp_server.sendmail(sender, recipients, msg.as_string())
         print("Message sent!")
 
+import os
 
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using :0.0')
+    os.environ.__setitem__('DISPLAY', ':0.0')
 class App(tkinter.Tk):
     trades: Trade
 
