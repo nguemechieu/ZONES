@@ -4,7 +4,7 @@ from src.modules.DwxZmqReporting import DwxZmqReporting
 from src.zmq_connector import DwxZeromqConnector
 
 
-class Trade(DwxZeromqConnector):
+class Trade:
     def __init__(self):
         super().__init__()
 
@@ -22,16 +22,11 @@ class Trade(DwxZeromqConnector):
         self.fee = None
 
         self.zones_connect = DwxZeromqConnector(_client_id='dwx-zeromq', _monitor=True)
-        self.zones_connect._heartbeat()
-        self.reporting = DwxZmqReporting(_zmq=self.zones_connect)
 
-        self.reporting.get_data()
-        self.zones_connect._get_market_info_()
-        self.zones_connect._get_instrument_list()
-        self.zones_connect._get_all_open_orders_()
-        self.zones_connect._get_live_price_(_symbols=self.symbol)
-        self.zones_connect._get_account_info_()
-        self.zones_connect._generate_default_order_dict()
+        self.reporting = DwxZmqReporting(_zmq=self.zones_connect)
+        print(str(self.reporting.get_data()))
+
+
 
     def load_from_file(self, filename: str):
         with open(filename) as f:
@@ -125,3 +120,8 @@ class Trade(DwxZeromqConnector):
                 slippage=self.slippage, loss=self.stop_loss,
                 profit=self.take_profit
             )
+
+    def _get_all_closed_orders_(self):
+
+
+        pass

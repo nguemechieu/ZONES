@@ -19,7 +19,7 @@ class CandlestickChart(tkinter.Canvas):
         self.candlestick_data = None
         self.controller = controller
         self.config(bg='black', border=4, highlightthickness=3, relief='ridge', width=1200, height=600)
-        self.pack(fill=tkinter.BOTH, expand=tkinter.YES)
+        self.pack(fill=tkinter.BOTH)
 
         self.draw_candlestick()
 

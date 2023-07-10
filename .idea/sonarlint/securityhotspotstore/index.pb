@@ -13,15 +13,11 @@
 src/models.py,d\9\d963cfa4f30e8b1b8e4cbc730a52d5f1b2464ae0
 Q
 !.idea/runConfigurations/zones.xml,1\b\1bed4015aa63be9d37f39c144194c9b31061f786
-B
-src/ui/services.py,5\8\589f1902e81dd7bc1613c664750b652455e8d3d8
 ?
 src/Telegram.py,3\8\38e0f20034143e65addaae83ae7e71881e649266
 @
 News/news_12.xml,e\5\e592c5363fc20c4f4b10ff4547727f8385dc9f36
 ?
 News/news_7.xml,2\f\2fe9f739675c9d19c02d855e273bdcfad571c842
-@
-src/News/news.py,2\2\225a6cde9f944fa08d3af748a7318469112ac64f
 ?
 News/news_8.xml,8\f\8f836679726571572fba734c10e9416e6a82e598

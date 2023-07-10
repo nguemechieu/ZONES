@@ -1,21 +1,21 @@
 import datetime
-import os
 import sys
-import time
 import tkinter
 import tkinter.ttk as ttk
+from tkinter import TOP, RAISED, LEFT
 
-import PIL
-import pyautogui
-import pygetwindow
-
+from src.News.news import NewsEvent
 from src.trade import Trade
-
-
+from src.ui.account import Account
+from src.ui.statistics import Statistics
+from src.ui.trading import Trading
 class Home(tkinter.Frame):
     def __init__(self, parent, controller):
-        self.trades = Trade()
-        tkinter.Frame.__init__(self, parent)
+        self.data = {}
+        self.login_window_label = None
+
+        tkinter.Frame.__init__(self, parent, bg='lightblue', relief=tkinter.RAISED, borderwidth=3,
+                               highlightthickness=3, padx=10, pady=20, width=1500, height=730)
         self.user_profile_username_entry = None
         self.user_profile_button = None
         self.user_profile_phone = None
@@ -24,7 +24,7 @@ class Home(tkinter.Frame):
         self.login_window = None
         self.login_window_username_entry = None
         self.user_profile_username = None
-        self.win = self
+
         self.login_window_password_entry = None
         self.user_profile_label = None
         self.user_profile_password_entry = None
@@ -35,66 +35,162 @@ class Home(tkinter.Frame):
         self.user_profile_password = None
         self.login_window_password = None
 
-        self.canvas = tkinter.Canvas(self, width=800, height=600, bg='black')
         self.tools_menu = tkinter.Menu(parent, tearoff=0)
         self.insert_menu = tkinter.Menu(parent, tearoff=0)
         self.tab_7 = None
         self.tab_6 = None
         self.controller = controller
         self.master = parent
-        self.zmq = Trade()
+
+        self.news = NewsEvent()
+
         self.config(bg='lightblue', relief=tkinter.RAISED, borderwidth=3, highlightthickness=3, padx=10,
-                               pady=20
-                               )
+                    pady=20
+                    )
 
         # create tab pane
-        self.tab_pane = tkinter.ttk.Notebook(parent, padding=10, takefocus=2)
-        self.tab_pane.pack(fill=tkinter.BOTH, expand=1)
+        self.tab_pane = tkinter.ttk.Notebook(parent, takefocus=2)
+        self.tab_pane.pack(fill=tkinter.BOTH, expand=1, side=LEFT, padx=10, pady=10)
         # create tab
         self.tab_1 = tkinter.Frame(self.tab_pane, background='yellow')
         self.tab_1.pack(fill=tkinter.BOTH, expand=1)
 
+        self.trade = Trade()
+        self.trade.get_instrument_list()
+
+        self.trade.zones_connect.get_server_status()
+        self.zmq = self.trade.zones_connect
+        self.account_info_DB = self.trade.zones_connect.account_info_DB
+
+        self.data = self.zmq.get_data()
+        self.zmq._get_all_open_orders_()
+
+        self.zmq._get_live_price_(_symbols='EURUSD')
+        self.zmq._get_live_price_(_symbols='USDJPY')
+        self.zmq._get_live_price_(_symbols='EURGBP')
+
+        self.zmq._get_order_history_()
+        self.zmq._get_market_info_()
+        self.account_all_trades = self.zmq._get_all_trades_()
+        self.zmq._get_candle_list_(symbol='EURUSD')
+        self.zmq._order_send(
+            symbol='EURUSD',
+            _lot=123,
+            order_type=1,
+            price=1, _loss=123, _profit=123, magic_number=23, expiration=34, slippage=1
+
+        )
+
+        self.tab_1_server_status_label = tkinter.Text(self.tab_1, width=280, height=2, bg='black', fg='white')
+        self.tab_1_server_status_label.pack(fill=tkinter.BOTH, expand=1)
+        self.tab_1_server_status_label.config(bg='black', fg='white')
+        self.tab_1_server_status_label.config(relief=tkinter.RAISED, borderwidth=1)
+        self.tab_1_server_status_label.config(highlightthickness=1)
+
+        self.tab_1_server_status_label.config(font=("Arial", 13))
+        self.tab_1_server_status_label.insert(0.0, "Server  :" +
+                                              str(self.zmq.server_status
+                                                  ))
+
+        self.tab_1_server_date_label = tkinter.Label(self.tab_1, text="DateTime   :" +
+                                                                      self.zmq.date,
+                                                     bg='black',
+                                                     fg='white')
+        self.tab_1_server_date_label.pack(fill=tkinter.BOTH, side=TOP, padx=10, pady=10)
+        self.tab_1_server_status_label = tkinter.Text(self.tab_1, width=280, height=2, bg='black', fg='white')
+        self.tab_1_server_status_label.pack(fill=tkinter.BOTH, expand=1)
+        self.tab_1_server_status_label.config(bg='black', fg='white')
+        self.tab_1_server_status_label.config(relief=tkinter.RAISED, borderwidth=1)
+        self.tab_1_server_status_label.config(highlightthickness=1)
+        self.tab_1_server_status_label.config(padx=10, pady=10)
+
+        self.tab_1_server_status_label.config(font=("Arial", 13))
+        self.tab_1_server_status_label.insert(0.0, "Server  :" +
+                                              str(self.zmq.server_status
+                                                  ))
+
         # create tab
-        self.tab_2 = tkinter.Frame(self.tab_pane, background='orange', relief=tkinter.RAISED, borderwidth=1)
+        self.tab_2 = tkinter.Frame(self.tab_pane, background='lightblue', relief=tkinter.RAISED, borderwidth=1)
         self.tab_2.pack(fill=tkinter.BOTH, expand=1)
 
         # create tab
-        self.tab_3 = tkinter.Frame(self.tab_pane, background='green', relief=tkinter.RAISED)
+        self.tab_3 = tkinter.Frame(self.tab_pane, background='green', relief=tkinter.RAISED, borderwidth=1)
         self.tab_3.pack(fill=tkinter.BOTH, expand=1)
+        self.news_label = tkinter.Label(self.tab_3, text="FOREX MARKET NEWS",
+                                        bg='black', border=2, relief=RAISED,
+                                        fg='green', font=
+                                        ("Arial", 12))
+        self.news_label.pack(fill=tkinter.BOTH, expand=1, side=TOP)
+        news_tree = tkinter.ttk.Treeview(self.tab_3, height=7, selectmode=tkinter.EXTENDED)
+        news_text = tkinter.Text(self.tab_3, width=80, height=2)
+
+        news_text.config(highlightthickness=1)
+        news_text.config(padx=10, pady=10)
+        news_text.pack(fill=tkinter.BOTH, expand=1)
+        news_text.config(relief=tkinter.RAISED, borderwidth=1)
+        news_text.insert(0.0, "Upcoming News\n" + str(self.news.get_upcoming_news()))
+
+        news_tree.pack(fill=tkinter.BOTH, expand=1)
+        self.current_time = datetime.datetime.now()
+
+        columns = ('date', 'title', 'country', 'impact', 'forecast', 'previous')
+        news_tree['columns'] = columns
+        news_tree['show'] = 'headings'
+        for title in self.news.titles:
+            i = self.news.titles.index(title)
+            news_tree.insert('', tkinter.END,
+                             values=(
+                                 self.news.titles[i],
+                                 self.news.dates[i],
+                                 self.news.countries[i],
+                                 self.news.impacts[i],
+                                 self.news.forecast[i],
+                                 self.news.previous[i]
+
+                             ))
+
+        news_tree.pack(fill=tkinter.BOTH, expand=1)
 
         # create tab
         self.tab_4 = tkinter.Frame(self.tab_pane, background='blue', relief=tkinter.RAISED, borderwidth=1,
                                    bg='black',
                                    highlightthickness=1)
         self.tab_4.pack(fill=tkinter.BOTH, expand=1)
-        self.data = self.zmq.zones_connect.get_data()
-        print(self.data)
+        self.account_tab = Account(self.tab_4, self.controller, self.account_info_DB)
+        self.account_tab.grid(row=0, column=0, sticky=tkinter.NSEW)
+
+        # create tab
+
+        print("data " + str(self.data))
         self.tab_5 = tkinter.Frame(self.tab_pane, background='red', relief=tkinter.RAISED, borderwidth=1)
 
         self.tab_5.pack(fill=tkinter.BOTH, expand=1)
         # create tab
-        self.tab_6 = tkinter.Frame(self.tab_pane, background='green', relief=tkinter.RAISED, borderwidth=1)
+        self.tab_6 = tkinter.Frame(self.tab_pane, relief=tkinter.RAISED, borderwidth=1)
         self.tab_6.pack(fill=tkinter.BOTH, expand=1)
 
         self.tab_pane.pack(fill=tkinter.BOTH, expand=1, padx=10, pady=10)
 
         # Inserting pages into the tab pane
-
-        self.tab_pane.add(self.tab_1, text="Zones Server")
-        self.tab_pane.add(self.tab_2, text="Trading ")
-        self.tab_pane.add(self.tab_3, text="News ")
-        self.tab_pane.add(self.tab_4, text="Account")
-        self.tab_pane.add(self.tab_5, text="Statistics")
-        self.tab_pane.add(self.tab_6, text="Settings")
+        self.news_tab = tkinter.Frame(self.tab_pane, relief=tkinter.RAISED)
+        self.trading_tab = Trading(self.tab_2, self.controller)
+        self.statistics_tab = Statistics(self.tab_5, self.controller)
+        self.statistics_tab.grid(sticky=tkinter.NSEW)
+        self.tab_pane.add(self.tab_1, text=" Zones Server ")
+        self.tab_pane.add(self.tab_2, text=" Trading ")
+        self.tab_pane.add(self.tab_3, text=" News ")
+        self.tab_pane.add(self.tab_4, text=" Account ")
+        self.tab_pane.add(self.tab_5, text=" Statistics  ")
+        self.tab_pane.add(self.tab_6, text=" Settings ")
 
         # create Menu Bar
         self.menu_bar = tkinter.Menu(parent, tearoff=0, background='gold', relief=tkinter.RIDGE, borderwidth=4
-                                )
+                                     )
         self.controller.config(menu=self.menu_bar, background="#004d99", relief=tkinter.RAISED, borderwidth=3,
                                highlightthickness=3, padx=10, pady=20)
         # create file menu
         self.file_menu = tkinter.Menu(self.menu_bar, tearoff=0, background='lightblue', relief=tkinter.RIDGE,
-                                      borderwidth=3,font=34,border=23)
+                                      borderwidth=3, font=34, border=23)
         self.menu_bar.add_cascade(label="File", menu=self.file_menu)
         self.file_menu.add_command(label="Open file", command=lambda: self.controller.open_file())
         self.file_menu.add_command(label="Save file", command=lambda: self.controller.save_file())
@@ -206,26 +302,23 @@ class Home(tkinter.Frame):
 
     def show_time(self):
 
-
         pass
 
     def save_as_picture(self):
         # Taking screenshot of the window and saving it as a picture
-        self.win.screenshot()
-        self.screenshot.show()
+        self.win.screen_shot()
 
     def login_to_trade(self):
         self.login_window = tkinter.Toplevel()
         self.login_window.title("MT4 Account Login")
         self.login_window.geometry("500x500")
-        self.login_window.resizable(0, 0)
+        self.login_window.resizable(False, False)
         self.login_window.grab_set()
         self.login_window.focus_set()
         self.login_window_label = tkinter.Label(self.login_window, text="MT4 Account Login")
         self.login_window_label.grid(row=0, column=0, padx=10, pady=10)
         self.login_window_username = tkinter.Label(self.login_window, text="username")
-        self.login_window_username.grid(row=1, column=0, padx=
-        10, pady=10)
+        self.login_window_username.grid(row=1, column=0, padx=12, pady=10)
         self.login_window_username_entry = tkinter.Entry(self.login_window)
         self.login_window_username_entry.grid(row=1, column=1, padx=10, pady=10)
         self.login_window_password = tkinter.Label(self.login_window, text="password")
@@ -239,20 +332,18 @@ class Home(tkinter.Frame):
         self.login_window_button = tkinter.Button(self.login_window, text="Login", command=lambda: self.mt4login())
         self.login_window_button.grid(row=3, column=1, padx=10, pady=10)
 
-        pass
-
     def profile(self):
         # Create user profile interface
 
         self.user_profile = tkinter.Toplevel()
-        self.user_profile.title("User Profile")
+        self.user_profile.title("Profile")
         self.user_profile.geometry("500x500")
-        self.user_profile.resizable(0, 0)
+        self.user_profile.resizable(False, False)
         self.user_profile.grab_set()
         self.user_profile.focus_set()
         self.user_profile.focus_force()
 
-        self.user_profile_label = tkinter.Label(self.user_profile, text="User Profile")
+        self.user_profile_label = tkinter.Label(self.user_profile, text="Profile")
         self.user_profile_label.grid(row=0, column=0, padx=10, pady=10)
 
         self.user_profile_username = tkinter.Label(self.user_profile, text="username")
@@ -272,61 +363,17 @@ class Home(tkinter.Frame):
         self.user_profile_phone.grid(row=4, column=0, padx=10, pady=10)
         self.user_profile_phone_entry = tkinter.Entry(self.user_profile)
         self.user_profile_phone_entry.grid(row=4, column=1, padx=10, pady=10)
-
         self.user_profile_button = tkinter.Button(self.user_profile, text="OK",
                                                   command=lambda: self.user_profile.destroy())
-
         self.user_profile_button.grid(row=3, column=0, padx=10, pady=10)
 
     def quit(self):
         self.controller.close()
 
-    def screenshot(self):
-
-        # get screensize
-        x, y = pyautogui.size()
-        print(f"width={x}\theight={y}")
-
-        x2, y2 = pyautogui.size()
-        x2, y2 = int(str(x2)), int(str(y2))
-        print(x2 // 2)
-        print(y2 // 2)
-
-        # find new window title
-        z1 = pygetwindow.getAllTitles()
-        time.sleep(1)
-        print(len(z1))
-        # test with pictures folder
-
-        time.sleep(1)
-        z2 = pygetwindow.getAllTitles()
-        print(len(z2))
-        time.sleep(1)
-        z3 = [x for x in z2 if x not in z1]
-        z3 = ''.join(z3)
-        time.sleep(3)
-        # also able to edit z3 to specified window-title string like: "Sublime Text (UNREGISTERED)"
-        my = pygetwindow.getWindowsWithTitle(z3)[0]
-        # quarter of screen screensize
-        x3 = x2 // 2
-        y3 = y2 // 2
-        my.resizeTo(x3, y3)
-        # top-left
-        my.moveTo(0, 0)
-        time.sleep(3)
-        my.activate()
-        time.sleep(1)
-
-        # save screenshot
-        p = pyautogui.screenshot()
-        p.save(
-            r"C:\\Users\\nguem\\Desktop\\MT4_Trading_Bot\\Pictures\\screenshot.png"
-        )
-
-        # close window
-        time.sleep(1)
-        my.close()
-
     def mt4login(self):
         self.login_window.destroy()
         self.controller.show_pages('Home')
+
+    def screen_shot(self):
+        # Taking screenshot of the window and saving it as a picture
+        print("screen shot")

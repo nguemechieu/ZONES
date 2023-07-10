@@ -226,24 +226,6 @@
 		<previous><![CDATA[-8.5]]></previous>
 	</event>
 	<event>
-		<title>M2 Money Supply y/y</title>
-		<country>CNY</country>
-		<date><![CDATA[07-11-2023]]></date>
-		<time><![CDATA[9:03am]]></time>
-		<impact><![CDATA[Low]]></impact>
-		<forecast><![CDATA[11.2%]]></forecast>
-		<previous><![CDATA[11.6%]]></previous>
-	</event>
-	<event>
-		<title>New Loans</title>
-		<country>CNY</country>
-		<date><![CDATA[07-11-2023]]></date>
-		<time><![CDATA[9:03am]]></time>
-		<impact><![CDATA[Medium]]></impact>
-		<forecast><![CDATA[2300B]]></forecast>
-		<previous><![CDATA[1360B]]></previous>
-	</event>
-	<event>
 		<title>NFIB Small Business Index</title>
 		<country>USD</country>
 		<date><![CDATA[07-11-2023]]></date>
@@ -368,6 +350,24 @@
 		<impact><![CDATA[High]]></impact>
 		<forecast />
 		<previous />
+	</event>
+	<event>
+		<title>M2 Money Supply y/y</title>
+		<country>CNY</country>
+		<date><![CDATA[07-12-2023]]></date>
+		<time><![CDATA[9:03am]]></time>
+		<impact><![CDATA[Low]]></impact>
+		<forecast><![CDATA[11.2%]]></forecast>
+		<previous><![CDATA[11.6%]]></previous>
+	</event>
+	<event>
+		<title>New Loans</title>
+		<country>CNY</country>
+		<date><![CDATA[07-12-2023]]></date>
+		<time><![CDATA[9:03am]]></time>
+		<impact><![CDATA[Medium]]></impact>
+		<forecast><![CDATA[2300B]]></forecast>
+		<previous><![CDATA[1360B]]></previous>
 	</event>
 	<event>
 		<title>10-y Bond Auction</title>
@@ -591,7 +591,7 @@
 		<date><![CDATA[07-13-2023]]></date>
 		<time><![CDATA[6:00am]]></time>
 		<impact><![CDATA[Low]]></impact>
-		<forecast><![CDATA[-14.6B]]></forecast>
+		<forecast><![CDATA[-14.9B]]></forecast>
 		<previous><![CDATA[-15.0B]]></previous>
 	</event>
 	<event>
@@ -600,7 +600,7 @@
 		<date><![CDATA[07-13-2023]]></date>
 		<time><![CDATA[6:00am]]></time>
 		<impact><![CDATA[Low]]></impact>
-		<forecast><![CDATA[-0.3%]]></forecast>
+		<forecast><![CDATA[-0.5%]]></forecast>
 		<previous><![CDATA[-0.6%]]></previous>
 	</event>
 	<event>
@@ -708,7 +708,7 @@
 		<date><![CDATA[07-13-2023]]></date>
 		<time><![CDATA[6:00pm]]></time>
 		<impact><![CDATA[Low]]></impact>
-		<forecast><![CDATA[-167.5B]]></forecast>
+		<forecast><![CDATA[-173.5B]]></forecast>
 		<previous><![CDATA[-240.3B]]></previous>
 	</event>
 	<event>
@@ -827,5 +827,23 @@
 		<impact><![CDATA[High]]></impact>
 		<forecast><![CDATA[65.5]]></forecast>
 		<previous><![CDATA[63.9]]></previous>
+	</event>
+	<event>
+		<title>G20 Meetings</title>
+		<country>ALL</country>
+		<date><![CDATA[07-14-2023]]></date>
+		<time><![CDATA[3:15pm]]></time>
+		<impact><![CDATA[Medium]]></impact>
+		<forecast />
+		<previous />
+	</event>
+	<event>
+		<title>G20 Meetings</title>
+		<country>ALL</country>
+		<date><![CDATA[07-15-2023]]></date>
+		<time><![CDATA[3:15pm]]></time>
+		<impact><![CDATA[Medium]]></impact>
+		<forecast />
+		<previous />
 	</event>
 </weeklyevents>

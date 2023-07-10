@@ -2,12 +2,15 @@ import datetime
 import tkinter
 from tkinter import ttk
 
-
 from src.News.news import NewsEvent
-
-
 class News(tkinter.Frame):
     def __init__(self, parent, controller):
+        tkinter.Frame.__init__(parent, bg="black", border=7, relief=tkinter.RIDGE, padx=10, pady=10
+                               , highlightbackground="black", highlightcolor="black", container=True)
+        self.parent = parent
+        self.title_label = tkinter.Label(self.parent, text="Forex Market News", justify="center",
+                                         background="lightblue")
+        self.title_label.pack(side=tkinter.TOP, fill=tkinter.X)
 
         self.item = None
         self.record = None
@@ -16,21 +19,15 @@ class News(tkinter.Frame):
         self.current_time = datetime.datetime.now()
         self.news = NewsEvent()
         self.news.get_next_x_news_items(7)
-        self.parent = parent
+
         self.controller = controller
 
-        tkinter.Frame.__init__(self, parent)
-        self.go_back = tkinter.Button(parent, text="Go Back", command=lambda: self.controller.show_pages("Home"))
-        self.go_back.pack(side=tkinter.LEFT)
-
-        self.after(1000, self.update)
         # define columns news and treeview
-        columns = ('Title', 'Date', 'Country', 'Impact', 'Forecast', 'Previous')
+        self.columns = ('Title', 'Date', 'Country', 'Impact', 'Forecast', 'Previous')
+        self.tree = ttk.Treeview(self.parent, columns=self.columns, selectmode="browse", show='headings',
+                                 style='Treeview.Heading', yscrollcommand=lambda: self.scrollbar)
 
-        self.tree = ttk.Treeview(self.parent, columns=columns, show='headings',style='Treeview.Heading')
-
-        self.tree.bind('<<TreeviewSelect>>', self.item_selected)
-        self.tree.pack(side=tkinter.LEFT)
+        self.tree.pack(side=tkinter.RIGHT, fill=tkinter.BOTH)
 
         # define headings
         self.tree.heading(
@@ -60,20 +57,49 @@ class News(tkinter.Frame):
                                  self.news.dates[i],
                                  self.news.countries[i],
                                  self.news.impacts[i],
+
                                  0,
-                                 56
+                                 0
 
                              ))
 
     def item_selected(self, event):
-
+        self.tree.delete(*self.tree.get_children())
+        self.item = None
+        self.record = None
         self.current_time = datetime.datetime.now()
-        for selected_item in self.tree.selection():
-            self.item = self.tree.item(selected_item)
-            self.record = self.item['values']
+        if event is not None:
+            self.tree.insert('', tkinter.END,
+                             values=(
+                                 self.news.titles[event],
+                                 self.news.dates[event],
+                                 self.news.countries[event],
+                                 self.news.impacts[event],
+                                 self.news.forecasts[event],
 
-            # show a message
+                                 self.news.previous[event]
 
-            # add a scrollbar
+                             ))
+
+            self.after(1000, self.update)
+            self.tree.selection_set(event)
+
+        elif event is None:
+            self.after(1000, self.update)
+
+            for title in self.news.titles:
+                i = self.news.titles.index(title)
+                self.tree.insert('', tkinter.END,
+                                 values=(
+                                     self.news.titles[i],
+                                     self.news.dates[i],
+                                     self.news.countries[i],
+                                     self.news.impacts[i],
+                                     self.news.forecasts[i],
+                                     self.news.previous[i]
+
+
+                                 ))
+
             self.scrollbar = ttk.Scrollbar(self.parent, orient=tkinter.VERTICAL, command=self.tree.yview)
-            self.tree.configure( selectmode='browse', yscrollcommand=self.scrollbar.set)
+            self.tree.configure(selectmode='browse')

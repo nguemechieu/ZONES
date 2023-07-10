@@ -4,22 +4,20 @@ from tkinter import messagebox
 
 class ForgotPassword(tkinter.Frame):
     def __init__(self, parent, controller):
-        tkinter.Frame.__init__(self, parent)
-
+        tkinter.Frame.__init__(self, parent, background='lightblue', padx=300, pady=70)
 
         self.controller = controller
         self.parent = parent
-        self.grid(padx=300, pady=70)
-        self.forgot_password_label = tkinter.Label(self.parent, text="Forgot Password")
-        self.forgot_password_label.grid(row=0, column=0)
+        self.grid(row=0, column=0, columnspan=2,pady=100, padx=100)
 
         self.title = tkinter.Label(self.parent, text="Forgot Password")
+        self.title.grid(row=0, column=0, columnspan=2)
         self.email_label = tkinter.Label(self.parent, text="Email")
-        self.email_label.grid(row=1, column=0)
+        self.email_label.grid(row=1, column=3)
         self.email_entry = tkinter.Entry(self.parent, background='lightblue')
-        self.email_entry.grid(row=1, column=1)
+        self.email_entry.grid(row=1, column=4)
         self.email_button = tkinter.Button(self.parent, text="SUBMIT", command=lambda: self.submit())
-        self.email_button.grid(row=3, column=2)
+        self.email_button.grid(row=3, column=5)
         self.go_back_button = tkinter.Button(self.parent, text="GO BACK",
                                              command=lambda: self.controller.show_pages('Login'))
         self.go_back_button.grid(row=3, column=0)

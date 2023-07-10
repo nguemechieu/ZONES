@@ -5,29 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="edcedfd6-e4c2-44aa-a80b-8d2f04536da8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/2/2/225a6cde9f944fa08d3af748a7318469112ac64f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/8/589f1902e81dd7bc1613c664750b652455e8d3d8" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/2/2/225a6cde9f944fa08d3af748a7318469112ac64f" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/5/8/589f1902e81dd7bc1613c664750b652455e8d3d8" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/News/news_7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/News/news_7.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/News/news_8.xml" beforeDir="false" afterPath="$PROJECT_DIR$/News/news_8.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/News/news_9.xml" beforeDir="false" afterPath="$PROJECT_DIR$/News/news_9.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/News/news.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/News/news.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Telegram.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Telegram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/DwxZmqExecution.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/DwxZmqExecution.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/DwxZmqReporting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/DwxZmqReporting.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/trade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/trade.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/News.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/News.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/about.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/about.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/account.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/candle_stick_chart.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/candle_stick_chart.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/forgot_password.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/forgot_password.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/home.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/home.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/login.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/register.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/register.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/reset_password.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/reset_password.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/statistics.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/statistics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/trading.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/trading.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/zmq_connector.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/zmq_connector.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zones.py" beforeDir="false" afterPath="$PROJECT_DIR$/zones.py" afterDir="false" />
     </list>

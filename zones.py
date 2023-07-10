@@ -1,4 +1,5 @@
 import smtplib
+import sys
 import tkinter
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -39,25 +40,25 @@ class App(tkinter.Tk):
 
         self.controller = self
         self.parent = self.master
-        self.frames = {}
+        self.frames = {
+
+        }
         self.pages = {}
         self.filename = None
         self.Messagebox = None
-
+        self.geometry("1530x800")
         self.title("ZONES   |MT4 Trader " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         self.resizable(width=True, height=True)
-
         self.iconbitmap(r"src\Images\zones_ea.ico")
         self.image = tkinter.PhotoImage(file=r"src\Images\zones_ea.png")
         self.background_label = tkinter.Label(self, image=self.image, bg="#004d99")
-        self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        self.background_label.place(x=0, y=0, relwidth=1, relheight=1,bordermode=
+                                    tkinter.OUTSIDE, anchor=tkinter.NW)
         self.configure(background="gray", relief=RAISED, border=9, bg="#004d99")
         self.db = Db()
-        print("users :" + str(self.db.get_all_users()))
-
         self.iconbitmap(r"src\images\zones_ea.ico")
         self.frame = Login(self, self.controller)
-        self.geometry("1530*800")
+
         self.mainloop()
 
     def show_pages(self, param):
@@ -65,11 +66,11 @@ class App(tkinter.Tk):
         for _frame in self.winfo_children():
             _frame.destroy()
         self.title(
-            "ZONES   |       AI POWERED MT4 Trader |    -->" + param + " | " + datetime.strftime(datetime.now(),
+            "ZONES     |     AI POWERED MT4 Trader |    -->" + param + " | " + datetime.strftime(datetime.now(),
                                                                                                  "%Y")
             + ", NGUEMECHIEU NOEL  MARTIAL")
-        if param in ['Login', 'Register', 'ForgotPassword', 'ResetPassword', 'Home', 'About', 'News']:
-            frames = [Service, Login, Register, ForgotPassword, ResetPassword, Home, About, News]
+        if param in ['Login', 'Register', 'ForgotPassword', 'ResetPassword', 'Home', 'About', 'News', 'Service']:
+            frames = [ Login, Register, ForgotPassword, ResetPassword, Home, About, News, Service]
             for frame in frames:
                 if param == frame.__name__:
                     frame = frame(self, self.controller)
@@ -83,7 +84,7 @@ class App(tkinter.Tk):
         self.delete_frame()
         for _frame in self.winfo_children():
             _frame.destroy()
-        self.frame = Login(self, self.controller)
+        self.frame = Login(self.parent, self.controller)
 
     def show_error(self, param):
         if param is not None:
@@ -111,10 +112,10 @@ class App(tkinter.Tk):
                 self.show_error(str(e))
 
     def exit(self):
-        self.master.destroy()
+        sys.exit(0)
 
 
 if __name__ == '__main__':
     App()
 else:
-    exit(1)
+    sys.exit(0)
