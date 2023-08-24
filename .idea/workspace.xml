@@ -1,32 +1,418 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="edcedfd6-e4c2-44aa-a80b-8d2f04536da8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/2/2/225a6cde9f944fa08d3af748a7318469112ac64f" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/8/589f1902e81dd7bc1613c664750b652455e8d3d8" beforeDir="false" />
+    <list default="true" id="edcedfd6-e4c2-44aa-a80b-8d2f04536da8" name="Changes" comment="newupdate">
+      <change afterPath="$PROJECT_DIR$/MQL4/Experts/Zones/Zones.ex4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Experts/Zones/Zones.mq4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Experts/Zones/sever.ex4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Experts/Zones/sever.mq4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Experts/mqlcache.dat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/DWX/DWX_Historic_Trades.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/DWX/DWX_Orders.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/session.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/DWX_Historic_Trades.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/DWX_Market_Data.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/DWX_Messages_Stored.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/DWX_Orders.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/DWX_Orders_Stored.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/account_info.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/bar_data.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/history_data.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Files/zones/tick_data.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Images/3331.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Images/trendsfollower.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Images/trendsfollower.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Images/trendsfollower.png.pptm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Images/trendsfollower_2_140x140.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Images/zones_ea.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/Array.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayBool.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayChar.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayDatetime.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayDouble.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayFloat.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayInt.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayLong.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayMqlRates.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayObj.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayShort.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/ArrayString.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/Base64.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/List.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/Tree.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Arrays/TreeNode.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/BillWilliams.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Canvas/Canvas.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObject.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectPanel.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectsArrows.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectsBmpControls.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectsChannels.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectsFibo.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectsGann.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectsLines.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectsShapes.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/ChartObjects/ChartObjectsTxtControls.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Charts/Chart.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Coinbase.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/BmpButton.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Button.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/CheckBox.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/CheckGroup.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/ComboBox.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/DateDropList.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/DatePicker.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Defines.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Dialog.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Edit.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Label.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/ListView.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Panel.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Picture.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/RadioButton.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/RadioGroup.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Rect.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Scrolls.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/SpinEdit.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/TimePicker.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/Wnd.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/WndClient.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/WndContainer.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/WndObj.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/CheckBoxOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/CheckBoxOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/Close.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/CloseDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/CloseOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/CloseOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/DateDropOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/DateDropOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/Down.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/DownDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/DownSmall.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/DownTransp.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/DropOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/DropOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/ExpandDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/ExpandOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/ExpandOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/HelpDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/HelpOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/HelpOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/Left.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/LeftDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/LeftTransp.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/RadioButtonOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/RadioButtonOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/Restore.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/RestoreDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/RestoreOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/RestoreOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/Right.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/RightDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/RightTransp.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/SpinDec.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/SpinInc.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/ThumbHor.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/ThumbHorDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/ThumbVert.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/ThumbVertDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/Turn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/TurnOff.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/TurnOn.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/Up.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/UpDisable.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/UpSmall.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/UpTransp.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/down_smoll.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Controls/res/up_smoll.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Custom.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DISCORD/Discord.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Data.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DataIMG.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DataSND.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Datas.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Defines.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Account.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Authenticator.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/BinanceUS.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/CCUSTOMMESSAGES.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/CControlsDialog.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/CMybot.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Chat.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Cindicators.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Circle.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Coinbase.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Comment.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Common.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/CryptoCurrencies.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Discord.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Enums.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/File.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/History.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/HistoryPosition.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Indicator.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/MQLMySQL.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/MoneyManagement.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/News.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Order.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/PanelDialog.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Pending.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Position.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/StdLibErr.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TESTERFILE.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TRADEEXPERT_INPUTS_PARAMETRES.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TRADE_DATA.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Telegram.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Trade.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TradeEvent.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TradeExpert_Functions.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TradeExpert_Library.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TradeExpert_Variables.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TradeReport.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/TradeSignal.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/User.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/Wallpaper.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/channel_post.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/createObjects.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/customMessage.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/entities.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/from.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/from_chat forward_from_chat.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/jason.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/message.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/mql4-auth.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/pipValue.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/result.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/sender_chat.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/snowflake.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/AccountsCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/BuffersCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/EventsCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/HistoryCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/IndicatorsCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/ListObj.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/MarketCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/OrderControl.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/ResourceCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/SymbolsCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/TickSeriesCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Collections/TimeSeriesCollection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Data.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/DataIMG.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/DataSND.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Datas.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Defines.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Engine.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/InpData.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Accounts/Account.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/BaseObj.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Events/Event.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Events/EventBalanceOperation.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Events/EventModify.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Events/EventOrderPlaced.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Events/EventOrderRemoved.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Events/EventPositionClose.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Events/EventPositionOpen.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Buffer.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferArrow.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferBars.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferCalculate.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferCandles.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferFilling.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferHistogram.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferHistogram2.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferLine.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferSection.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/BufferZigZag.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/DataInd.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/IndicatorDE.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/SeriesDataInd.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndAC.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndAD.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndADX.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndADXW.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndAMA.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndAO.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndATR.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndAlligator.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndBWMFI.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndBands.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndBears.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndBulls.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndCCI.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndChaikin.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndCustom.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndDEMA.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndDeMarker.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndEnvelopes.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndFRAMA.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndForce.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndFractals.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndGator.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndIchimoku.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndMA.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndMACD.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndMFI.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndMomentum.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndOBV.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndOsMA.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndRSI.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndRVI.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndSAR.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndStDev.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndStoch.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndTEMA.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndTRIX.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndVIDYA.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndVolumes.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Indicators/Standart/IndWPR.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Orders/HistoryBalance.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Orders/HistoryDeal.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Orders/HistoryOrder.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Orders/HistoryPending.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Orders/MarketOrder.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Orders/MarketPending.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Orders/MarketPosition.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Orders/Order.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/PendRequest/PendReqClose.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/PendRequest/PendReqModify.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/PendRequest/PendReqOpen.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/PendRequest/PendReqPlace.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/PendRequest/PendReqRemove.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/PendRequest/PendReqSLTP.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/PendRequest/PendRequest.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Series/Bar.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Series/SeriesDE.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Series/TimeSeriesDE.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/Symbol.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolBonds.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolCFD.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolCollateral.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolCommodity.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolCommon.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolCrypto.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolCustom.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolExchange.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolFX.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolFXExotic.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolFXMajor.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolFXMinor.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolFXRub.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolFutures.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolIndex.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolIndicative.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolMetall.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolOption.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Symbols/SymbolStocks.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Ticks/DataTick.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Ticks/NewTickObj.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Ticks/TickSeries.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Objects/Trade/TradeObj.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Services/DELib.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Services/EasyAccess.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Services/FileGen.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Services/Message.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Services/NewBarObj.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Services/Pause.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Services/Select.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Services/TimerCounter.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/ToMQL4.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/Trading.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/DoEasy/TradingControl.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/FileBin.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/FilePipe.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/FileTxt.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Files/File.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Files/FileBin.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Files/FilePipe.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Files/FileTxt.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Files/neurotrend.net" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/HTMLReport.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicator.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/BillWilliams.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/Custom.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/Indicator.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/Indicators.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/Oscilators.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/Series.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/TimeSeries.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/Trend.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Indicators/Volumes.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/InpDatas.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Main.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/MainWindow.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/MovingAverages.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Mql/Lang/Error.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Mql/Lang/GlobalVariable.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Mql/Lang/Mql.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Mql/Lang/Native.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Object.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Order.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Oscilators.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Program.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Series.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/StdLibErr.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Strings/String.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Symbols.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/TimeSeries.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Tools/DateTime.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/TradeReport.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Trend.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Volumes.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/WinUser32.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Zmq/AtomicCounter.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Zmq/Context.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Zmq/Errno.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Zmq/Socket.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/Zmq/Z85.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/createObjects.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/eax_mysql.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/internetlib.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/jason.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/orderreliable_v0_2_5.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/pipValue.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/stderror.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/stdlib.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/urlencode.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/wininet.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Include/xmlrpctags.mqh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Indicators/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Indicators/.mq4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MQL4/Indicators/1mfsto.ex4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DwxClient.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/tickprocessor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/zones.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/zones.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_7_8_2023_7_09_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_7_8_2023_7_09_PM__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/2/2/225a6cde9f944fa08d3af748a7318469112ac64f" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/5/8/589f1902e81dd7bc1613c664750b652455e8d3d8" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/News/news_9.xml" beforeDir="false" afterPath="$PROJECT_DIR$/News/news_9.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/News/news_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/News/news_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ZONES.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ZONES.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/News/news.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/News/news.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/trade.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/trade.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/News.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/News.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/about.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/about.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/candle_stick_chart.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/candle_stick_chart.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/forgot_password.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/forgot_password.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Telegram.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Telegram.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/saved_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/saved_model.pkl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/home.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/login.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/register.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/register.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/statistics.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/statistics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/trading.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/trading.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/zmq_connector.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/zmq_connector.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/zones.py" beforeDir="false" afterPath="$PROJECT_DIR$/zones.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,27 +430,156 @@
   <component name="Git.Rebase.Settings">
     <option name="NEW_BASE" value="zones/master" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiPersistence">
+    <option name="context" value="docker-desktop" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectId" id="2SIHHwVYOCpjeVJ55rJBeiZWIbk" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/nguem/OneDrive/Documents/GitHub/Trader/ZONES/zones_ea.py&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/nguem/IdeaProjects/ZONES/src",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.47816092",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\nguem\IdeaProjects\ZONES\src" />
       <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES" />
+      <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES\MQL4" />
+      <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES\MT4" />
+      <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES\src" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES\src" />
+      <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES" />
+      <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES\src\ui" />
+      <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES\src\STRATEGIES" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.zones">
+    <configuration name="help" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="help" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="terminal" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ZONES" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/terminal.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="zigzag" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ZONES" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/zigzag.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="imageTag" value="bigbossmanager/zones" />
+          <option name="buildOnly" value="true" />
+          <option name="sourceFilePath" value="Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+      <item itemvalue="Docker.Dockerfile" />
+      <item itemvalue="Makefile Target.help" />
+      <item itemvalue="Python.zones" />
+      <item itemvalue="Python.terminal" />
+      <item itemvalue="Python.zigzag" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Docker.Dockerfile" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -74,7 +589,65 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1688827105045</updated>
+      <workItem from="1692858576717" duration="252000" />
+      <workItem from="1692859022023" duration="10399000" />
     </task>
+    <task id="LOCAL-00001" summary="newupdate">
+      <created>1690254211783</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1690254211783</updated>
+    </task>
+    <task id="LOCAL-00002" summary="newupdate">
+      <created>1690254333894</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1690254333894</updated>
+    </task>
+    <task id="LOCAL-00003" summary="newupdate">
+      <created>1690562512710</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1690562512710</updated>
+    </task>
+    <task id="LOCAL-00004" summary="newupdate">
+      <created>1690683446449</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1690683446449</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.spec" />
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.py" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="newupdateh" />
+    <MESSAGE value="newupdate" />
+    <option name="LAST_COMMIT_MESSAGE" value="newupdate" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ZONES$zones.coverage" NAME="zones Coverage Results" MODIFIED="1692869493442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
