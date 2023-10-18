@@ -1,6 +1,16 @@
-# ZONES 
+# WELCOME  TO  ZONES  
+
+PYTHON  AI  MetaTrader 4 software
 
      copyright (c) 2022 - 2023  
+
+
+
+
+
+[![Docker Image CI](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml)
+[![Docker](https://github.com/nguemechieu/ZONES/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-publish.yml)
+[![Zones](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml)
 
 !['ZONES'](./src/images/zones_ea.png)
 
@@ -42,21 +52,23 @@
     - mql-zmq (library package)
     - pandas
 
-# Zones_EA.exe ,MT4 or MT5 Installation flow
+# Zones.exe ,MT4 or MT5 Installation flow
 
 !['alt text'](src/images/ZONESEA/Slide2.PNG)
 ## Documentation
 
 See documentation [click here !](src/docs/ZONESEA.pdf)
 
-# Linux installation:
+# Installation:
 
-You can run your strategies on linux through wine
+- OPERATING SYSTEM :
+          Windows, macOS, Ubuntu
 
-Here is a ready docker Wine:   [click here](https://hub.docker.com/docker-wine/nguemechieu/zones_ea)
 
-# Virtual environment
 
--     commands:
+
+## Virtual environment :DOCKER
+
+commands:
 -         docker pull zones
 -         docker run  zones Xvfb :99 -screen 0 1024x768x16 & python zones.py
