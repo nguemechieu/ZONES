@@ -2,11 +2,9 @@
 FROM python:latest
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /ZONES
 
 # Copy your Python script and other necessary files
-COPY zones.py .
-COPY . .
 
 # Install required packages
 RUN apt-get update && \
@@ -19,8 +17,13 @@ RUN apt-get update && \
     apt-get install -y x11-apps && \
     apt-get install -y firefox
 
+
+
 # Set up Xvfb
 ENV DISPLAY=:99
+COPY zones.py ./
+COPY . .
+
 
 # Run Xvfb and your Python script in the background
 CMD Xvfb :99 -screen 0 1024x768x16 & python zones.py
