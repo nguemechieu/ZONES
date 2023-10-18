@@ -52,21 +52,23 @@ PYTHON  AI  MetaTrader 4 software
     - mql-zmq (library package)
     - pandas
 
-# Zones_EA.exe ,MT4 or MT5 Installation flow
+# Zones.exe ,MT4 or MT5 Installation flow
 
 !['alt text'](src/images/ZONESEA/Slide2.PNG)
 ## Documentation
 
 See documentation [click here !](src/docs/ZONESEA.pdf)
 
-# Linux installation:
+# Installation:
 
-You can run your strategies on linux through wine
+- OPERATING SYSTEM :
+          Windows, macOS, Ubuntu
 
-Here is a ready docker Wine:   [click here](https://hub.docker.com/docker-wine/nguemechieu/zones_ea)
 
-# Virtual environment
 
--     commands:
+
+## Virtual environment :DOCKER
+
+commands:
 -         docker pull zones
 -         docker run  zones Xvfb :99 -screen 0 1024x768x16 & python zones.py
