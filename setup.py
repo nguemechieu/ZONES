@@ -1,23 +1,3 @@
-import setuptools
-
-setuptools.setup(
-
-    name="ZONES",
-    version="0.0.1",
-    author="Noel M nguemechieu",
-    author_email="nguemechieu@live.com",
-    description="AI POWERED trading software for MetaTrader",
-    long_description_content_type="text/x-rst",
-    keywords=['run', 'open', 'trade'],
-    url="https://github.com/nguemechieu/zones",
-    include_package_data=True,
-    package_dir={'ZONES': 'src'},
-    packages=['ZONES'],
-    license='LICENSE-MIT',
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: LICENSE-MIT",
-        "Operating System :: OS Independent",
-    ],
-    python_requires='>=3.11'
-)
+version https://git-lfs.github.com/spec/v1
+oid sha256:025d6001bf81c8fe3f5e54e414fda6d8f2f10a511cfabdd1ee38a39a90876fd7
+size 645
