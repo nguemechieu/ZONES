@@ -1,6 +1,14 @@
-# ZONES 
+#WELCOME  TO  ZONES  
+
+PYTHON  AI  MetaTrader 4 software
 
      copyright (c) 2022 - 2023  
+
+
+
+
+
+     [![Docker Image CI](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml)
 
 !['ZONES'](./src/images/zones_ea.png)
 
