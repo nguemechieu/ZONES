@@ -9,8 +9,8 @@ WORKDIR /ZONES
 # Install required packages
 RUN apt-get update && \
     apt-get install -y default-libmysqlclient-dev && \
-    apt-get install -y mysql-client && \
-    pip install mysqlclient && \
+    apt-get install -y mysql-server && \
+
     apt-get install -y xvfb && \
     apt-get install -y x11-xkb-utils && \
     apt-get install -y xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic && \
