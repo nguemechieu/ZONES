@@ -8,7 +8,7 @@ PYTHON  AI  MetaTrader 4 software
 
 
 
-     [![Docker Image CI](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml)
+[![Docker Image CI](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml)
 
 !['ZONES'](./src/images/zones_ea.png)
 
