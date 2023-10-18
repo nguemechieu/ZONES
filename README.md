@@ -11,7 +11,7 @@
 # Description
 
           ZONES EA  is an ai powered professional  
-          trading application using the standard platform MT4 ,MT5 and others
+          trading application using the standard platform MT4,MT5, and others
 
 # Architecture
 
@@ -30,7 +30,7 @@
 - Live trade on Telegram
 - Live trade copies
 - VPS
-- Upcoming features cryptocurrencies trading Terminal integration
+- Upcoming features cryptocurrency trading Terminal integration
   ![screenshot](MT4/Files/USDCHF5.gif)
 
 # ________ Installation _____________
@@ -51,13 +51,12 @@ See documentation [click here !](src/docs/ZONESEA.pdf)
 
 # Linux installation:
 
-You can run your strategies on linux through wine.
+You can run your strategies on linux through wine
 
 Here is a ready docker Wine:   [click here](https://hub.docker.com/docker-wine/nguemechieu/zones_ea)
 
 # Virtual environment
 
--     command: docker pull , docker run -d zones_ea
--     docker login 
--     docker pull zones_ea
--     docker run -d zones_ea
+-     commands:
+-         docker pull zones
+-         docker run  zones Xvfb :99 -screen 0 1024x768x16 & python zones.py
