@@ -32,4 +32,4 @@ ENV DISPLAY=:99
 
 
 # Run Xvfb and your Python script in the background
-CMD Xvfb :99 -screen 0 1024x768x16 & python ./zones.py
+CMD Xvfb :99 -screen 0 1024x768x16 & service mysql start & python ./zones.py
