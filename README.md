@@ -18,6 +18,7 @@ PYTHON  AI  MetaTrader 4 software
 
 !['ZONES'](./src/images/zones_ea.ico)
 
+
 # Description
 
           ZONES EA  is an ai powered professional  
@@ -70,5 +71,5 @@ See documentation [click here !](src/docs/ZONESEA.pdf)
 ## Virtual environment :DOCKER
 
 commands:
--         docker pull zones
--         docker run  zones Xvfb :99 -screen 0 1024x768x16 & python zones.py
+-         docker pull bigbossmanager/zones
+-         docker run -p 5000:5000
