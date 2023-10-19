@@ -8,6 +8,7 @@ copyright (c) 2022 -2023
 [![Docker Image CI](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml)
 [![Docker](https://github.com/nguemechieu/ZONES/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-publish.yml)
 [![ZONES](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml)
+[![Upload Python Package](https://github.com/nguemechieu/ZONES/actions/workflows/python-publish.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/python-publish.yml)
 
 !['ZONES'](./src/images/zones_ea.png)
 
@@ -16,7 +17,7 @@ copyright (c) 2022 -2023
 # Description
 
           ZONES   is a ai powered professional  
-          trading application using the standard platform MT4,MT5, and others
+          trading application using the standard platform MT4, MT5, and others
 
 # Architecture
 
@@ -56,7 +57,7 @@ OPERATING SYSTEM
 
 
 
-## Virtual environment :DOCKER
+## Virtual environment: DOCKER
 
 Commands
 -          docker pull bigbossmanager/zones
