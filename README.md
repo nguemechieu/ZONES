@@ -12,6 +12,7 @@ copyright (c) 2022 -2023
 !['ZONES'](./src/images/zones_ea.png)
 
 
+
 # Description
 
           ZONES   is a ai powered professional  
@@ -57,6 +58,12 @@ OPERATING SYSTEM
 
 ## Virtual environment :DOCKER
 
+<<<<<<< HEAD
 Commands
 -          docker pull bigbossmanager/zones
 -          docker run -p 5000:5000 bigbossmanager/zones
+=======
+commands:
+-         docker pull bigbossmanager/zones
+-         docker run -p 5000:5000
+>>>>>>> 457b02ab6cb2d1b801d708b5a86bdcaa3794a01e
