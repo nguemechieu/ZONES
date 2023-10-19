@@ -1,26 +1,20 @@
 # WELCOME  TO  ZONES  
 
-PYTHON  AI  MetaTrader 4 software
+PYTHON  AI  POWERED MetaTrader4 Software
 
-     copyright (c) 2022 - 2023  
-
-
-
+copyright (c) 2022 -2023  
 
 
 [![Docker Image CI](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-image.yml)
 [![Docker](https://github.com/nguemechieu/ZONES/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-publish.yml)
-[![Zones](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml)
+[![ZONES](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml)
 
 !['ZONES'](./src/images/zones_ea.png)
 
-## Icon
-
-!['ZONES'](./src/images/zones_ea.ico)
 
 # Description
 
-          ZONES EA  is an ai powered professional  
+          ZONES   is a ai powered professional  
           trading application using the standard platform MT4,MT5, and others
 
 # Architecture
@@ -29,7 +23,7 @@ PYTHON  AI  MetaTrader 4 software
 !['Architecture'](./src/images/Architecture/zones_ea/Slide4.PNG)
 !['docs'](./src/License/LICENSE)
 
-## Growing list of features:
+## Growing list of features
 
 - AI Trading Terminal
 - Mysql database connection
@@ -43,32 +37,26 @@ PYTHON  AI  MetaTrader 4 software
 - Upcoming features cryptocurrency trading Terminal integration
   ![screenshot](MT4/Files/USDCHF5.gif)
 
-# ________ Installation _____________
-## Requirements
-    - Python ~= 3.11
-    - pyzmq
-    - zmq
-    - mysql
-    - mql-zmq (library package)
-    - pandas
-
-# Zones.exe ,MT4 or MT5 Installation flow
+# 
+Installation flow
 
 !['alt text'](src/images/ZONESEA/Slide2.PNG)
 ## Documentation
 
 See documentation [click here !](src/docs/ZONESEA.pdf)
 
-# Installation:
 
-- OPERATING SYSTEM :
-          Windows, macOS, Ubuntu
+
+OPERATING SYSTEM 
+  - Windows
+  - MacOS
+  -   Linux
 
 
 
 
 ## Virtual environment :DOCKER
 
-commands:
--         docker pull zones
--         docker run  zones Xvfb :99 -screen 0 1024x768x16 & python zones.py
+Commands
+-          docker pull bigbossmanager/zones
+-          docker run -p 5000:5000 bigbossmanager/zones
