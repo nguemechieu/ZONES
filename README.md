@@ -51,19 +51,13 @@ See documentation [click here !](src/docs/ZONESEA.pdf)
 OPERATING SYSTEM 
   - Windows
   - MacOS
-  -   Linux
+  - Linux
 
 
 
 
 ## Virtual environment :DOCKER
 
-<<<<<<< HEAD
 Commands
 -          docker pull bigbossmanager/zones
 -          docker run -p 5000:5000 bigbossmanager/zones
-=======
-commands:
--         docker pull bigbossmanager/zones
--         docker run -p 5000:5000
->>>>>>> 457b02ab6cb2d1b801d708b5a86bdcaa3794a01e
