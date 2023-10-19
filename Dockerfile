@@ -1,22 +1,23 @@
-# Use a base image with Python and Tkinter pre-installed
-FROM python:latest
+# Use Ubuntu as the base image
+FROM ubuntu:latest
 
-# Set the working directory in the container
-WORKDIR /zones
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Copy your Python script and other necessary files
-COPY ./zones.py ./
-COPY . .
+# Update package list and install necessary dependencies
+RUN apt-get update -y && \
+    apt-get install -y python3-pip firefox xvfb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install required packages
-RUN apt-get update && \
-    apt-get install -y default-libmysqlclient-dev && \
-    pip install mysqlclient && \
-    apt-get install -y mysql-server xvfb x11-xkb-utils xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic x11-apps firefox && \
-    apt-get clean
+# Install Flask and Selenium
+RUN pip3 install flask selenium
 
-# Set up Xvfb
+# Copy your Python app into the container
+COPY ./ZONES /ZONES
+
+# Set up display for running Firefox headlessly
 ENV DISPLAY=:99
 
-# Run Xvfb and your Python script in the background
-CMD Xvfb :99 -screen 0 1024x768x16 & service mysql start & python ./zones.py
+# Start Xvfb and run the Flask app
+CMD Xvfb :99 -screen 0 1024x768x16 & python3 /ZONES/zones.py
