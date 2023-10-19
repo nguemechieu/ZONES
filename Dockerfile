@@ -15,7 +15,7 @@ RUN apt-get update && \
 # Run the Python script
 # Copy your Python script and other necessary files
 
-# Install required packages
+# Install cnhrequired packages
 RUN  apt-get install -y mysql-server && \
 
     apt-get install -y xvfb && \
@@ -23,9 +23,9 @@ RUN  apt-get install -y mysql-server && \
     apt-get install -y xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic && \
     apt-get install -y x11-apps && \
     apt update
-    apt clean
-    apt update
-    apt install firefox
+   RUN apt clean
+RUN apt update
+ RUN    apt install firefox
 
 
 
