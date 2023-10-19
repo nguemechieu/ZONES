@@ -14,7 +14,10 @@ RUN apt-get update -y && \
 RUN pip3 install flask selenium
 
 # Copy your Python app into the container
-COPY ./ZONES /ZONES
+
+WORKDIR ./ZONES
+COPY ./zones.py  ./zones.py
+COPY . .
 
 # Set up display for running Firefox headlessly
 ENV DISPLAY=:99
