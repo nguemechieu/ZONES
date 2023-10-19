@@ -23,9 +23,9 @@ RUN  apt-get install -y mysql-server && \
     apt-get install -y xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic && \
     apt-get install -y x11-apps && \
     apt update
-    sudo apt clean
-    sudo apt update
-    sudo apt install firefox
+    apt clean
+    apt update
+    apt install firefox
 
 
 
