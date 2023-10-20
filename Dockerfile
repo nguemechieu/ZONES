@@ -4,8 +4,6 @@
 FROM python:latest
 
 # Set the working directory in the container
-
-
 WORKDIR ./zones
 COPY ./zones.py  ./zones.py
 COPY . .

@@ -6,7 +6,7 @@
   <component name="ParserProjectConfiguration">
     <class-path />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_19" project-jdk-name="Python 3.11" project-jdk-type="Python SDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_19">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

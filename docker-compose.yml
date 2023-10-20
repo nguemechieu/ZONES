@@ -1,7 +1,7 @@
 version: '3'
 services:
-  web:
-    image: nginx
+  zones:
+    image: bigbossmanager/zones
   db:
     image: mysql
     ports:
