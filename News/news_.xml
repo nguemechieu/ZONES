@@ -868,19 +868,10 @@
 		<title>Credit Card Spending y/y</title>
 		<country>NZD</country>
 		<date><![CDATA[10-20-2023]]></date>
-		<time><![CDATA[2:00am]]></time>
+		<time><![CDATA[2:05am]]></time>
 		<impact><![CDATA[Low]]></impact>
 		<forecast />
 		<previous><![CDATA[4.2%]]></previous>
-	</event>
-	<event>
-		<title>RBNZ Statement of Intent</title>
-		<country>NZD</country>
-		<date><![CDATA[10-20-2023]]></date>
-		<time><![CDATA[2:00am]]></time>
-		<impact><![CDATA[Medium]]></impact>
-		<forecast />
-		<previous />
 	</event>
 	<event>
 		<title>German PPI m/m</title>
