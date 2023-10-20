@@ -8,409 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="edcedfd6-e4c2-44aa-a80b-8d2f04536da8" name="Changes" comment="newupdate">
-      <change afterPath="$PROJECT_DIR$/dist/ZONES-0.0.5-py3-none-any.whl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dist/ZONES-0.0.5.tar.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/ALIPAY.JPG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Experts/Zones/Zones.ex4" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Experts/Zones/Zones.mq4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Experts/Zones/Zones.mqproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Experts/mqlcache.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Files/B3USDCAD_60_tradeexpert.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Files/B3USDCAD_60_zones_ea.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Files/GBPUSD60.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Files/News.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Files/News/news.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Files/USDCHF5.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Images/zones_ea.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/Array.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/ArrayChar.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/ArrayDouble.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/ArrayFloat.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/ArrayInt.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/ArrayLong.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/ArrayObj.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/ArrayShort.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/ArrayString.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/List.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/Tree.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Arrays/TreeNode.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Canvas/Canvas.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObject.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectPanel.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectsArrows.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectsBmpControls.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectsChannels.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectsFibo.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectsGann.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectsLines.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectsShapes.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/ChartObjects/ChartObjectsTxtControls.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Charts/Chart.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/BmpButton.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Button.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/CheckBox.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/CheckGroup.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/ComboBox.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/DateDropList.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/DatePicker.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Defines.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Dialog.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Edit.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Label.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/ListView.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Panel.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Picture.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/RadioButton.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/RadioGroup.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Rect.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Scrolls.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/SpinEdit.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/TimePicker.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/Wnd.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/WndClient.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/WndContainer.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/WndObj.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/CheckBoxOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/CheckBoxOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/Close.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/CloseDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/CloseOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/CloseOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/DateDropOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/DateDropOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/Down.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/DownDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/DownSmall.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/DownTransp.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/DropOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/DropOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/ExpandDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/ExpandOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/ExpandOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/HelpDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/HelpOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/HelpOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/Left.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/LeftDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/LeftTransp.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/RadioButtonOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/RadioButtonOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/Restore.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/RestoreDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/RestoreOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/RestoreOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/Right.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/RightDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/RightTransp.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/SpinDec.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/SpinInc.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/ThumbHor.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/ThumbHorDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/ThumbVert.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/ThumbVertDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/Turn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/TurnOff.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/TurnOn.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/Up.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/UpDisable.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/UpSmall.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/UpTransp.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/down_smoll.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Controls/res/up_smoll.bmp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Account.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Autheticator.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/BinanceUS.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/CCUSTOMMESSAGES.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/CMybot.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Chat.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Cindicators.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Circle.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Coinbase.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Comment.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Common.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/CryptoCurrencies.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Discord.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Enums.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/File.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/History.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/HistoryPosition.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Indicator.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/MoneyManagement.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/MyBot.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/News.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Order.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/PanelDialog.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Pending.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Position.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/StdLibErr.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TESTERFILE.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TRADEEXPERT_INPUTS_PARAMETRES.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TRADE_DATA.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Telegram.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Trade.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TradeEvent.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TradeExpert_Functions.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TradeExpert_Library.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TradeExpert_Variables.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TradeReport.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/TradeSignal.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/USER.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/Wallpaper.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/ccustomChat.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/channel_post.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/createObjects.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/customMessage.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/entities.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/from.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/from_chat forward_from_chat.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/jason.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/message.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/pipValue.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/result.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/sender_chat.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DiscordTelegram/snowflake.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/AccountsCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/BuffersCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/EventsCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/HistoryCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/IndicatorsCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/ListObj.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/MarketCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/OrderControl.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/ResourceCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/SymbolsCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/TickSeriesCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Collections/TimeSeriesCollection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Data.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/DataIMG.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/DataSND.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Datas.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Defines.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Engine.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/InpData.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Accounts/Account.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/BaseObj.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Events/Event.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Events/EventBalanceOperation.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Events/EventModify.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Events/EventOrderPlaced.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Events/EventOrderRemoved.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Events/EventPositionClose.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Events/EventPositionOpen.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Buffer.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferArrow.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferBars.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferCalculate.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferCandles.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferFilling.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferHistogram.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferHistogram2.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferLine.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferSection.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/BufferZigZag.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/DataInd.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/IndicatorDE.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/SeriesDataInd.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndAC.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndAD.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndADX.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndADXW.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndAMA.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndAO.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndATR.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndAlligator.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndBWMFI.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndBands.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndBears.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndBulls.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndCCI.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndChaikin.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndCustom.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndDEMA.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndDeMarker.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndEnvelopes.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndFRAMA.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndForce.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndFractals.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndGator.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndIchimoku.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndMA.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndMACD.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndMFI.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndMomentum.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndOBV.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndOsMA.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndRSI.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndRVI.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndSAR.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndStDev.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndStoch.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndTEMA.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndTRIX.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndVIDYA.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndVolumes.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Indicators/Standart/IndWPR.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Orders/HistoryBalance.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Orders/HistoryDeal.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Orders/HistoryOrder.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Orders/HistoryPending.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Orders/MarketOrder.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Orders/MarketPending.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Orders/MarketPosition.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Orders/Order.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/PendRequest/PendReqClose.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/PendRequest/PendReqModify.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/PendRequest/PendReqOpen.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/PendRequest/PendReqPlace.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/PendRequest/PendReqRemove.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/PendRequest/PendReqSLTP.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/PendRequest/PendRequest.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Series/Bar.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Series/SeriesDE.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Series/TimeSeriesDE.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/Symbol.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolBonds.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolCFD.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolCollateral.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolCommodity.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolCommon.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolCrypto.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolCustom.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolExchange.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolFX.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolFXExotic.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolFXMajor.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolFXMinor.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolFXRub.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolFutures.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolIndex.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolIndicative.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolMetall.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolOption.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Symbols/SymbolStocks.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Ticks/DataTick.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Ticks/NewTickObj.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Ticks/TickSeries.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Objects/Trade/TradeObj.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Services/DELib.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Services/EasyAccess.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Services/FileGen.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Services/Message.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Services/NewBarObj.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Services/Pause.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Services/Select.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Services/TimerCounter.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/ToMQL4.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/Trading.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/DoEasy/TradingControl.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Files/File.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Files/FileBin.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Files/FilePipe.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Files/FileTxt.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/BillWilliams.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/Custom.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/Indicator.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/Indicators.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/Oscilators.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/Series.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/TimeSeries.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/Trend.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Indicators/Volumes.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/MovingAverages.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Mql/Lang/Error.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Mql/Lang/GlobalVariable.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Mql/Lang/Mql.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Mql/Lang/Native.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Object.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/StdLibErr.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Strings/String.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Tools/DateTime.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/WinUser32.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Zmq/AtomicCounter.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Zmq/Context.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Zmq/Errno.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Zmq/Socket.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Zmq/SocketOptions.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Zmq/Z85.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Zmq/Zmq.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/Zmq/ZmqMsg.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/api.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/stderror.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Include/stdlib.mqh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/Charger.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/Enums.ex4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/FSB-MT4 Bridge.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/FXBlueQuickChannel.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/FXS.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/FXSe.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/IrisFx.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/MQLMySQL.def" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/MQLMySQL.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/MT4/libsodium.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/MT4/libzmq.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/MT5/libsodium.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/MT5/libzmq.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/MySql.Data.DLL" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/MyfxPlay.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/VC2010/x64/libsodium.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/VC2010/x64/libzmq.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/VC2010/x86/libsodium.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/VC2010/x86/libzmq.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/api.ex4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/api.mq4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/libmysql.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/libsodium.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/libzmq.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/mqlcache.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/stdlib.ex4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/stdlib.mq4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Libraries/try.mq4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/Presets/trades.set" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/changelog.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/development.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MT4/join.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/News/news_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/News/news_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ZONES.egg-info/PKG-INFO" beforeDir="false" afterPath="$PROJECT_DIR$/ZONES.egg-info/PKG-INFO" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ZONES.egg-info/SOURCES.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ZONES.egg-info/SOURCES.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ZONES.egg-info/dependency_links.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ZONES.egg-info/dependency_links.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ZONES.egg-info/top_level.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ZONES.egg-info/top_level.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/ZONES-0.0.1-py3-none-any.whl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/ZONES-0.0.1-py3.11.egg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/ZONES-0.0.1.tar.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/index.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mt4ubuntu.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DwxClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/DwxClient.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Exchanges/CoinbasePro.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exchanges/CoinbasePro.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MetaTrader_Helpers/Data_Processing/DWX_HISTORY_IO_v2_0_1_RC8.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MetaTrader_Helpers/Report_Conversion/MT_TO_PYTHON/DWX_MT_TO_PYTHON_v2_RC4.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MetaTrader_Helpers/Report_Conversion/MT_TO_PYTHON/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MetaTrader_Helpers/Report_Conversion/MT_TO_PYTHON/images/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MetaTrader_Helpers/Report_Conversion/MT_TO_PYTHON/images/mt_to_df_example.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/News/news.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/News/news.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/STRATEGIES/BASE/DWZ_ZMQ_Strategy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/STRATEGIES/coin_flip_traders_v1.0.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TEMPLATE/MODULES/DwxZmqExecution.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TEMPLATE/MODULES/DwxZmqReporting.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/learning/learning.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/learning/learning.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/DwxZmqExecution.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/DwxZmqReporting.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tickprocessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tickprocessor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/trained_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/trained_model.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/exchange.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/home.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/register.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/register.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/trading.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/trading.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zones.py" beforeDir="false" afterPath="$PROJECT_DIR$/zones.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -483,12 +84,36 @@
       <recent name="C:\Users\nguem\OneDrive\Documents\GitHub\Trader\ZONES\src\STRATEGIES" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.zones">
-    <configuration name="help" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="help" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
+  <component name="RunManager" selected="Docker.Docker Image">
+    <configuration default="true" type="AZURE_FUNCTION_SUPPORT" factoryName="Run Functions">
+      <option name="appName" />
+      <option name="appServicePlanName" />
+      <option name="appServicePlanResourceGroup" />
+      <option name="appSettingsKey" value="6a25aa01-d61e-41bc-ab59-3600b3a6869d" />
+      <option name="artifact" />
+      <option name="debugOptions" />
+      <option name="deployment" />
+      <option name="deploymentStagingDirectoryPath" />
+      <option name="funcPath" />
+      <option name="functionHostArguments" />
+      <option name="hostJsonPath" />
+      <option name="insightsName" />
+      <option name="instrumentationKey" />
+      <option name="javaVersion" />
+      <option name="localSettingsJsonPath" />
+      <option name="moduleName" />
+      <option name="os" />
+      <option name="pricingTier" />
+      <option name="providerMap">
+        <map />
+      </option>
+      <option name="region" />
+      <option name="resourceGroup" />
+      <option name="stagingFolder" />
+      <option name="subscription" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="terminal" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ZONES" />
@@ -534,6 +159,15 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Docker Image" type="docker-deploy" factoryName="docker-image" temporary="true" server-name="Docker">
+      <deployment type="docker-image">
+        <settings>
+          <option name="imageTag" value="bigbossmanager/zones:latest" />
+          <option name="containerName" value="zones" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
@@ -548,6 +182,10 @@
       <deployment type="docker-compose.yml">
         <settings />
       </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-image" temporary="true">
+      <deployment type="docker-image" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
@@ -566,15 +204,16 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Docker.Docker Image" />
       <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
       <item itemvalue="Docker.Dockerfile" />
-      <item itemvalue="Makefile Target.help" />
       <item itemvalue="Python.zones" />
       <item itemvalue="Python.terminal" />
       <item itemvalue="Python.zigzag" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.Docker Image" />
         <item itemvalue="Docker.Dockerfile" />
         <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
       </list>
@@ -594,6 +233,7 @@
       <workItem from="1693356551939" duration="7162000" />
       <workItem from="1693540800018" duration="327000" />
       <workItem from="1693693666039" duration="1445000" />
+      <workItem from="1697754237222" duration="24767000" />
     </task>
     <task id="LOCAL-00001" summary="newupdate">
       <created>1690254211783</created>
@@ -651,6 +291,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="newupdate" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ZONES$zones.coverage" NAME="zones Coverage Results" MODIFIED="1693366312080" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ZONES$zones.coverage" NAME="zones Coverage Results" MODIFIED="1697778465404" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
