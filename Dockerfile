@@ -6,6 +6,7 @@ WORKDIR /zones
 
 # Copy the Python script and other necessary files
 COPY ./zones.py ./
+COPY . .
 
 # Install required packages
 RUN apt-get update && \

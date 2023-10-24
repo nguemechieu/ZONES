@@ -105,7 +105,7 @@
 		<date><![CDATA[10-24-2023]]></date>
 		<time><![CDATA[7:15am]]></time>
 		<impact><![CDATA[High]]></impact>
-		<forecast><![CDATA[44.5]]></forecast>
+		<forecast><![CDATA[44.9]]></forecast>
 		<previous><![CDATA[43.9]]></previous>
 	</event>
 	<event>
@@ -240,7 +240,7 @@
 		<date><![CDATA[10-25-2023]]></date>
 		<time><![CDATA[12:30am]]></time>
 		<impact><![CDATA[High]]></impact>
-		<forecast><![CDATA[5.4%]]></forecast>
+		<forecast><![CDATA[5.3%]]></forecast>
 		<previous><![CDATA[5.2%]]></previous>
 	</event>
 	<event>
@@ -249,7 +249,7 @@
 		<date><![CDATA[10-25-2023]]></date>
 		<time><![CDATA[12:30am]]></time>
 		<impact><![CDATA[High]]></impact>
-		<forecast><![CDATA[1.1%]]></forecast>
+		<forecast><![CDATA[1.0%]]></forecast>
 		<previous><![CDATA[0.9%]]></previous>
 	</event>
 	<event>
@@ -339,7 +339,7 @@
 		<date><![CDATA[10-25-2023]]></date>
 		<time><![CDATA[2:00pm]]></time>
 		<impact><![CDATA[Medium]]></impact>
-		<forecast><![CDATA[684K]]></forecast>
+		<forecast><![CDATA[678K]]></forecast>
 		<previous><![CDATA[675K]]></previous>
 	</event>
 	<event>
@@ -447,7 +447,7 @@
 		<date><![CDATA[10-26-2023]]></date>
 		<time><![CDATA[12:30pm]]></time>
 		<impact><![CDATA[High]]></impact>
-		<forecast><![CDATA[4.3%]]></forecast>
+		<forecast><![CDATA[4.5%]]></forecast>
 		<previous><![CDATA[2.4%]]></previous>
 	</event>
 	<event>
@@ -465,7 +465,7 @@
 		<date><![CDATA[10-26-2023]]></date>
 		<time><![CDATA[12:30pm]]></time>
 		<impact><![CDATA[Medium]]></impact>
-		<forecast><![CDATA[2.5%]]></forecast>
+		<forecast><![CDATA[2.7%]]></forecast>
 		<previous><![CDATA[2.2%]]></previous>
 	</event>
 	<event>
@@ -474,7 +474,7 @@
 		<date><![CDATA[10-26-2023]]></date>
 		<time><![CDATA[12:30pm]]></time>
 		<impact><![CDATA[Medium]]></impact>
-		<forecast><![CDATA[0.3%]]></forecast>
+		<forecast><![CDATA[0.2%]]></forecast>
 		<previous><![CDATA[0.4%]]></previous>
 	</event>
 	<event>
@@ -483,7 +483,7 @@
 		<date><![CDATA[10-26-2023]]></date>
 		<time><![CDATA[12:30pm]]></time>
 		<impact><![CDATA[Medium]]></impact>
-		<forecast><![CDATA[1.6%]]></forecast>
+		<forecast><![CDATA[1.9%]]></forecast>
 		<previous><![CDATA[0.2%]]></previous>
 	</event>
 	<event>
@@ -528,7 +528,7 @@
 		<date><![CDATA[10-26-2023]]></date>
 		<time><![CDATA[2:00pm]]></time>
 		<impact><![CDATA[Medium]]></impact>
-		<forecast><![CDATA[-1.4%]]></forecast>
+		<forecast><![CDATA[-2.0%]]></forecast>
 		<previous><![CDATA[-7.1%]]></previous>
 	</event>
 	<event>
@@ -564,7 +564,7 @@
 		<date><![CDATA[10-27-2023]]></date>
 		<time><![CDATA[12:30am]]></time>
 		<impact><![CDATA[Low]]></impact>
-		<forecast />
+		<forecast><![CDATA[0.7%]]></forecast>
 		<previous><![CDATA[0.5%]]></previous>
 	</event>
 	<event>
@@ -582,7 +582,7 @@
 		<date><![CDATA[10-27-2023]]></date>
 		<time><![CDATA[7:00am]]></time>
 		<impact><![CDATA[Low]]></impact>
-		<forecast><![CDATA[0.3%]]></forecast>
+		<forecast><![CDATA[0.2%]]></forecast>
 		<previous><![CDATA[0.4%]]></previous>
 	</event>
 	<event>
