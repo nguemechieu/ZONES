@@ -220,7 +220,7 @@
 		<title>Richmond Manufacturing Index</title>
 		<country>USD</country>
 		<date><![CDATA[10-24-2023]]></date>
-		<time><![CDATA[2:00pm]]></time>
+		<time><![CDATA[1:59pm]]></time>
 		<impact><![CDATA[Medium]]></impact>
 		<forecast><![CDATA[3]]></forecast>
 		<previous><![CDATA[5]]></previous>
@@ -303,7 +303,7 @@
 		<date><![CDATA[10-25-2023]]></date>
 		<time><![CDATA[1:00pm]]></time>
 		<impact><![CDATA[Low]]></impact>
-		<forecast />
+		<forecast><![CDATA[-14.7]]></forecast>
 		<previous><![CDATA[-14.4]]></previous>
 	</event>
 	<event>
@@ -456,7 +456,7 @@
 		<date><![CDATA[10-26-2023]]></date>
 		<time><![CDATA[12:30pm]]></time>
 		<impact><![CDATA[High]]></impact>
-		<forecast><![CDATA[209K]]></forecast>
+		<forecast><![CDATA[208K]]></forecast>
 		<previous><![CDATA[198K]]></previous>
 	</event>
 	<event>
@@ -492,7 +492,7 @@
 		<date><![CDATA[10-26-2023]]></date>
 		<time><![CDATA[12:30pm]]></time>
 		<impact><![CDATA[Low]]></impact>
-		<forecast><![CDATA[-85.5B]]></forecast>
+		<forecast><![CDATA[-86.2B]]></forecast>
 		<previous><![CDATA[-84.3B]]></previous>
 	</event>
 	<event>
@@ -537,7 +537,7 @@
 		<date><![CDATA[10-26-2023]]></date>
 		<time><![CDATA[2:30pm]]></time>
 		<impact><![CDATA[Low]]></impact>
-		<forecast />
+		<forecast><![CDATA[82B]]></forecast>
 		<previous><![CDATA[97B]]></previous>
 	</event>
 	<event>
