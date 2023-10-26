@@ -10,8 +10,9 @@
     <list default="true" id="edcedfd6-e4c2-44aa-a80b-8d2f04536da8" name="Changes" comment="newupdate">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MQL4/Experts/Zones/Zones.mq4" beforeDir="false" afterPath="$PROJECT_DIR$/MQL4/Experts/Zones/Zones.mq4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/CMybot.mqh" beforeDir="false" afterPath="$PROJECT_DIR$/MQL4/Include/DiscordTelegram/CMybot.mqh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DwxClient.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/DwxClient.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/home.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/home.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zones.py" beforeDir="false" afterPath="$PROJECT_DIR$/zones.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -241,7 +242,7 @@
       <workItem from="1698038973942" duration="1469000" />
       <workItem from="1698074887770" duration="10220000" />
       <workItem from="1698089104463" duration="40902000" />
-      <workItem from="1698195272285" duration="60163000" />
+      <workItem from="1698195272285" duration="75439000" />
     </task>
     <task id="LOCAL-00001" summary="newupdate">
       <created>1690254211783</created>
@@ -299,6 +300,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="newupdate" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ZONES$zones.coverage" NAME="zones Coverage Results" MODIFIED="1698299676826" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ZONES$zones.coverage" NAME="zones Coverage Results" MODIFIED="1698335192591" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
