@@ -568,15 +568,6 @@
 		<previous><![CDATA[0.5%]]></previous>
 	</event>
 	<event>
-		<title>RBNZ Statement of Intent</title>
-		<country>NZD</country>
-		<date><![CDATA[10-27-2023]]></date>
-		<time><![CDATA[2:10am]]></time>
-		<impact><![CDATA[Medium]]></impact>
-		<forecast />
-		<previous />
-	</event>
-	<event>
 		<title>Spanish Flash GDP q/q</title>
 		<country>EUR</country>
 		<date><![CDATA[10-27-2023]]></date>
@@ -584,6 +575,15 @@
 		<impact><![CDATA[Low]]></impact>
 		<forecast><![CDATA[0.2%]]></forecast>
 		<previous><![CDATA[0.4%]]></previous>
+	</event>
+	<event>
+		<title>Euro Summit</title>
+		<country>EUR</country>
+		<date><![CDATA[10-27-2023]]></date>
+		<time><![CDATA[10:15am]]></time>
+		<impact><![CDATA[High]]></impact>
+		<forecast />
+		<previous />
 	</event>
 	<event>
 		<title>Core PCE Price Index m/m</title>

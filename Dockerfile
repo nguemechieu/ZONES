@@ -5,13 +5,10 @@ FROM python:latest
 WORKDIR /zones
 
 # Copy the Python script and other necessary files
-COPY ./zones.py ./
+COPY  zones.py ./
 COPY . .
 
-# Install required packages
-RUN apt-get update && \
-    apt-get install -y default-libmysqlclient-dev && \
-    pip install mysqlclient
+
 
 # Expose port for the web server (assuming your Python script serves on port 80)
 EXPOSE 80
