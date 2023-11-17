@@ -685,6 +685,15 @@
 		<previous><![CDATA[2.07B]]></previous>
 	</event>
 	<event>
+		<title>Spanish 10-y Bond Auction</title>
+		<country>EUR</country>
+		<date><![CDATA[11-16-2023]]></date>
+		<time><![CDATA[9:42am]]></time>
+		<impact><![CDATA[Low]]></impact>
+		<forecast />
+		<previous><![CDATA[3.58|2.0]]></previous>
+	</event>
+	<event>
 		<title>FOMC Member Cook Speaks</title>
 		<country>USD</country>
 		<date><![CDATA[11-16-2023]]></date>
