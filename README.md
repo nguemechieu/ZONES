@@ -10,7 +10,6 @@ copyright (c) 2022 -2023
 [![Docker](https://github.com/nguemechieu/ZONES/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/docker-publish.yml)
 [![ZONES](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/python-app.yml)
 [![Upload Python Package](https://github.com/nguemechieu/ZONES/actions/workflows/python-publish.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/python-publish.yml)
-[![Upload Python Package](https://github.com/nguemechieu/ZONES/actions/workflows/python-publish.yml/badge.svg)](https://github.com/nguemechieu/ZONES/actions/workflows/python-publish.yml)
 
 !['ZONES'](./src/images/zones_ea.png)
 
