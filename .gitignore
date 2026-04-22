@@ -1,0 +1,45 @@
+# Environment and secrets
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+env/
+venv/
+myenv/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Monitoring and log outputs
+monitoring/
+logs/
+*.log
+*.jsonl
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Compiled C++ / DLL
+*.dll
+*.exp
+*.ilk
+*.pdb
+*.obj
+*.tlog
