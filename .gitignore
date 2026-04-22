@@ -15,6 +15,7 @@ build/
 env/
 venv/
 myenv/
+.ipynb_checkpoints/
 
 # Database files
 *.db
@@ -37,6 +38,20 @@ Thumbs.db
 .DS_Store
 
 # Compiled C++ / DLL
+bridge_dll/.vs/
+bridge_dll/build/
+bridge_dll/CMakeFiles/
+bridge_dll/Debug/
+bridge_dll/Release/
+bridge_dll/Win32/
+bridge_dll/*/Debug/
+bridge_dll/*/Release/
+bridge_dll/**/*.tlog
+bridge_dll/**/*.pdb
+bridge_dll/**/*.ilk
+bridge_dll/**/*.obj
+bridge_dll/**/*.exp
+bridge_dll/**/*.lib
 *.dll
 *.exp
 *.ilk

@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:98182a9b2c914728550fa1e787c4db5a0bd50bda41776e3d304a31b2ddc06970
-size 386
+import tkinter
+
+from mplfinance import figure
+
+
+class Trading(tkinter.Frame):
+    def __init__(self, parent, controller):
+        tkinter.Frame.__init__(self, parent)
+        self.parent = parent
+        self.controller = controller
+        self.fig = figure(figsize=(10, 6), dpi=100)
+        self.ax = self.fig.add_subplot(111)
+        self.fig.subplots_adjust(bottom=0.15)

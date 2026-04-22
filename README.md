@@ -198,7 +198,7 @@ SQLite
 Default file:
 
 ```text
-supply_demand_ea.db
+logs/zones.sqlite
 ```
 
 Optional remote database:

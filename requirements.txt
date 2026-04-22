@@ -1,0 +1,8 @@
+# Browser dashboard uses Python's standard library.
+#
+# These packages support the legacy Tk/MT4 helper modules still present in the repo.
+iso8601>=2.1.0
+pytz>=2024.1
+typing_extensions>=4.10.0
+mysql-connector-python>=8.4.0
+pywin32>=306; platform_system == "Windows"
