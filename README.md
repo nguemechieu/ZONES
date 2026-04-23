@@ -94,6 +94,7 @@ Useful routes:
 - `/`
 - `/chart`
 - `/system`
+- `POST /api/ingest`
 - `/api/analysis`
 - `/api/reports`
 - `/api/symbols`
@@ -109,6 +110,12 @@ For raw JSON, add:
 
 ```text
 ?format=json
+```
+
+Live MT4 or bridge clients can post JSON snapshots directly to:
+
+```text
+http://127.0.0.1:8787/api/ingest
 ```
 
 ## Browser Chart And MT4 Commands

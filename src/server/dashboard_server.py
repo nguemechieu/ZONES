@@ -1407,6 +1407,7 @@ class DashboardServer:
                                 "/": "Main dashboard",
                                 "/chart": "Live chart and command panel",
                                 "/system": "System status and runtime controls",
+                                "POST /api/ingest": "Accept live MT4 terminal snapshots as JSON",
                                 "/api/analysis": "Structured analysis payload",
                                 "/api/chart": "Candlestick chart payload for one timeframe",
                                 "/api/reports": "Recent stored reports",
@@ -1424,6 +1425,38 @@ class DashboardServer:
 
             def do_POST(self) -> None:  # noqa: N802
                 parsed = urlparse(self.path)
+
+                if parsed.path == "/api/ingest":
+                    try:
+                        content_length = int(self.headers.get("Content-Length", "0"))
+                        raw = self.rfile.read(content_length) if content_length > 0 else b"{}"
+                        payload = json.loads(raw.decode("utf-8"))
+                        result = server.feed_service.ingest_payload(payload)
+                        server.diagnostics["ingest_requests"] = (
+                            int(server.diagnostics.get("ingest_requests", 0)) + 1
+                        )
+                        server.diagnostics["last_ingest_at"] = result["report"]["created_at"]
+                        server.diagnostics["last_ingest_symbol"] = result["symbol"]
+                        server.diagnostics["last_transport"] = "http"
+                        server.diagnostics["last_error"] = ""
+                    except (json.JSONDecodeError, UnicodeDecodeError, ValueError) as exc:
+                        server.diagnostics["ingest_failures"] = (
+                            int(server.diagnostics.get("ingest_failures", 0)) + 1
+                        )
+                        server.diagnostics["last_error"] = str(exc)
+                        self._send_json({"status": "error", "message": str(exc)}, status=HTTPStatus.BAD_REQUEST)
+                        return
+                    except Exception as exc:
+                        server.diagnostics["ingest_failures"] = (
+                            int(server.diagnostics.get("ingest_failures", 0)) + 1
+                        )
+                        server.diagnostics["last_error"] = str(exc)
+                        self._send_json({"status": "error", "message": str(exc)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+                        return
+
+                    self._send_json(result, status=HTTPStatus.CREATED)
+                    return
+
                 form = self._read_form()
 
                 if parsed.path == "/api/system/settings":

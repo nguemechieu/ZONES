@@ -25,6 +25,12 @@ It renders a local candlestick chart from the same payload used by the dashboard
 4. The browser renders the candle terminal SVG from `chart_data[TF]`.
 5. Zone overlays are filtered to the same timeframe and ignore zones marked `deleted`.
 
+HTTP ingest clients can also post JSON snapshots to:
+
+```text
+POST http://127.0.0.1:8787/api/ingest
+```
+
 If no live MT4 report has arrived yet, the terminal uses the waiting payload so the page still renders and the user can verify the UI.
 
 ## Useful URLs
