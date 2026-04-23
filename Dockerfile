@@ -11,10 +11,8 @@ COPY . .
 
 
 # Expose port for the web server (assuming your Python script serves on port 80)
-EXPOSE 80
+EXPOSE 8787
 
 # Run the Python script and start a simple web server
 CMD ["python", "zones.py"]
 
-# Add a command to open the default web browser after running the Python script
-CMD ["python", "-m", "webbrowser", "http://localhost"]
