@@ -21,7 +21,7 @@ setup(
     python_requires='>=3.12',  # Adjusted the minimum Python version
     entry_points={
         'console_scripts': [
-            'zones = ZONES.main:main',
+            'zones = ZONES.src:main',
         ],
     },
     install_requires=[

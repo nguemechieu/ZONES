@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 import requests
 
-from Telegram import TelegramBot
+from src.execution.icp.Telegram import TelegramBot
 
 sUrl = "https://nfs.faireconomy.media/ff_calendar_thisweek.xml?version=bf0e35a327e8c9cd0b0ffdbae2dae029"  # ForexFactory NEWS URL (XML)
 

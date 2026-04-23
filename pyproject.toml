@@ -1,0 +1,123 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+# ============================================================
+# PROJECT METADATA
+# ============================================================
+
+[project]
+name = "zones"
+version = "1.0.0"
+description = "ZONES - Market Structure, Supply & Demand, Execution Engine"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+
+authors = [
+    { name = "Sopotek Corporation", email = "contact@sopotek.com" }
+]
+
+keywords = [
+    "trading",
+    "quant",
+    "forex",
+    "execution-engine",
+    "market-structure",
+    "supply-demand",
+    "ai-trading"
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Office/Business :: Financial :: Investment"
+]
+
+
+# ============================================================
+# CORE DEPENDENCIES
+# ============================================================
+
+dependencies = [
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+    "aiohttp>=3.9",
+    "websockets>=12.0",
+    "prometheus-client>=0.20",
+]
+
+
+# ============================================================
+# OPTIONAL (ADVANCED / AI / ANALYTICS)
+# ============================================================
+
+[project.optional-dependencies]
+
+ml = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scikit-learn>=1.3",
+    "xgboost>=2.0"
+]
+
+charts = [
+    "matplotlib>=3.8"
+]
+
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "black",
+    "ruff",
+    "mypy"
+]
+
+
+# ============================================================
+# ENTRY POINT (CLI)
+# ============================================================
+
+[project.scripts]
+zones = "main:main"
+
+
+# ============================================================
+# TOOLING CONFIG
+# ============================================================
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+
+# ============================================================
+# PACKAGE DISCOVERY
+# ============================================================
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+
+# ============================================================
+# PROJECT URLS
+# ============================================================
+
+[project.urls]
+Homepage = "https://localhost:8787"
+Repository = "https://github.com/nguemechieu/ZONES"
+Documentation = "https://github.com/nguemechieu/ZONES/docs"
