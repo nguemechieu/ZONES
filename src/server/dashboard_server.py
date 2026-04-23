@@ -21,6 +21,7 @@ from src.execution.system_state import (
     coerce_int,
     mask_database_url,
 )
+from src.execution.portfolio import build_portfolio_analysis
 from src.server.bridge import LiveFeedService
 from src.server.engine_config import EngineConfig
 
@@ -239,6 +240,7 @@ def _route_navigation(current_path: str) -> str:
     routes = [
         ("/", "Dashboard"),
         ("/chart", "Chart"),
+        ("/portfolio", "Portfolio"),
         ("/system", "System"),
         ("/api/analysis", "Analysis"),
         ("/api/reports", "Reports"),
@@ -296,6 +298,90 @@ def _zone_chart_style(zone: dict[str, Any]) -> tuple[str, str]:
     if kind == "resistance":
         return ("rgba(246, 183, 60, 0.12)", "#f6b73c")
     return ("rgba(233, 241, 248, 0.08)", "#c8d5e4")
+
+
+def _tradingview_symbol(symbol: str, override: str = "") -> str:
+    candidate = (override or symbol or "").strip().upper()
+    if not candidate:
+        return "FX:EURUSD"
+    if ":" in candidate:
+        return candidate
+    if len(candidate) == 6 and candidate.isalpha():
+        return f"FX:{candidate}"
+    if candidate in {"XAUUSD", "XAGUSD", "XPTUSD", "XPDUSD"}:
+        return f"OANDA:{candidate}"
+    return candidate
+
+
+def _tradingview_interval(timeframe: str) -> str:
+    mapping = {
+        "1M": "1",
+        "3M": "3",
+        "5M": "5",
+        "15M": "15",
+        "30M": "30",
+        "1H": "60",
+        "4H": "240",
+        "1D": "D",
+    }
+    return mapping.get(str(timeframe).upper(), "5")
+
+
+def _tradingview_widget_html(
+        *,
+        symbol: str,
+        timeframe: str,
+        symbol_options: list[str],
+        tv_symbol_override: str = "",
+) -> tuple[str, str]:
+    tv_symbol = _tradingview_symbol(symbol, tv_symbol_override)
+    watchlist: list[str] = []
+    seen: set[str] = set()
+    for item in [symbol, *symbol_options]:
+        mapped = _tradingview_symbol(str(item or ""))
+        if mapped and mapped not in seen:
+            seen.add(mapped)
+            watchlist.append(mapped)
+    if tv_symbol not in seen:
+        watchlist.insert(0, tv_symbol)
+
+    widget_config = {
+        "autosize": True,
+        "symbol": tv_symbol,
+        "interval": _tradingview_interval(timeframe),
+        "timezone": "exchange",
+        "theme": "dark",
+        "backgroundColor": "rgba(8, 17, 30, 1)",
+        "style": "1",
+        "locale": "en",
+        "withdateranges": True,
+        "hide_side_toolbar": False,
+        "allow_symbol_change": True,
+        "save_image": True,
+        "details": True,
+        "hotlist": True,
+        "calendar": True,
+        "studies": [
+            "ROC@tv-basicstudies",
+            "StochasticRSI@tv-basicstudies",
+            "MASimple@tv-basicstudies",
+        ],
+        "watchlist": watchlist[:12],
+        "show_popup_button": True,
+        "popup_width": "1200",
+        "popup_height": "760",
+        "support_host": "https://www.tradingview.com",
+    }
+    html = f"""<div class="tradingview-widget-container tradingview-stage">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright">
+    <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">Advanced chart by TradingView</a>
+  </div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+{json.dumps(widget_config, indent=2)}
+  </script>
+</div>"""
+    return html, tv_symbol
 
 
 def _candlestick_terminal_svg(payload: dict[str, Any], timeframe: str) -> str:
@@ -582,6 +668,43 @@ def _base_css() -> str:
       min-width: 900px;
       height: auto;
     }
+    .tradingview-stage {
+      width: 100%;
+      min-height: 640px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(6, 14, 27, 0.82);
+    }
+    .tradingview-widget-container__widget {
+      width: 100%;
+      height: 600px;
+    }
+    .tradingview-widget-copyright {
+      padding: 8px 12px 10px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .tradingview-widget-copyright a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .metrics-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--panel-alt);
+    }
+    .metric-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-top: 6px;
+    }
     .chart-toolbar {
       display: grid;
       gap: 12px;
@@ -813,6 +936,12 @@ def _chart_page_html(
     if not timeframe_tabs:
         timeframe_tabs = "<span class='pill'>No timeframe feeds yet</span>"
 
+    tradingview_html, resolved_tv_symbol = _tradingview_widget_html(
+        symbol=current_symbol,
+        timeframe=selected_timeframe,
+        symbol_options=symbol_options,
+        tv_symbol_override=tv_symbol_override,
+    )
     terminal_svg = _candlestick_terminal_svg(payload, selected_timeframe)
     selected_zones = [
         zone
@@ -894,7 +1023,7 @@ def _chart_page_html(
           <span class="pill">Symbol: {escape(current_symbol or "-")}</span>
           <span class="pill">Timeframe: {escape(selected_timeframe)}</span>
           <span class="pill">Zones: {len(selected_zones)}</span>
-          <span class="pill">TV Symbol: {escape(tv_symbol_override or current_symbol or "-")}</span>
+          <span class="pill">TV Symbol: {escape(resolved_tv_symbol)}</span>
         </div>
         <div class="chart-toolbar">
           <form method="get" action="/chart">
@@ -951,6 +1080,17 @@ def _chart_page_html(
           <button type="submit">Queue Command</button>
         </form>
       </div>
+    </section>
+
+    <section class="card" style="margin-bottom:18px;">
+      <div class="terminal-header">
+        <div>
+          <h2 style="margin:0 0 6px;">TradingView Market Chart</h2>
+          <div class="muted">External TradingView chart for the selected symbol, with public drawing tools and studies.</div>
+        </div>
+        <span class="pill">{escape(resolved_tv_symbol)}</span>
+      </div>
+      {tradingview_html}
     </section>
 
     <section class="card" style="margin-bottom:18px;">
@@ -1165,6 +1305,94 @@ def _system_page_html(status: dict[str, Any], message: str = "", error: str = ""
       <div class="card">
         <h2 style="margin-top:0;">Diagnostics</h2>
         {_render_value(diagnostics)}
+      </div>
+    </section>
+  </div>
+</body>
+</html>"""
+
+
+def _portfolio_page_html(portfolio: dict[str, Any]) -> str:
+    fund = portfolio.get("fund_summary", {}) if isinstance(portfolio, dict) else {}
+    risk = portfolio.get("risk_metrics", {}) if isinstance(portfolio, dict) else {}
+    pnl = portfolio.get("pnl_attribution", {}) if isinstance(portfolio, dict) else {}
+    exposure = portfolio.get("exposure_by_symbol", []) if isinstance(portfolio, dict) else []
+    notes = portfolio.get("risk_notes", []) if isinstance(portfolio, dict) else []
+    metrics = [
+        ("NAV", fund.get("nav", portfolio.get("equity", 0.0))),
+        ("Daily Return %", fund.get("daily_return_pct", 0.0)),
+        ("Gross Lots", risk.get("gross_exposure_lots", portfolio.get("total_lots", 0.0))),
+        ("Net Lots", risk.get("net_exposure_lots", 0.0)),
+        ("Leverage Proxy", risk.get("leverage_proxy", 0.0)),
+        ("Margin Level %", risk.get("margin_level_pct", portfolio.get("margin_level_pct", 0.0))),
+        ("Concentration", risk.get("concentration_risk", portfolio.get("concentration_risk", 0.0))),
+        ("VaR 95 Proxy", risk.get("var_95_proxy", 0.0)),
+    ]
+    metric_cards = "".join(
+        "<div class='metric'>"
+        f"<div class='muted'>{escape(label)}</div>"
+        f"<div class='metric-value'>{_format_scalar(value)}</div>"
+        "</div>"
+        for label, value in metrics
+    )
+    exposure_rows = "".join(
+        "<tr>"
+        f"<td>{escape(str(item.get('symbol', '-')))}</td>"
+        f"<td>{_format_scalar(item.get('count', 0))}</td>"
+        f"<td>{_format_scalar(item.get('long_lots', 0.0))}</td>"
+        f"<td>{_format_scalar(item.get('short_lots', 0.0))}</td>"
+        f"<td>{_format_scalar(item.get('net_lots', 0.0))}</td>"
+        f"<td>{_format_scalar(item.get('floating_pnl', 0.0))}</td>"
+        "</tr>"
+        for item in exposure if isinstance(item, dict)
+    ) or "<tr><td colspan='6'>No open exposure</td></tr>"
+    note_items = "".join(f"<li>{escape(str(note))}</li>" for note in notes) or "<li>No risk notes.</li>"
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio | ZONES</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/zones-logo.png">
+  <style>{_base_css()}</style>
+</head>
+<body>
+  <div class="shell">
+    <nav class="nav">{_route_navigation("/portfolio")}</nav>
+    <section class="hero">
+      <div class="card">
+        <h1 style="margin-top:0;">Hedge Fund Portfolio Analysis</h1>
+        <div class="muted">Risk, exposure, concentration, leverage proxy, and PnL attribution from the latest account snapshot.</div>
+        <div style="margin-top:12px;">
+          <span class="pill">Account: {escape(str(portfolio.get("account_id", "-")))}</span>
+          <span class="pill">Symbol Context: {escape(str(portfolio.get("symbol", "-")))}</span>
+          <span class="pill">Positions: {_format_scalar(fund.get("open_position_count", portfolio.get("open_position_count", 0)))}</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0;">Risk Notes</h2>
+        <ul>{note_items}</ul>
+        <a class="button" href="/api/portfolio?format=json">Raw Metrics</a>
+      </div>
+    </section>
+    <section class="card">
+      <div class="metrics-grid">{metric_cards}</div>
+    </section>
+    <section class="grid" style="margin-top:18px;">
+      <div class="card">
+        <h2 style="margin-top:0;">Exposure By Symbol</h2>
+        <table>
+          <thead><tr><th>Symbol</th><th>Positions</th><th>Long Lots</th><th>Short Lots</th><th>Net Lots</th><th>PnL</th></tr></thead>
+          <tbody>{exposure_rows}</tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0;">PnL Attribution</h2>
+        {_dict_table(pnl)}
+        <h2>Risk Metrics</h2>
+        {_dict_table(risk)}
       </div>
     </section>
   </div>
@@ -1559,6 +1787,12 @@ class DashboardServer:
                     )
                     return
 
+                if parsed.path == "/portfolio":
+                    payload = server._build_payload(account_id, symbol)
+                    portfolio = build_portfolio_analysis(payload)
+                    self._send_html(_portfolio_page_html(portfolio))
+                    return
+
                 if parsed.path == "/api/analysis":
                     payload = server._build_payload(account_id, symbol)
                     self._send_route_payload(
@@ -1628,6 +1862,18 @@ class DashboardServer:
                     )
                     return
 
+                if parsed.path == "/api/portfolio":
+                    payload = server._build_payload(account_id, symbol)
+                    portfolio = build_portfolio_analysis(payload)
+                    self._send_route_payload(
+                        title="Portfolio Analysis",
+                        subtitle="Hedge fund style exposure, risk, concentration, and PnL metrics.",
+                        payload=portfolio,
+                        parsed_path=parsed.path,
+                        query=query,
+                    )
+                    return
+
                 if parsed.path == "/api/health":
                     self._send_json(
                         {
@@ -1655,6 +1901,7 @@ class DashboardServer:
                             "routes": {
                                 "/": "Main dashboard",
                                 "/chart": "Live chart and command panel",
+                                "/portfolio": "Hedge fund portfolio analysis",
                                 "/system": "System status and runtime controls",
                                 "POST /api/ingest": "Accept live MT4 terminal snapshots as JSON",
                                 "/api/analysis": "Structured analysis payload",
@@ -1662,6 +1909,7 @@ class DashboardServer:
                                 "/api/reports": "Recent stored reports",
                                 "/api/symbols": "Tracked symbols",
                                 "/api/commands": "Command queue snapshot",
+                                "/api/portfolio": "Portfolio risk and exposure metrics",
                                 "/api/health": "Diagnostics health payload",
                                 "/api/system/status": "System status payload",
                                 "/api/schema": "API schema",

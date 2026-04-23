@@ -25,6 +25,7 @@ Current foundation in this repo includes:
 - browser dashboard with structured route views
 - browser candle terminal with ZONES overlays filtered by selected symbol and timeframe
 - TradingView Advanced Chart page with live symbol switching, public drawing tools, and ZONES projection overlays
+- hedge fund style portfolio analysis with exposure, leverage, concentration, VaR proxy, and PnL attribution metrics
 - system status page for runtime settings, remote DB control, AI training, and feedback capture
 - editable allowed-session control on the system page for the execution gate
 - local MT4 bridge using `ZonesBridge.dll` and Windows named pipes
@@ -75,6 +76,7 @@ Supporting docs:
 - `docs/mt4_dll_bridge.md`
 - `docs/chart_terminal.md`
 - `docs/runtime_settings.md`
+- `docs/installation_package.md`
 
 ## Run The App
 
@@ -94,12 +96,14 @@ Useful routes:
 
 - `/`
 - `/chart`
+- `/portfolio`
 - `/system`
 - `POST /api/ingest`
 - `/api/analysis`
 - `/api/reports`
 - `/api/symbols`
 - `/api/commands`
+- `/api/portfolio`
 - `/api/health`
 - `/api/schema`
 - `/api/system/status`
@@ -166,6 +170,32 @@ The browser command panel can queue:
 - `alert`
 
 Those commands are picked up by the MT4 EA when it polls the local bridge.
+
+## Portfolio Analysis
+
+Open:
+
+```text
+http://127.0.0.1:8787/portfolio
+```
+
+The portfolio page shows hedge fund style metrics from the latest account snapshot:
+
+- NAV and daily return proxy
+- gross and net exposure in lots
+- long/short lots and long/short ratio
+- leverage proxy
+- margin level and margin utilization
+- concentration risk, HHI concentration, and effective bets
+- 95% VaR proxy and 2% stress-loss proxy
+- PnL attribution by long and short books
+- exposure by symbol
+
+Raw JSON is available at:
+
+```text
+http://127.0.0.1:8787/api/portfolio?format=json
+```
 
 ## MT4 Setup
 

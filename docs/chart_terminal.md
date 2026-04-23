@@ -14,7 +14,8 @@ It renders a local candlestick chart from the same payload used by the dashboard
 - Enter a custom symbol in the chart form, such as `EURUSD`, `GBPUSD`, or `XAUUSD`.
 - Switch between available timeframe feeds, for example `1M`, `5M`, and `1H`.
 - View supply, demand, support, and resistance zones as colored ranges on the local candle terminal.
-- Compare the local ZONES terminal with the optional TradingView symbol override field.
+- Compare the local ZONES terminal with the embedded TradingView Advanced Chart widget.
+- Use the optional TradingView symbol override field for provider-specific symbols like `FX:EURUSD` or `OANDA:XAUUSD`.
 - Queue MT4 commands from the same chart page after checking the selected symbol and zones.
 
 ## Data Flow
