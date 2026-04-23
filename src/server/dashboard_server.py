@@ -2,13 +2,15 @@ from __future__ import annotations
 
 import json
 import logging
+import urllib.error
+import urllib.request
 from html import escape
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from logging import Logger
 from pathlib import Path
 from typing import Any
-from urllib.parse import parse_qs, urlencode, urlparse
+from urllib.parse import quote, unquote, parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 
 from src.db.repository.learning_repository import LearningRepository
 from src.execution.system_state import (
@@ -49,6 +51,94 @@ def _parse_allowed_sessions(value: Any, fallback: tuple[str, ...]) -> tuple[str,
     if not sessions:
         return fallback
     return tuple(dict.fromkeys(sessions))
+
+
+def _parse_chat_ids(value: Any) -> list[int]:
+    if isinstance(value, list):
+        items = value
+    else:
+        items = str(value or "").replace(";", ",").split(",")
+    chat_ids: list[int] = []
+    for item in items:
+        text = str(item).strip()
+        if not text:
+            continue
+        try:
+            chat_ids.append(int(text))
+        except ValueError:
+            continue
+    return list(dict.fromkeys(chat_ids))
+
+
+def _mask_secret(value: str, visible: int = 4) -> str:
+    text = str(value or "")
+    if not text:
+        return ""
+    if len(text) <= visible:
+        return "*" * len(text)
+    return f"{text[:visible]}{'*' * 8}"
+
+
+def _compose_database_url(raw_url: str, username: str = "", password: str = "") -> str:
+    url = str(raw_url or "").strip()
+    user = str(username or "").strip()
+    secret = str(password or "")
+    if not url:
+        return ""
+    if not user and not secret:
+        return url
+    parsed = urlsplit(url)
+    if not parsed.scheme or not parsed.netloc or parsed.scheme.startswith("sqlite"):
+        return url
+    host = parsed.hostname or ""
+    port = f":{parsed.port}" if parsed.port else ""
+    auth = ""
+    if user:
+        auth = quote(user, safe="")
+        if secret:
+            auth += ":" + quote(secret, safe="")
+        auth += "@"
+    return urlunsplit((parsed.scheme, f"{auth}{host}{port}", parsed.path, parsed.query, parsed.fragment))
+
+
+def _discover_telegram_chat_ids(token: str) -> tuple[list[int], str]:
+    clean_token = str(token or "").strip()
+    if not clean_token:
+        return [], "Telegram token is empty."
+    url = f"https://api.telegram.org/bot{clean_token}/getUpdates"
+    request = urllib.request.Request(url, headers={"Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(request, timeout=8) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        return [], f"Telegram rejected the token or request: HTTP {exc.code}."
+    except (urllib.error.URLError, TimeoutError) as exc:
+        return [], f"Telegram discovery failed: {exc}."
+    except (OSError, json.JSONDecodeError, UnicodeDecodeError) as exc:
+        return [], f"Telegram discovery failed: {exc}."
+
+    if not payload.get("ok"):
+        description = str(payload.get("description") or "Telegram returned an error.")
+        return [], description
+
+    chat_ids: list[int] = []
+    for update in payload.get("result", []):
+        if not isinstance(update, dict):
+            continue
+        for key in ("message", "edited_message", "channel_post", "my_chat_member"):
+            event = update.get(key)
+            if isinstance(event, dict):
+                chat = event.get("chat")
+                if isinstance(chat, dict) and chat.get("id") is not None:
+                    try:
+                        chat_ids.append(int(chat["id"]))
+                    except (TypeError, ValueError):
+                        pass
+
+    unique_ids = list(dict.fromkeys(chat_ids))
+    if unique_ids:
+        return unique_ids, f"Discovered {len(unique_ids)} Telegram chat id(s)."
+    return [], "No Telegram chat id found yet. Send a message to the bot, then save settings again."
 
 
 def _labelize(value: str) -> str:
@@ -919,6 +1009,20 @@ def _system_page_html(status: dict[str, Any], message: str = "", error: str = ""
 
     message_html = f"<div class='notice success'>{escape(message)}</div>" if message else ""
     error_html = f"<div class='notice error'>{escape(error)}</div>" if error else ""
+    tracked_symbols = status.get("tracked_symbols", [])
+    symbol_options = sorted(
+        {
+            str(item.get("symbol", "")).upper()
+            for item in tracked_symbols
+            if isinstance(item, dict) and item.get("symbol")
+        }
+        | {str(runtime.get("chart_symbol", "EURUSD")).upper()}
+    )
+    symbol_options_html = "".join(
+        f"<option value='{escape(item, quote=True)}' {'selected' if item == str(runtime.get('chart_symbol', '')).upper() else ''}>"
+        f"{escape(item)}</option>"
+        for item in symbol_options
+    )
 
     return f"""<!doctype html>
 <html lang="en">
@@ -946,6 +1050,7 @@ def _system_page_html(status: dict[str, Any], message: str = "", error: str = ""
           <span class="pill">AI: {escape(str(signal_model.get("status", "warming_up")))}</span>
           <span class="pill">Signal: {escape(str(live_signal.get("signal", "neutral")))}</span>
           <span class="pill">Transport: {escape(str(diagnostics.get("transport", "-")))}</span>
+          <span class="pill">Telegram: {escape(str(runtime.get("telegram_status", "not configured")))}</span>
         </div>
       </div>
       <div class="card">
@@ -956,6 +1061,7 @@ def _system_page_html(status: dict[str, Any], message: str = "", error: str = ""
           <tr><th>Model Mode</th><td>{escape(str(signal_model.get("training_mode", "-")))}</td></tr>
           <tr><th>Model Samples</th><td>{escape(str(signal_model.get("sample_count", 0)))}</td></tr>
           <tr><th>Live Confidence</th><td>{escape(str(live_signal.get("confidence", 0.0)))}</td></tr>
+          <tr><th>Telegram Chats</th><td>{escape(str(runtime.get("telegram_chat_ids", "")) or "-")}</td></tr>
         </tbody></table>
       </div>
     </section>
@@ -964,9 +1070,39 @@ def _system_page_html(status: dict[str, Any], message: str = "", error: str = ""
       <div class="card">
         <h2 style="margin-top:0;">Runtime Settings</h2>
         <form method="post" action="/api/system/settings">
-          <label>Database URL
-            <input type="text" name="database_url" value="{escape(str(runtime.get('database_url', '')))}">
+          <h3 style="margin:0;">Database</h3>
+          <label>Database URL or Host
+            <input type="text" name="database_url" value="{escape(str(runtime.get('database_url_input', runtime.get('database_url', ''))), quote=True)}" placeholder="sqlite:///data/zones.db or postgresql://host:5432/zones">
           </label>
+          <label>Database Username
+            <input type="text" name="database_username" value="{escape(str(runtime.get('database_username', '')), quote=True)}">
+          </label>
+          <label>Database Password
+            <input type="password" name="database_password" value="" placeholder="Leave blank to keep current password">
+          </label>
+          <div class="muted">Stored password: {escape(_mask_secret(str(runtime.get('database_password', ''))) or 'not set')}</div>
+          <div class="muted">Current target: {escape(str(runtime.get('database_masked_url') or database.get('masked_target', '-')))}</div>
+
+          <h3>Telegram</h3>
+          <label class="check-item"><input type="checkbox" name="telegram_enabled" {'checked' if runtime.get('telegram_enabled') else ''}> Enable Telegram notifications</label>
+          <label>Telegram Bot Token
+            <input type="password" name="telegram_bot_token" value="" placeholder="Leave blank to keep current token">
+          </label>
+          <div class="muted">Stored token: {escape(_mask_secret(str(runtime.get('telegram_bot_token', ''))) or 'not set')}</div>
+          <label>Telegram Chat IDs
+            <input type="text" name="telegram_chat_ids" value="{escape(str(runtime.get('telegram_chat_ids', '')), quote=True)}" placeholder="Auto-discovered after user messages bot">
+          </label>
+          <div class="muted">{escape(str(runtime.get('telegram_status', 'Send a message to the bot, then save settings to discover chat id.')))}</div>
+
+          <h3>Chart Symbol</h3>
+          <label>Default Chart Symbol
+            <select name="chart_symbol">{symbol_options_html}</select>
+          </label>
+          <label>Custom Chart Symbol
+            <input type="text" name="chart_symbol_custom" value="" placeholder="EURUSD, GBPUSD, XAUUSD">
+          </label>
+
+          <h3>Execution Filters</h3>
           <div class="check-grid">
             <label class="check-item"><input type="checkbox" name="ai_enabled" {'checked' if runtime.get('ai_enabled') else ''}> AI enabled</label>
             <label class="check-item"><input type="checkbox" name="require_confirmation_signal" {'checked' if runtime.get('require_confirmation_signal') else ''}> Require confirmation</label>
@@ -991,6 +1127,9 @@ def _system_page_html(status: dict[str, Any], message: str = "", error: str = ""
           <label>Allowed Sessions<input type="text" name="allowed_sessions" value="{escape(str(runtime.get('allowed_sessions', '')))}"></label>
           <button type="submit">Save Runtime Settings</button>
         </form>
+        <div style="margin-top:12px;">
+          <a class="button" href="/chart?symbol={escape(str(runtime.get('chart_symbol', 'EURUSD')), quote=True)}">Open Selected Symbol Chart</a>
+        </div>
       </div>
 
       <div class="card">
@@ -1135,11 +1274,17 @@ class DashboardServer:
 
         database_url = str(stored.get("database_url", "")).strip()
         config_updates = dict(stored.get("config", {})) if isinstance(stored.get("config"), dict) else {}
+        database_settings = dict(stored.get("database", {})) if isinstance(stored.get("database"), dict) else {}
+        telegram_settings = dict(stored.get("telegram", {})) if isinstance(stored.get("telegram"), dict) else {}
+        chart_settings = dict(stored.get("chart", {})) if isinstance(stored.get("chart"), dict) else {}
 
         try:
             self._apply_runtime_settings(
                 database_url=database_url,
                 config_updates=config_updates,
+                database_settings=database_settings,
+                telegram_settings=telegram_settings,
+                chart_settings=chart_settings,
                 persist=False,
             )
             return self._runtime_snapshot(database_url)
@@ -1148,8 +1293,19 @@ class DashboardServer:
             return self._runtime_snapshot(database_url)
 
     def _runtime_snapshot(self, database_url: str) -> dict[str, Any]:
+        current = getattr(self, "runtime_settings", {}) if isinstance(getattr(self, "runtime_settings", {}), dict) else {}
+        database_url = str(database_url or current.get("database_url", ""))
         return {
             "database_url": database_url,
+            "database_url_input": str(current.get("database_url_input", database_url)),
+            "database_username": str(current.get("database_username", "")),
+            "database_password": str(current.get("database_password", "")),
+            "database_masked_url": mask_database_url(database_url),
+            "telegram_enabled": coerce_bool(current.get("telegram_enabled"), False),
+            "telegram_bot_token": str(current.get("telegram_bot_token", "")),
+            "telegram_chat_ids": str(current.get("telegram_chat_ids", "")),
+            "telegram_status": str(current.get("telegram_status", "not configured")),
+            "chart_symbol": str(current.get("chart_symbol", getattr(self.config, "symbol", "EURUSD"))).upper(),
             "ai_enabled": getattr(self.config, "ai_enabled", True),
             "minimum_trade_score": getattr(self.config, "minimum_trade_score", 2.0),
             "min_confluence_count": getattr(self.config, "min_confluence_count", 3),
@@ -1173,17 +1329,103 @@ class DashboardServer:
             *,
             database_url: str,
             config_updates: dict[str, Any],
+            database_settings: dict[str, Any] | None = None,
+            telegram_settings: dict[str, Any] | None = None,
+            chart_settings: dict[str, Any] | None = None,
             persist: bool,
     ) -> None:
         for key, value in config_updates.items():
             setattr(self.config, key, value)
 
-        self.runtime_settings = self._runtime_snapshot(database_url)
+        current = dict(self.runtime_settings)
+        db_settings = dict(database_settings or {})
+        raw_database_url = str(db_settings.get("url") or database_url or "").strip()
+        database_username = str(db_settings.get("username", "")).strip()
+        database_password = str(db_settings.get("password", ""))
+        parsed_database_url = urlsplit(raw_database_url)
+        if parsed_database_url.password and not database_password:
+            database_password = unquote(parsed_database_url.password)
+        if parsed_database_url.username and not database_username:
+            database_username = unquote(parsed_database_url.username)
+        if parsed_database_url.password or parsed_database_url.username:
+            host = parsed_database_url.hostname or ""
+            port = f":{parsed_database_url.port}" if parsed_database_url.port else ""
+            raw_database_url = urlunsplit(
+                (
+                    parsed_database_url.scheme,
+                    f"{host}{port}",
+                    parsed_database_url.path,
+                    parsed_database_url.query,
+                    parsed_database_url.fragment,
+                )
+            )
+        effective_database_url = _compose_database_url(
+            raw_database_url,
+            database_username,
+            database_password,
+        )
+
+        if effective_database_url:
+            current["database_url_input"] = raw_database_url
+            current["database_username"] = database_username
+            current["database_password"] = database_password
+
+        telegram = dict(telegram_settings or {})
+        telegram_token = str(
+            telegram.get("bot_token", telegram.get("telegram_bot_token", current.get("telegram_bot_token", "")))
+        ).strip()
+        manual_chat_ids = _parse_chat_ids(
+            telegram.get("chat_ids", telegram.get("telegram_chat_ids", current.get("telegram_chat_ids", "")))
+        )
+        telegram_enabled = coerce_bool(
+            telegram.get("enabled", telegram.get("telegram_enabled", current.get("telegram_enabled", False))),
+            False,
+        )
+        telegram_status = str(current.get("telegram_status", "not configured"))
+        discovered_chat_ids: list[int] = []
+        if telegram_token:
+            discovered_chat_ids, telegram_status = _discover_telegram_chat_ids(telegram_token)
+        chat_ids = list(dict.fromkeys([*manual_chat_ids, *discovered_chat_ids]))
+
+        chart = dict(chart_settings or {})
+        chart_symbol = str(chart.get("symbol", current.get("chart_symbol", self.config.symbol)) or self.config.symbol).upper()
+
+        current.update(
+            {
+                "database_url": effective_database_url,
+                "database_url_input": raw_database_url,
+                "database_username": database_username,
+                "database_password": database_password,
+                "database_masked_url": mask_database_url(effective_database_url),
+                "telegram_enabled": telegram_enabled,
+                "telegram_bot_token": telegram_token,
+                "telegram_chat_ids": ", ".join(str(item) for item in chat_ids),
+                "telegram_status": telegram_status,
+                "chart_symbol": chart_symbol,
+            }
+        )
+
+        self.config.symbol = chart_symbol or self.config.symbol
+        self.runtime_settings = current
+        self.runtime_settings.update(self._runtime_snapshot(effective_database_url))
 
         if persist:
             self.settings_store.save(
                 {
-                    "database_url": database_url,
+                    "database_url": effective_database_url,
+                    "database": {
+                        "url": raw_database_url,
+                        "username": database_username,
+                        "password": database_password,
+                    },
+                    "telegram": {
+                        "enabled": telegram_enabled,
+                        "bot_token": telegram_token,
+                        "chat_ids": chat_ids,
+                    },
+                    "chart": {
+                        "symbol": chart_symbol,
+                    },
                     "config": config_updates,
                 }
             )
@@ -1224,12 +1466,19 @@ class DashboardServer:
         else:
             database["masked_target"] = mask_database_url(str(database.get("target", "")))
 
+        safe_runtime = dict(runtime)
+        safe_runtime["database_password"] = _mask_secret(str(safe_runtime.get("database_password", "")))
+        safe_runtime["telegram_bot_token"] = _mask_secret(str(safe_runtime.get("telegram_bot_token", "")))
+        safe_runtime["database_url"] = mask_database_url(str(safe_runtime.get("database_url", "")))
+        safe_runtime["database_masked_url"] = mask_database_url(str(runtime.get("database_url", "")))
+
         return {
             "database": database,
-            "runtime": runtime,
+            "runtime": safe_runtime,
             "signal_model": signal_model,
             "live_signal": live_signal,
             "diagnostics": dict(self.diagnostics),
+            "tracked_symbols": self.feed_service.tracked_symbols(account_id),
         }
 
     def _build_payload(
@@ -1462,6 +1711,14 @@ class DashboardServer:
                 if parsed.path == "/api/system/settings":
                     try:
                         database_url = str(form.get("database_url", [""])[0]).strip()
+                        database_password = str(form.get("database_password", [""])[0])
+                        if database_password == "":
+                            database_password = str(server.runtime_settings.get("database_password", ""))
+                        telegram_token = str(form.get("telegram_bot_token", [""])[0]).strip()
+                        if telegram_token == "":
+                            telegram_token = str(server.runtime_settings.get("telegram_bot_token", ""))
+                        chart_symbol_custom = str(form.get("chart_symbol_custom", [""])[0]).strip().upper()
+                        chart_symbol = chart_symbol_custom or str(form.get("chart_symbol", [self.config.symbol])[0]).strip().upper()
                         config_updates = {
                             "ai_enabled": coerce_bool(form.get("ai_enabled", ["off"])[0], False),
                             "require_confirmation_signal": coerce_bool(form.get("require_confirmation_signal", ["off"])[0], False),
@@ -1484,6 +1741,19 @@ class DashboardServer:
                         server._apply_runtime_settings(
                             database_url=database_url,
                             config_updates=config_updates,
+                            database_settings={
+                                "url": database_url,
+                                "username": str(form.get("database_username", [""])[0]).strip(),
+                                "password": database_password,
+                            },
+                            telegram_settings={
+                                "enabled": coerce_bool(form.get("telegram_enabled", ["off"])[0], False),
+                                "bot_token": telegram_token,
+                                "chat_ids": str(form.get("telegram_chat_ids", [""])[0]).strip(),
+                            },
+                            chart_settings={
+                                "symbol": chart_symbol,
+                            },
                             persist=True,
                         )
                         self._redirect("/system?message=Runtime+settings+saved")

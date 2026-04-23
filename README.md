@@ -74,6 +74,7 @@ Supporting docs:
 - `docs/live_mt4_bridge.md`
 - `docs/mt4_dll_bridge.md`
 - `docs/chart_terminal.md`
+- `docs/runtime_settings.md`
 
 ## Run The App
 
@@ -237,7 +238,17 @@ The browser system page can also switch the runtime repository without editing e
 
 - open `/system`
 - paste a SQLite or PostgreSQL URL
+- enter the database username and password separately when the URL requires credentials
 - save runtime settings
+
+The same `/system` page also stores Telegram settings:
+
+- paste the Telegram bot token
+- send one message to the bot from the Telegram account or group you want to use
+- save runtime settings, and ZONES will call Telegram `getUpdates` to discover the chat id automatically
+- confirm the discovered chat id in the system status card
+
+For chart viewing, `/system` can store a default chart symbol, and `/chart` also lets the user select a tracked symbol or type a custom symbol before viewing the ZONES candle terminal.
 
 The same page also exposes live zone sizing controls:
 
