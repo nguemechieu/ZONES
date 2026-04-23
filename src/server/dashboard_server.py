@@ -23,7 +23,17 @@ from src.server.bridge import LiveFeedService
 from src.server.engine_config import EngineConfig
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-LOGO_PATH = PROJECT_ROOT / "assets" / "Zones.ico"
+ASSET_DIR = PROJECT_ROOT / "src" / "assets"
+FAVICON_PATH = ASSET_DIR / "Zones.ico"
+BRAND_LOGO_PATH = ASSET_DIR / "Zones.png"
+ASSET_ROUTES = {
+    "/favicon.ico": (FAVICON_PATH, "image/x-icon"),
+    "/assets/favicon.ico": (FAVICON_PATH, "image/x-icon"),
+    "/assets/Zones.ico": (FAVICON_PATH, "image/x-icon"),
+    "/assets/Zones.png": (BRAND_LOGO_PATH, "image/png"),
+    "/assets/zones-logo.png": (BRAND_LOGO_PATH, "image/png"),
+    "/src/assets/Zones.png": (BRAND_LOGO_PATH, "image/png"),
+}
 
 
 # ============================================================
@@ -150,6 +160,176 @@ def _route_navigation(current_path: str) -> str:
     return "".join(
         f"<a class='nav-link{' active' if current_path == path else ''}' href='{path}'>{label}</a>"
         for path, label in routes
+    )
+
+
+def _to_float(value: Any, default: float = 0.0) -> float:
+    try:
+        if value in (None, ""):
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _timeframe_sort_key(timeframe: str) -> tuple[int, str]:
+    order = {"1M": 0, "5M": 1, "15M": 2, "30M": 3, "1H": 4, "4H": 5, "1D": 6}
+    return (order.get(str(timeframe).upper(), 99), str(timeframe))
+
+
+def _chart_href(
+        *,
+        account_id: str,
+        symbol: str,
+        timeframe: str,
+        tv_symbol: str = "",
+) -> str:
+    params = {
+        "account_id": account_id,
+        "symbol": symbol,
+        "timeframe": timeframe,
+    }
+    if tv_symbol:
+        params["tv_symbol"] = tv_symbol
+    return "/chart?" + urlencode(params)
+
+
+def _zone_chart_style(zone: dict[str, Any]) -> tuple[str, str]:
+    kind = str(zone.get("kind", "")).lower()
+    family = str(zone.get("family", "")).lower()
+    if kind == "demand":
+        return ("rgba(57, 217, 138, 0.16)", "#39d98a" if family == "main" else "#66e2a3")
+    if kind == "supply":
+        return ("rgba(255, 107, 107, 0.16)", "#ff6b6b" if family == "main" else "#ff8a8a")
+    if kind == "support":
+        return ("rgba(95, 209, 255, 0.12)", "#5fd1ff")
+    if kind == "resistance":
+        return ("rgba(246, 183, 60, 0.12)", "#f6b73c")
+    return ("rgba(233, 241, 248, 0.08)", "#c8d5e4")
+
+
+def _candlestick_terminal_svg(payload: dict[str, Any], timeframe: str) -> str:
+    chart_data = payload.get("chart_data", {})
+    candles = chart_data.get(timeframe, []) if isinstance(chart_data, dict) else []
+    if not isinstance(candles, list) or not candles:
+        return "<div class='empty'>No candle data is available for this timeframe yet.</div>"
+
+    visible = [candle for candle in candles[-72:] if isinstance(candle, dict)]
+    if not visible:
+        return "<div class='empty'>No valid candle rows are available for this timeframe yet.</div>"
+
+    visible_start = max(0, len(candles) - len(visible))
+    zones = [
+        zone
+        for zone in payload.get("zones", [])
+        if isinstance(zone, dict)
+        and str(zone.get("timeframe", timeframe)).upper() == timeframe
+        and str(zone.get("status", "")).lower() != "deleted"
+    ]
+
+    highs = [_to_float(candle.get("high"), _to_float(candle.get("close"), 0.0)) for candle in visible]
+    lows = [_to_float(candle.get("low"), _to_float(candle.get("close"), 0.0)) for candle in visible]
+    for zone in zones:
+        highs.append(_to_float(zone.get("upper"), max(highs or [1.0])))
+        lows.append(_to_float(zone.get("lower"), min(lows or [1.0])))
+
+    max_price = max(highs or [1.0])
+    min_price = min(lows or [0.0])
+    price_range = max(max_price - min_price, 0.0001)
+    padding = price_range * 0.08
+    max_price += padding
+    min_price -= padding
+
+    width = 1180
+    height = 540
+    left = 74
+    right = 24
+    top = 24
+    bottom = 48
+    plot_width = width - left - right
+    plot_height = height - top - bottom
+    candle_gap = plot_width / max(len(visible), 1)
+    body_width = max(4.0, min(16.0, candle_gap * 0.58))
+
+    def y(price: float) -> float:
+        return top + (max_price - price) / max(max_price - min_price, 1e-9) * plot_height
+
+    grid_markup: list[str] = []
+    for step in range(6):
+        price = max_price - (max_price - min_price) * step / 5.0
+        y_pos = y(price)
+        grid_markup.append(
+            f"<line x1='{left}' y1='{y_pos:.2f}' x2='{width - right}' y2='{y_pos:.2f}' "
+            "stroke='rgba(141, 164, 189, 0.14)' stroke-width='1' />"
+            f"<text x='10' y='{y_pos + 4:.2f}' fill='#8da4bd' font-size='12'>{price:.5f}</text>"
+        )
+
+    zone_markup: list[str] = []
+    for zone in zones:
+        origin_index = int(_to_float(zone.get("origin_index"), visible_start))
+        rect_left_index = max(0, origin_index - visible_start)
+        rect_x = left + rect_left_index * candle_gap
+        rect_width = max(16.0, plot_width - (rect_x - left))
+        upper = _to_float(zone.get("upper"), max_price)
+        lower = _to_float(zone.get("lower"), min_price)
+        top_y = min(y(upper), y(lower))
+        rect_height = max(5.0, abs(y(lower) - y(upper)))
+        fill, stroke = _zone_chart_style(zone)
+        label = " ".join(
+            item
+            for item in (
+                str(zone.get("family", "")).upper(),
+                str(zone.get("kind", "")).upper(),
+                str(zone.get("strength_label", "")),
+            )
+            if item
+        )
+        zone_markup.append(
+            f"<rect x='{rect_x:.2f}' y='{top_y:.2f}' width='{rect_width:.2f}' "
+            f"height='{rect_height:.2f}' fill='{fill}' stroke='{stroke}' stroke-width='1.4' rx='7' />"
+            f"<text x='{rect_x + 8:.2f}' y='{top_y + 16:.2f}' fill='{stroke}' font-size='12'>"
+            f"{escape(label)}</text>"
+        )
+
+    candle_markup: list[str] = []
+    label_interval = max(1, len(visible) // 7)
+    for index, candle in enumerate(visible):
+        open_price = _to_float(candle.get("open"), _to_float(candle.get("close"), 0.0))
+        high_price = _to_float(candle.get("high"), max(open_price, _to_float(candle.get("close"), open_price)))
+        low_price = _to_float(candle.get("low"), min(open_price, _to_float(candle.get("close"), open_price)))
+        close_price = _to_float(candle.get("close"), open_price)
+        bullish = close_price >= open_price
+        color = "#39d98a" if bullish else "#ff6b6b"
+        center_x = left + index * candle_gap + candle_gap / 2.0
+        body_top = min(y(open_price), y(close_price))
+        body_height = max(2.0, abs(y(open_price) - y(close_price)))
+        candle_markup.append(
+            f"<line x1='{center_x:.2f}' y1='{y(high_price):.2f}' x2='{center_x:.2f}' "
+            f"y2='{y(low_price):.2f}' stroke='{color}' stroke-width='1.6' />"
+            f"<rect x='{center_x - body_width / 2:.2f}' y='{body_top:.2f}' "
+            f"width='{body_width:.2f}' height='{body_height:.2f}' rx='3' fill='{color}' opacity='0.92' />"
+        )
+        if index % label_interval == 0:
+            timestamp = str(candle.get("timestamp", ""))
+            label = timestamp[11:16] if len(timestamp) >= 16 else timestamp[-5:]
+            candle_markup.append(
+                f"<text x='{center_x - 16:.2f}' y='{height - 16:.2f}' fill='#8da4bd' font-size='11'>"
+                f"{escape(label)}</text>"
+            )
+
+    last_close = _to_float(visible[-1].get("close"), 0.0)
+    return (
+        f"<svg viewBox='0 0 {width} {height}' role='img' "
+        f"aria-label='Candlestick terminal for {escape(str(payload.get('symbol', '')))} {escape(timeframe)}'>"
+        f"<rect x='0' y='0' width='{width}' height='{height}' fill='rgba(6, 14, 27, 0.64)' rx='18' />"
+        + "".join(grid_markup)
+        + "".join(zone_markup)
+        + "".join(candle_markup)
+        + f"<line x1='{left}' y1='{y(last_close):.2f}' x2='{width - right}' y2='{y(last_close):.2f}' "
+        "stroke='rgba(246, 183, 60, 0.7)' stroke-width='1' stroke-dasharray='6 5' />"
+        f"<text x='{width - right - 104:.2f}' y='{y(last_close) - 7:.2f}' fill='#f6b73c' font-size='12'>"
+        f"Last {last_close:.5f}</text>"
+        "</svg>"
     )
 
 
@@ -292,9 +472,66 @@ def _base_css() -> str:
       background: var(--panel-alt);
     }
     .check-item input { width: auto; margin: 0; }
+    .terminal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .terminal-shell {
+      background: linear-gradient(180deg, rgba(6, 14, 27, 0.78), rgba(10, 21, 40, 0.94));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      overflow-x: auto;
+    }
+    .terminal-shell svg {
+      display: block;
+      width: 100%;
+      min-width: 900px;
+      height: auto;
+    }
+    .chart-toolbar {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 14px;
+    }
+    .timeframe-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .timeframe-tabs a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(17, 37, 59, 0.9);
+      border: 1px solid var(--line);
+      font-size: 0.86rem;
+    }
+    .timeframe-tabs a.active {
+      color: var(--accent);
+      border-color: rgba(246, 183, 60, 0.46);
+    }
+    .zone-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .zone-item {
+      border: 1px solid var(--line);
+      background: var(--panel-alt);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
     @media (max-width: 960px) {
       .hero { grid-template-columns: 1fr; }
       .shell { padding: 18px; }
+      .terminal-header { display: block; }
     }
     """
 
@@ -351,6 +588,9 @@ def _html_template(title: str, payload: dict[str, Any]) -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escape(title)}</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/zones-logo.png">
   <style>{_base_css()}</style>
 </head>
 <body>
@@ -359,7 +599,7 @@ def _html_template(title: str, payload: dict[str, Any]) -> str:
     <section class="hero">
       <div class="card">
         <div class="brand">
-          <img class="brand-logo" src="./src/assets/Zones.png" alt="ZONES logo">
+          <img class="brand-logo" src="/assets/Zones.png" alt="ZONES logo">
           <div>
             <h1 style="margin:0 0 8px;">ZONES</h1>
             <div class="muted">Live market structure, zones, execution filters, and AI signal view.</div>
@@ -443,7 +683,68 @@ def _chart_page_html(
     message_html = f"<div class='notice success'>{escape(message)}</div>" if message else ""
     error_html = f"<div class='notice error'>{escape(error)}</div>" if error else ""
 
-    candles = payload.get("chart_data", {}).get(timeframe, [])
+    account_id = str(payload.get("account", {}).get("account_id", ""))
+    current_symbol = str(payload.get("symbol", "")).upper()
+    chart_data = payload.get("chart_data", {})
+    available_timeframes = (
+        sorted([str(item) for item in chart_data.keys()], key=_timeframe_sort_key)
+        if isinstance(chart_data, dict)
+        else []
+    )
+    selected_timeframe = (
+        timeframe
+        if timeframe in available_timeframes
+        else (available_timeframes[0] if available_timeframes else "5M")
+    )
+
+    tracked_symbols = payload.get("tracked_symbols", [])
+    symbol_options = sorted(
+        {
+            str(item.get("symbol", "")).upper()
+            for item in tracked_symbols
+            if isinstance(item, dict) and item.get("symbol")
+        }
+        | ({current_symbol} if current_symbol else set())
+    )
+    if not symbol_options:
+        symbol_options = [current_symbol or "EURUSD"]
+
+    symbol_options_html = "".join(
+        f"<option value='{escape(item, quote=True)}' {'selected' if item == current_symbol else ''}>"
+        f"{escape(item)}</option>"
+        for item in symbol_options
+    )
+    timeframe_tabs = "".join(
+        f"<a class='{'active' if item == selected_timeframe else ''}' "
+        f"href='{escape(_chart_href(account_id=account_id, symbol=current_symbol, timeframe=item, tv_symbol=tv_symbol_override), quote=True)}'>"
+        f"{escape(item)}</a>"
+        for item in available_timeframes
+    )
+    if not timeframe_tabs:
+        timeframe_tabs = "<span class='pill'>No timeframe feeds yet</span>"
+
+    terminal_svg = _candlestick_terminal_svg(payload, selected_timeframe)
+    selected_zones = [
+        zone
+        for zone in payload.get("zones", [])
+        if isinstance(zone, dict)
+        and str(zone.get("timeframe", selected_timeframe)).upper() == selected_timeframe
+        and str(zone.get("status", "")).lower() != "deleted"
+    ]
+    zone_items = "".join(
+        "<div class='zone-item'>"
+        f"<strong>{escape(str(zone.get('family', '')).upper())} "
+        f"{escape(str(zone.get('kind', '')).upper())} "
+        f"{escape(str(zone.get('strength_label', zone.get('strength', ''))))}</strong>"
+        f"<div class='muted'>{_format_scalar(zone.get('lower'))} - {_format_scalar(zone.get('upper'))}</div>"
+        f"<div class='muted'>Status: {escape(str(zone.get('status', '-')))} | "
+        f"Mode: {escape(str(zone.get('mode_bias', '-')))} | "
+        f"Origin: {escape(str(zone.get('origin_index', '-')))}</div>"
+        "</div>"
+        for zone in selected_zones
+    ) or "<div class='zone-item'>No zones available for this timeframe.</div>"
+
+    candles = chart_data.get(selected_timeframe, []) if isinstance(chart_data, dict) else []
     candle_rows = "".join(
         "<tr>"
         f"<td>{escape(str(c.get('timestamp', '-')))}</td>"
@@ -484,6 +785,9 @@ def _chart_page_html(
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Chart | ZONES</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/zones-logo.png">
   <style>{_base_css()}</style>
 </head>
 <body>
@@ -495,17 +799,42 @@ def _chart_page_html(
     <section class="hero">
       <div class="card">
         <h1 style="margin-top:0;">Chart</h1>
-        <div class="muted">Selected timeframe: {escape(timeframe)}</div>
+        <div class="muted">Selected symbol and timeframe drive the candle terminal and ZONES overlay.</div>
         <div style="margin-top:8px;">
-          <span class="pill">Symbol: {escape(str(payload.get("symbol", "-")))}</span>
-          <span class="pill">TV Symbol: {escape(tv_symbol_override or str(payload.get("symbol", "-")))}</span>
+          <span class="pill">Symbol: {escape(current_symbol or "-")}</span>
+          <span class="pill">Timeframe: {escape(selected_timeframe)}</span>
+          <span class="pill">Zones: {len(selected_zones)}</span>
+          <span class="pill">TV Symbol: {escape(tv_symbol_override or current_symbol or "-")}</span>
         </div>
+        <div class="chart-toolbar">
+          <form method="get" action="/chart">
+            <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
+            <input type="hidden" name="timeframe" value="{escape(selected_timeframe, quote=True)}">
+            <input type="hidden" name="tv_symbol" value="{escape(tv_symbol_override, quote=True)}">
+            <label>Tracked Symbol
+              <select name="symbol">{symbol_options_html}</select>
+            </label>
+            <button type="submit">Load Symbol</button>
+          </form>
+          <form method="get" action="/chart">
+            <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
+            <input type="hidden" name="timeframe" value="{escape(selected_timeframe, quote=True)}">
+            <label>Custom Symbol<input type="text" name="symbol" value="{escape(current_symbol, quote=True)}" placeholder="EURUSD"></label>
+            <label>TradingView Symbol<input type="text" name="tv_symbol" value="{escape(tv_symbol_override or current_symbol, quote=True)}" placeholder="FX:EURUSD"></label>
+            <button type="submit">Open Custom Chart</button>
+          </form>
+        </div>
+        <div class="timeframe-tabs">{timeframe_tabs}</div>
       </div>
       <div class="card">
         <h2 style="margin-top:0;">Queue Command</h2>
         <form method="post" action="/api/commands">
-          <label>Account ID<input type="text" name="account_id" value="{escape(str(payload.get("account", {}).get("account_id", "")))}"></label>
-          <label>Symbol<input type="text" name="symbol" value="{escape(str(payload.get("symbol", "")))}"></label>
+          <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
+          <input type="hidden" name="symbol" value="{escape(current_symbol, quote=True)}">
+          <input type="hidden" name="timeframe" value="{escape(selected_timeframe, quote=True)}">
+          <input type="hidden" name="tv_symbol" value="{escape(tv_symbol_override, quote=True)}">
+          <label>Account ID<input type="text" value="{escape(account_id)}" disabled></label>
+          <label>Symbol<input type="text" value="{escape(current_symbol)}" disabled></label>
           <label>Command Type
             <select name="command_type">
               <option value="alert">alert</option>
@@ -532,6 +861,23 @@ def _chart_page_html(
           <button type="submit">Queue Command</button>
         </form>
       </div>
+    </section>
+
+    <section class="card" style="margin-bottom:18px;">
+      <div class="terminal-header">
+        <div>
+          <h2 style="margin:0 0 6px;">ZONES Candle Terminal</h2>
+          <div class="muted">Candles and overlays come from the selected symbol payload served by the local ZONES engine.</div>
+        </div>
+        <div>
+          <span class="pill">Demand</span>
+          <span class="pill">Supply</span>
+          <span class="pill">Support</span>
+          <span class="pill">Resistance</span>
+        </div>
+      </div>
+      <div class="terminal-shell">{terminal_svg}</div>
+      <div class="zone-list">{zone_items}</div>
     </section>
 
     <section class="grid">
@@ -580,6 +926,9 @@ def _system_page_html(status: dict[str, Any], message: str = "", error: str = ""
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>System | ZONES</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/zones-logo.png">
   <style>{_base_css()}</style>
 </head>
 <body>
@@ -709,6 +1058,9 @@ def _structured_route_html(
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escape(title)} | ZONES</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/zones-logo.png">
   <style>{_base_css()}</style>
 </head>
 <body>
@@ -717,7 +1069,7 @@ def _structured_route_html(
     <section class="hero">
       <div class="card">
         <div class="brand">
-          <img class="brand-logo" src="/assets/Zones.ico" alt="ZONES logo">
+          <img class="brand-logo" src="/assets/Zones.png" alt="ZONES logo">
           <div>
             <h1 style="margin:0 0 8px;">{escape(title)}</h1>
             <div class="muted">{escape(subtitle)}</div>
@@ -753,6 +1105,7 @@ class DashboardServer:
             signal_service: SignalModelService | None = None,
     ) -> None:
         self.logger=logging.getLogger("DashboardServer")
+        self._httpd: ThreadingHTTPServer | None = None
         self.config = config or EngineConfig()
         self.repository = repository or LearningRepository()
         self.feed_service = feed_service or LiveFeedService(self.config, self.repository)
@@ -915,8 +1268,9 @@ class DashboardServer:
                 account_id = query.get("account_id", [None])[0]
                 symbol = query.get("symbol", [None])[0]
 
-                if parsed.path == "./src/assets/Zones.ico":
-                    self._send_file(LOGO_PATH, "image/x-icon")
+                asset = ASSET_ROUTES.get(parsed.path)
+                if asset is not None:
+                    self._send_file(*asset)
                     return
 
                 if parsed.path == "/":
@@ -1134,9 +1488,23 @@ class DashboardServer:
                     return
 
                 if parsed.path == "/api/commands":
+                    account_id = str(form.get("account_id", [""])[0])
+                    symbol = str(form.get("symbol", [""])[0]).upper()
+                    timeframe = str(form.get("timeframe", ["5M"])[0])
+                    tv_symbol = str(form.get("tv_symbol", [""])[0])
+
+                    def command_redirect(kind: str, text: str) -> str:
+                        return "/chart?" + urlencode(
+                            {
+                                "account_id": account_id,
+                                "symbol": symbol,
+                                "timeframe": timeframe,
+                                "tv_symbol": tv_symbol,
+                                kind: text,
+                            }
+                        )
+
                     try:
-                        account_id = str(form.get("account_id", [""])[0])
-                        symbol = str(form.get("symbol", [""])[0])
                         command_type = str(form.get("command_type", ["alert"])[0])
 
                         params: dict[str, Any] = {}
@@ -1145,15 +1513,35 @@ class DashboardServer:
                             if raw != "":
                                 params[key] = raw
 
+                        order_commands = {
+                            "market_buy",
+                            "market_sell",
+                            "buy_limit",
+                            "sell_limit",
+                            "buy_stop",
+                            "sell_stop",
+                        }
+                        pending_commands = {"buy_limit", "sell_limit", "buy_stop", "sell_stop"}
+                        ticket_commands = {"modify_ticket", "close_ticket", "delete_ticket"}
+
+                        if command_type in order_commands and coerce_float(params.get("lot"), 0.0) <= 0:
+                            raise ValueError("Lot must be greater than 0.")
+                        if command_type in pending_commands and coerce_float(params.get("price"), 0.0) <= 0:
+                            raise ValueError("Price is required for pending orders.")
+                        if command_type in ticket_commands and coerce_int(params.get("ticket"), 0) <= 0:
+                            raise ValueError("Ticket is required for ticket commands.")
+                        if command_type == "alert" and not params.get("message"):
+                            raise ValueError("Message is required for alert commands.")
+
                         server.feed_service.enqueue_command(
                             account_id=account_id,
                             symbol=symbol,
                             command_type=command_type,
                             params=params,
                         )
-                        self._redirect("/chart?message=Command+queued")
+                        self._redirect(command_redirect("message", "Command queued"))
                     except Exception as exc:
-                        self._redirect(f"/chart?error={urlencode({'e': str(exc)})[2:]}")
+                        self._redirect(command_redirect("error", str(exc)))
                     return
 
                 self.send_error(HTTPStatus.NOT_FOUND, "Route not found")
@@ -1168,17 +1556,19 @@ class DashboardServer:
 
 
             def _send_html(self, html: str, status: int = 200) -> None:
-             body = html.encode("utf-8", errors="replace")
-             try:
-               self.send_response(status)
-               self.send_header("Content-Type", "text/html; charset=utf-8")
-               self.send_header("Content-Length", str(len(body)))
-               self.send_header("Cache-Control", "no-cache")
-               self.end_headers()
-               self.wfile.write(body)
-               self.wfile.flush()
-             except Exception as exc:
-                self.logger.warning("HTTP client disconnected before response completed: %s", exc)
+                body = html.encode("utf-8", errors="replace")
+                try:
+                    self.send_response(status)
+                    self.send_header("Content-Type", "text/html; charset=utf-8")
+                    self.send_header("Content-Length", str(len(body)))
+                    self.send_header("Cache-Control", "no-cache")
+                    self.send_header("X-Content-Type-Options", "nosniff")
+                    self.end_headers()
+                    self.wfile.write(body)
+                    self.wfile.flush()
+                except Exception as exc:
+                    server.logger.warning("HTTP client disconnected before response completed: %s", exc)
+
             def _send_file(self, path: Path, content_type: str) -> None:
                 if not path.exists():
                     self.send_error(HTTPStatus.NOT_FOUND, "File not found")
@@ -1187,6 +1577,8 @@ class DashboardServer:
                 self.send_response(HTTPStatus.OK)
                 self.send_header("Content-Type", content_type)
                 self.send_header("Content-Length", str(len(data)))
+                self.send_header("Cache-Control", "public, max-age=86400")
+                self.send_header("X-Content-Type-Options", "nosniff")
                 self.end_headers()
                 self.wfile.write(data)
 
@@ -1239,12 +1631,18 @@ class DashboardServer:
     # Server
     # ============================================================
 
-    def serve(self, host: str = "127.0.0.1", port: int = 8080) -> None:
+    def serve(self, host: str = "127.0.0.1", port: int = 8787) -> None:
         handler = self.create_handler()
 
         httpd = ThreadingHTTPServer((host, port), handler)
         httpd.daemon_threads = True
+        self._httpd = httpd
         try:
             httpd.serve_forever()
         finally:
             httpd.server_close()
+            self._httpd = None
+
+    def stop(self) -> None:
+        if self._httpd is not None:
+            self._httpd.shutdown()

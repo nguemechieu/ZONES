@@ -1,14 +1,25 @@
+from pathlib import Path
 import sys
-import webbrowser
 
-from PySide6.QtCore import Qt, Signal, QObject, QPropertyAnimation, QEasingCurve, QRect
-from PySide6.QtGui import QColor, QPalette, QFont, QIcon, QPixmap
-from PySide6.QtGui import QColor, QPalette, QFont
+from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QRect
+from PySide6.QtGui import QColor, QPalette, QIcon, QPixmap
 from PySide6.QtWidgets import QGraphicsOpacityEffect
-from src.server.server_controller import  ServerController
+from src.server.server_controller import ServerController
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame
 )
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+
+
+def resource_path(*parts: str) -> Path:
+    bundled_root = Path(getattr(sys, "_MEIPASS", PROJECT_ROOT))
+    return bundled_root.joinpath(*parts)
+
+
+LOGO_PATH = resource_path("src", "assets", "Zones.png")
+ICON_PATH = resource_path("src", "assets", "Zones.ico")
+
 
 class AnimatedButton(QPushButton):
     def __init__(self, text):
@@ -64,6 +75,7 @@ class MainWindow(QWidget):
         self.controller.server_stopped.connect(self.on_server_stopped)
 
         self.setWindowTitle("Zones")
+        self.setWindowIcon(QIcon(str(ICON_PATH)))
         self.setMinimumSize(600, 500)
 
         # Background gradient
@@ -95,8 +107,20 @@ class MainWindow(QWidget):
         card_layout.setContentsMargins(30, 30, 30, 30)
         card_layout.setSpacing(20)
 
+        self.logo_label = QLabel()
+        self.logo_label.setAlignment(Qt.AlignCenter)
+        logo = QPixmap(str(LOGO_PATH))
+        if not logo.isNull():
+            self.logo_label.setPixmap(
+                logo.scaled(180, 180, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            )
+        else:
+            self.logo_label.setText("ZONES")
+            self.logo_label.setStyleSheet("color: white; font-size: 28px; font-weight: bold;")
+        card_layout.addWidget(self.logo_label)
+
         # Title
-        self.label = QLabel("Welcome to Zones ")
+        self.label = QLabel("Welcome to Zones")
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("color: white; font-size: 20px; font-weight: bold;")
         card_layout.addWidget(self.label)
@@ -158,30 +182,16 @@ class MainWindow(QWidget):
         anim.setDuration(600)
         anim.setStartValue(0.2)
         anim.setEndValue(1)
-        anim.start()
+        self.label_anim = anim
+        self.label_anim.start()
+
+
+def main() -> int:
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    return app.exec()
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.setWindowTitle("Zones")
-    window.setWindowIcon(QIcon("src/assets/Zones.ico"))
-    logo_image = QLabel()
-    logo_image.setPixmap(QPixmap("src/assets/logo.png"))
-    logo_image.setAutoFillBackground( True)
-
-    logo_image.setStyleSheet("""
-    QLabel {
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-    background-color: transparent;
-    background-image: url("src/assets/Zones.png");
-    
-    }
-    """)
-    window.layout().addWidget(logo_image)
-    window.show()
-
-    window.show()
-    sys.exit(app.exec())
+    sys.exit(main())

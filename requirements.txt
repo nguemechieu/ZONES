@@ -5,4 +5,7 @@ iso8601>=2.1.0
 pytz>=2024.1
 typing_extensions>=4.10.0
 mysql-connector-python>=8.4.0
+prometheus-client>=0.20
+PySide6>=6.7
+websockets>=12.0
 pywin32>=306; platform_system == "Windows"

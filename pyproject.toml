@@ -46,6 +46,8 @@ dependencies = [
     "aiohttp>=3.9",
     "websockets>=12.0",
     "prometheus-client>=0.20",
+    "PySide6>=6.7",
+    "pywin32>=306; platform_system == 'Windows'",
 ]
 
 
@@ -80,7 +82,7 @@ dev = [
 # ============================================================
 
 [project.scripts]
-zones = "main:main"
+zones = "zones:main"
 
 
 # ============================================================
@@ -111,6 +113,13 @@ ignore_missing_imports = true
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["src*"]
+
+[tool.setuptools]
+include-package-data = true
+py-modules = ["zones"]
+
+[tool.setuptools.package-data]
+src = ["assets/*.png", "assets/*.ico"]
 
 
 # ============================================================

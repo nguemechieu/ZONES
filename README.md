@@ -23,6 +23,7 @@ Current foundation in this repo includes:
 - support, resistance, and liquidity mapping
 - multi-timeframe analysis for `1H`, `5M`, and `1M`
 - browser dashboard with structured route views
+- browser candle terminal with ZONES overlays filtered by selected symbol and timeframe
 - TradingView Advanced Chart page with live symbol switching, public drawing tools, and ZONES projection overlays
 - system status page for runtime settings, remote DB control, AI training, and feedback capture
 - editable allowed-session control on the system page for the execution gate
@@ -72,6 +73,7 @@ Supporting docs:
 - `docs/supply_demand_ea_phase1.md`
 - `docs/live_mt4_bridge.md`
 - `docs/mt4_dll_bridge.md`
+- `docs/chart_terminal.md`
 
 ## Run The App
 
@@ -119,6 +121,8 @@ http://127.0.0.1:8787/chart
 
 What it includes:
 
+- local ZONES candle terminal rendered from the app payload
+- supply, demand, support, and resistance overlays drawn directly on the candles
 - candlestick chart for live or waiting candle data
 - TradingView Advanced Chart widget as the main browser chart surface
 - drawn zone overlays from the ZONES engine
@@ -130,6 +134,14 @@ What it includes:
 - browser form that queues MT4 commands through the existing DLL bridge flow
 - auto-filled entry, SL, and TP from the current setup, with manual adjustment before queueing
 - basic validation so empty lot, price, ticket, or alert message inputs are rejected before hitting MT4
+
+Symbol workflow:
+
+1. Start `python zones.py`.
+2. Open `http://127.0.0.1:8787/chart`.
+3. Use `Tracked Symbol` to load a symbol already ingested from MT4, or type a custom symbol such as `EURUSD`.
+4. Pick the timeframe tab shown above the terminal.
+5. Review the local ZONES candle terminal. The rectangular overlays are the exact zones from the selected symbol payload.
 
 The browser command panel can queue:
 

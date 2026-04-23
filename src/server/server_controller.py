@@ -36,6 +36,7 @@ class ServerController(QObject):
         self.running = False
         self.thread = None
         self.loop = None
+        self.dashboard = None
 
     def start_server(self):
         if self.running:
@@ -50,6 +51,12 @@ class ServerController(QObject):
             return
 
         self.running = False
+
+        try:
+            if self.dashboard is not None:
+                self.dashboard.stop()
+        except Exception:
+            pass
 
         try:
             KILL_SWITCH.set(1)
@@ -78,7 +85,7 @@ class ServerController(QObject):
         )
 
         dashboard_host = os.getenv("ZONES_DASHBOARD_HOST", "127.0.0.1")
-        dashboard_port = int(os.getenv("ZONES_DASHBOARD_PORT", "8065"))
+        dashboard_port = int(os.getenv("ZONES_DASHBOARD_PORT", "8787"))
         ws_host = os.getenv("ZONES_WS_HOST", "127.0.0.1")
         ws_port = int(os.getenv("ZONES_WS_PORT", "8090"))
 
@@ -125,6 +132,7 @@ class ServerController(QObject):
             feed_service=feed_service,
             diagnostics=diagnostics,
         )
+        self.dashboard = dashboard
 
         metrics_port = int(os.getenv("ZONES_METRICS_PORT", "9108"))
         start_metrics_server(metrics_port)
@@ -177,6 +185,11 @@ class ServerController(QObject):
                 logger.exception("Failed stopping pipe server")
 
             try:
+                dashboard.stop()
+            except Exception:
+                logger.exception("Failed stopping dashboard")
+
+            try:
                 if self.loop:
                     self.loop.call_soon_threadsafe(self.loop.stop)
             except Exception:
@@ -184,3 +197,4 @@ class ServerController(QObject):
 
             self.server_stopped.emit()
             self.running = False
+            self.dashboard = None
