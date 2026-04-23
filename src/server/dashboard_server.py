@@ -1718,7 +1718,7 @@ class DashboardServer:
                         if telegram_token == "":
                             telegram_token = str(server.runtime_settings.get("telegram_bot_token", ""))
                         chart_symbol_custom = str(form.get("chart_symbol_custom", [""])[0]).strip().upper()
-                        chart_symbol = chart_symbol_custom or str(form.get("chart_symbol", [self.config.symbol])[0]).strip().upper()
+                        chart_symbol = chart_symbol_custom or str(form.get("chart_symbol", [server.config.symbol])[0]).strip().upper()
                         config_updates = {
                             "ai_enabled": coerce_bool(form.get("ai_enabled", ["off"])[0], False),
                             "require_confirmation_signal": coerce_bool(form.get("require_confirmation_signal", ["off"])[0], False),
