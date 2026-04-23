@@ -25,6 +25,7 @@ Current foundation in this repo includes:
 - browser dashboard with structured route views
 - browser candle terminal with ZONES overlays filtered by selected symbol and timeframe
 - TradingView Advanced Chart page with live symbol switching, public drawing tools, and ZONES projection overlays
+- browser backtesting for zone-touch entries with risk, drawdown, R-multiple, and trade-list metrics
 - hedge fund style portfolio analysis with exposure, leverage, concentration, VaR proxy, and PnL attribution metrics
 - system status page for runtime settings, remote DB control, AI training, and feedback capture
 - editable allowed-session control on the system page for the execution gate
@@ -75,6 +76,7 @@ Supporting docs:
 - `docs/live_mt4_bridge.md`
 - `docs/mt4_dll_bridge.md`
 - `docs/chart_terminal.md`
+- `docs/backtesting.md`
 - `docs/runtime_settings.md`
 - `docs/installation_package.md`
 
@@ -96,6 +98,7 @@ Useful routes:
 
 - `/`
 - `/chart`
+- `/backtest`
 - `/portfolio`
 - `/system`
 - `POST /api/ingest`
@@ -103,6 +106,7 @@ Useful routes:
 - `/api/reports`
 - `/api/symbols`
 - `/api/commands`
+- `/api/backtest`
 - `/api/portfolio`
 - `/api/health`
 - `/api/schema`
@@ -170,6 +174,29 @@ The browser command panel can queue:
 - `alert`
 
 Those commands are picked up by the MT4 EA when it polls the local bridge.
+
+## Backtesting
+
+Open:
+
+```text
+http://127.0.0.1:8787/backtest
+```
+
+The backtester uses the selected symbol's `chart_data` and filtered ZONES overlays. It simulates a zone-touch strategy where the signal candle touches an eligible zone and the entry happens at the next candle open.
+
+Metrics include:
+
+- ending balance, net PnL, and return percentage
+- win rate, profit factor, expectancy in R, and net R
+- max drawdown percentage
+- full trade list with entry, stop, target, exit reason, R multiple, and PnL
+
+Raw JSON is available at:
+
+```text
+http://127.0.0.1:8787/api/backtest?symbol=EURUSD&timeframe=5M&format=json
+```
 
 ## Portfolio Analysis
 

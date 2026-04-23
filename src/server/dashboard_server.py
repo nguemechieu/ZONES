@@ -21,6 +21,7 @@ from src.execution.system_state import (
     coerce_int,
     mask_database_url,
 )
+from src.execution.backtesting import build_backtest_analysis
 from src.execution.portfolio import build_portfolio_analysis
 from src.server.bridge import LiveFeedService
 from src.server.engine_config import EngineConfig
@@ -240,6 +241,7 @@ def _route_navigation(current_path: str) -> str:
     routes = [
         ("/", "Dashboard"),
         ("/chart", "Chart"),
+        ("/backtest", "Backtest"),
         ("/portfolio", "Portfolio"),
         ("/system", "System"),
         ("/api/analysis", "Analysis"),
@@ -1400,6 +1402,214 @@ def _portfolio_page_html(portfolio: dict[str, Any]) -> str:
 </html>"""
 
 
+def _backtest_page_html(payload: dict[str, Any], result: dict[str, Any]) -> str:
+    parameters = result.get("parameters", {}) if isinstance(result, dict) else {}
+    summary = result.get("summary", {}) if isinstance(result, dict) else {}
+    data = result.get("data", {}) if isinstance(result, dict) else {}
+    trades = result.get("trades", []) if isinstance(result, dict) else []
+    assumptions = result.get("assumptions", []) if isinstance(result, dict) else []
+    account_id = str(payload.get("account", {}).get("account_id", ""))
+    current_symbol = str(payload.get("symbol", "")).upper()
+    chart_data = payload.get("chart_data", {})
+    selected_timeframe = str(parameters.get("timeframe", "5M"))
+    available_timeframes = (
+        sorted([str(item) for item in chart_data.keys()], key=_timeframe_sort_key)
+        if isinstance(chart_data, dict)
+        else []
+    )
+    if selected_timeframe and selected_timeframe not in available_timeframes:
+        available_timeframes.append(selected_timeframe)
+        available_timeframes = sorted(set(available_timeframes), key=_timeframe_sort_key)
+
+    tracked_symbols = payload.get("tracked_symbols", [])
+    symbol_options = sorted(
+        {
+            str(item.get("symbol", "")).upper()
+            for item in tracked_symbols
+            if isinstance(item, dict) and item.get("symbol")
+        }
+        | ({current_symbol} if current_symbol else set())
+    ) or [current_symbol or "EURUSD"]
+
+    symbol_options_html = "".join(
+        f"<option value='{escape(item, quote=True)}' {'selected' if item == current_symbol else ''}>"
+        f"{escape(item)}</option>"
+        for item in symbol_options
+    )
+    timeframe_options_html = "".join(
+        f"<option value='{escape(item, quote=True)}' {'selected' if item == selected_timeframe else ''}>"
+        f"{escape(item)}</option>"
+        for item in available_timeframes or [selected_timeframe]
+    )
+
+    def selected(value: str, current: object) -> str:
+        return "selected" if str(current).lower() == value.lower() else ""
+
+    metric_cards = "".join(
+        "<div class='metric'>"
+        f"<div class='muted'>{escape(label)}</div>"
+        f"<div class='metric-value'>{_format_scalar(value)}</div>"
+        "</div>"
+        for label, value in [
+            ("Return %", summary.get("return_pct", 0.0)),
+            ("Net PnL", summary.get("net_pnl", 0.0)),
+            ("Trades", summary.get("trades", 0)),
+            ("Win Rate %", summary.get("win_rate_pct", 0.0)),
+            ("Profit Factor", summary.get("profit_factor", 0.0)),
+            ("Max DD %", summary.get("max_drawdown_pct", 0.0)),
+            ("Net R", summary.get("net_r", 0.0)),
+            ("Expectancy R", summary.get("expectancy_r", 0.0)),
+        ]
+    )
+    trade_rows = "".join(
+        "<tr>"
+        f"<td>{_format_scalar(trade.get('number'))}</td>"
+        f"<td>{escape(str(trade.get('direction', '-')))}</td>"
+        f"<td>{escape(str(trade.get('zone_family', '-')))} {escape(str(trade.get('zone_kind', '-')))}</td>"
+        f"<td>{escape(str(trade.get('entry_time', '-')))}</td>"
+        f"<td>{_format_scalar(trade.get('entry'))}</td>"
+        f"<td>{_format_scalar(trade.get('exit'))}</td>"
+        f"<td>{escape(str(trade.get('exit_reason', '-')))}</td>"
+        f"<td>{_format_scalar(trade.get('r_multiple'))}</td>"
+        f"<td>{_format_scalar(trade.get('pnl_amount'))}</td>"
+        "</tr>"
+        for trade in trades if isinstance(trade, dict)
+    ) or "<tr><td colspan='9'>No trades were generated for this symbol and timeframe.</td></tr>"
+    assumption_items = "".join(
+        f"<li>{escape(str(item))}</li>"
+        for item in assumptions
+    ) or "<li>No assumptions recorded.</li>"
+    raw_href = "/api/backtest?" + urlencode(
+        {
+            "account_id": account_id,
+            "symbol": current_symbol,
+            "timeframe": selected_timeframe,
+            "initial_balance": str(parameters.get("initial_balance", 10000)),
+            "risk_per_trade_pct": str(parameters.get("risk_per_trade_pct", 1.0)),
+            "risk_reward": str(parameters.get("risk_reward", 2.0)),
+            "max_hold_bars": str(parameters.get("max_hold_bars", 48)),
+            "max_trades": str(parameters.get("max_trades", 50)),
+            "min_strength": str(parameters.get("min_strength", 1.0)),
+            "zone_family": str(parameters.get("zone_family", "all")),
+            "zone_kind": str(parameters.get("zone_kind", "all")),
+            "stop_buffer": str(parameters.get("stop_buffer", 0.0)),
+            "format": "json",
+        }
+    )
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Backtest | ZONES</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/assets/zones-logo.png">
+  <style>{_base_css()}</style>
+</head>
+<body>
+  <div class="shell">
+    <nav class="nav">{_route_navigation("/backtest")}</nav>
+    <section class="hero">
+      <div class="card">
+        <h1 style="margin-top:0;">Backtesting</h1>
+        <div class="muted">Run a deterministic zone-touch backtest from the selected symbol's candle and ZONES payload.</div>
+        <div style="margin-top:12px;">
+          <span class="pill">Symbol: {escape(current_symbol or "-")}</span>
+          <span class="pill">Timeframe: {escape(selected_timeframe)}</span>
+          <span class="pill">Candles: {_format_scalar(data.get("candles", 0))}</span>
+          <span class="pill">Eligible Zones: {_format_scalar(data.get("eligible_zones", 0))}</span>
+          <span class="pill">Status: {escape(str(result.get("status", "-")))}</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0;">Assumptions</h2>
+        <ul>{assumption_items}</ul>
+        <a class="button" href="{escape(raw_href, quote=True)}">Raw Backtest JSON</a>
+        <a class="button" href="/chart?{escape(urlencode({'account_id': account_id, 'symbol': current_symbol, 'timeframe': selected_timeframe}), quote=True)}">Open Chart</a>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:18px;">
+      <h2 style="margin-top:0;">Run Backtest</h2>
+      <form method="get" action="/backtest">
+        <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
+        <div class="chart-toolbar">
+          <label>Tracked Symbol
+            <select name="symbol">{symbol_options_html}</select>
+          </label>
+          <label>Timeframe
+            <select name="timeframe">{timeframe_options_html}</select>
+          </label>
+          <label>Initial Balance
+            <input type="number" step="100" name="initial_balance" value="{escape(str(parameters.get('initial_balance', 10000)), quote=True)}">
+          </label>
+          <label>Risk Per Trade %
+            <input type="number" step="0.1" min="0.01" name="risk_per_trade_pct" value="{escape(str(parameters.get('risk_per_trade_pct', 1.0)), quote=True)}">
+          </label>
+          <label>Risk Reward
+            <input type="number" step="0.1" min="0.1" name="risk_reward" value="{escape(str(parameters.get('risk_reward', 2.0)), quote=True)}">
+          </label>
+          <label>Max Hold Bars
+            <input type="number" step="1" min="1" name="max_hold_bars" value="{escape(str(parameters.get('max_hold_bars', 48)), quote=True)}">
+          </label>
+          <label>Max Trades
+            <input type="number" step="1" min="1" name="max_trades" value="{escape(str(parameters.get('max_trades', 50)), quote=True)}">
+          </label>
+          <label>Minimum Zone Strength
+            <input type="number" step="0.1" min="0" name="min_strength" value="{escape(str(parameters.get('min_strength', 1.0)), quote=True)}">
+          </label>
+          <label>Zone Family
+            <select name="zone_family">
+              <option value="all" {selected('all', parameters.get('zone_family', 'all'))}>all</option>
+              <option value="main" {selected('main', parameters.get('zone_family', 'all'))}>main</option>
+              <option value="temp" {selected('temp', parameters.get('zone_family', 'all'))}>temp</option>
+            </select>
+          </label>
+          <label>Zone Kind
+            <select name="zone_kind">
+              <option value="all" {selected('all', parameters.get('zone_kind', 'all'))}>all</option>
+              <option value="demand" {selected('demand', parameters.get('zone_kind', 'all'))}>demand</option>
+              <option value="supply" {selected('supply', parameters.get('zone_kind', 'all'))}>supply</option>
+              <option value="support" {selected('support', parameters.get('zone_kind', 'all'))}>support</option>
+              <option value="resistance" {selected('resistance', parameters.get('zone_kind', 'all'))}>resistance</option>
+            </select>
+          </label>
+          <label>Stop Buffer
+            <input type="number" step="0.00001" min="0" name="stop_buffer" value="{escape(str(parameters.get('stop_buffer', 0.0)), quote=True)}">
+          </label>
+        </div>
+        <button type="submit">Run Backtest</button>
+      </form>
+    </section>
+
+    <section class="card" style="margin-bottom:18px;">
+      <div class="metrics-grid">{metric_cards}</div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2 style="margin-top:0;">Summary</h2>
+        {_dict_table(summary)}
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0;">Parameters</h2>
+        {_dict_table(parameters)}
+      </div>
+      <div class="card" style="grid-column: 1 / -1;">
+        <h2 style="margin-top:0;">Trades</h2>
+        <table>
+          <thead><tr><th>#</th><th>Side</th><th>Zone</th><th>Entry Time</th><th>Entry</th><th>Exit</th><th>Reason</th><th>R</th><th>PnL</th></tr></thead>
+          <tbody>{trade_rows}</tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</body>
+</html>"""
+
+
 def _structured_route_html(
         *,
         title: str,
@@ -1731,6 +1941,29 @@ class DashboardServer:
 
         return payload
 
+    def _build_backtest_result(
+            self,
+            account_id: str | None,
+            symbol: str | None,
+            query: dict[str, list[str]],
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        timeframe = str(query.get("timeframe", ["5M"])[0]).upper()
+        payload = self._build_payload(account_id, symbol)
+        result = build_backtest_analysis(
+            payload,
+            timeframe=timeframe,
+            initial_balance=coerce_float(query.get("initial_balance", ["10000"])[0], 10000.0),
+            risk_per_trade_pct=coerce_float(query.get("risk_per_trade_pct", ["1.0"])[0], 1.0),
+            risk_reward=coerce_float(query.get("risk_reward", ["2.0"])[0], 2.0),
+            max_hold_bars=coerce_int(query.get("max_hold_bars", ["48"])[0], 48),
+            max_trades=coerce_int(query.get("max_trades", ["50"])[0], 50),
+            min_strength=coerce_float(query.get("min_strength", ["1.0"])[0], 1.0),
+            zone_family=str(query.get("zone_family", ["all"])[0]),
+            zone_kind=str(query.get("zone_kind", ["all"])[0]),
+            stop_buffer=coerce_float(query.get("stop_buffer", ["0.0"])[0], 0.0),
+        )
+        return payload, result
+
     # ============================================================
     # HTTP utilities
     # ============================================================
@@ -1773,6 +2006,11 @@ class DashboardServer:
                             error=query.get("error", [""])[0],
                         )
                     )
+                    return
+
+                if parsed.path == "/backtest":
+                    payload, result = server._build_backtest_result(account_id, symbol, query)
+                    self._send_html(_backtest_page_html(payload, result))
                     return
 
                 if parsed.path == "/system":
@@ -1862,6 +2100,19 @@ class DashboardServer:
                     )
                     return
 
+                if parsed.path == "/api/backtest":
+                    payload, result = server._build_backtest_result(account_id, symbol, query)
+                    result["symbol"] = payload.get("symbol")
+                    result["account_id"] = payload.get("account", {}).get("account_id")
+                    self._send_route_payload(
+                        title="Backtest",
+                        subtitle="Zone-touch historical simulation for the selected symbol and timeframe.",
+                        payload=result,
+                        parsed_path=parsed.path,
+                        query=query,
+                    )
+                    return
+
                 if parsed.path == "/api/portfolio":
                     payload = server._build_payload(account_id, symbol)
                     portfolio = build_portfolio_analysis(payload)
@@ -1901,6 +2152,7 @@ class DashboardServer:
                             "routes": {
                                 "/": "Main dashboard",
                                 "/chart": "Live chart and command panel",
+                                "/backtest": "Zone-touch strategy backtesting",
                                 "/portfolio": "Hedge fund portfolio analysis",
                                 "/system": "System status and runtime controls",
                                 "POST /api/ingest": "Accept live MT4 terminal snapshots as JSON",
@@ -1909,6 +2161,7 @@ class DashboardServer:
                                 "/api/reports": "Recent stored reports",
                                 "/api/symbols": "Tracked symbols",
                                 "/api/commands": "Command queue snapshot",
+                                "/api/backtest": "Backtest metrics and trade list",
                                 "/api/portfolio": "Portfolio risk and exposure metrics",
                                 "/api/health": "Diagnostics health payload",
                                 "/api/system/status": "System status payload",

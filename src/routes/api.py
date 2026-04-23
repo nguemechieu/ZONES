@@ -13,6 +13,7 @@ API_CHART = "/api/chart"
 API_REPORTS = "/api/reports"
 API_SYMBOLS = "/api/symbols"
 API_COMMANDS = "/api/commands"
+API_BACKTEST = "/api/backtest"
 API_HEALTH = "/api/health"
 API_SCHEMA = "/api/schema"
 API_SYSTEM_STATUS = "/api/system/status"
@@ -393,6 +394,7 @@ def api_schema() -> dict[str, Any]:
             API_REPORTS: "Recent stored reports",
             API_SYMBOLS: "Tracked symbols in memory",
             API_COMMANDS: "Pending commands and command history",
+            API_BACKTEST: "Zone-touch backtest metrics and trade list",
             API_HEALTH: "Diagnostics and service health",
             API_SCHEMA: "API schema and route descriptions",
             API_SYSTEM_STATUS: "Database, runtime settings, model state, diagnostics",
