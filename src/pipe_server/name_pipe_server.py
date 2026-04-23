@@ -285,6 +285,7 @@ class NamedPipeBridgeServer:
                 metadata={"transport": "named-pipe"},
             )
 
+            ai_response = dict(result.get("ai_response", {}) or {})
             return json.dumps(
                 {
                     "status": "ok",
@@ -292,6 +293,14 @@ class NamedPipeBridgeServer:
                     "symbol": result["symbol"],
                     "created_at": result["report"]["created_at"],
                     "execution_allowed": result["report"]["execution_decision"]["allowed"],
+                    "execution_direction": result["report"]["execution_decision"].get("direction", "neutral"),
+                    "ai_prediction": ai_response.get("prediction", "HOLD"),
+                    "ai_confidence": ai_response.get("confidence", 0.0),
+                    "ai_reason": ai_response.get("reason", ""),
+                    "ai_zone_confirmation": ai_response.get("zone_confirmation", "pending"),
+                    "ai_execution_hint": ai_response.get("execution_hint", ""),
+                    "ai_risk_hint": ai_response.get("risk_hint", ""),
+                    "ai_model_status": ai_response.get("model_status", "warming_up"),
                 }
             )
 

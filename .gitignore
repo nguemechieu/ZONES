@@ -11,6 +11,13 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+.venv-release/
+installer/Output/
+dist/ZONES/
+dist/ZONES-v*/
+dist/ZONES-v*.zip
+*.pyz
+*.pkg
 .venv/
 env/
 venv/
@@ -27,6 +34,8 @@ monitoring/
 logs/
 *.log
 *.jsonl
+MQL4/Logs/
+MQL4/**/mqlcache.dat
 
 # IDE
 .idea/

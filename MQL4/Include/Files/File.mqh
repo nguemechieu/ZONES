@@ -1,7 +1,7 @@
 //+------------------------------------------------------------------+
 //|                                                         File.mqh |
-//|                   Copyright 2009-2016, MetaQuotes Software Corp. |
-//|                                              http://www.mql4.com |
+//|                             Copyright 2000-2026, MetaQuotes Ltd. |
+//|                                              http://www.mql5.com |
 //+------------------------------------------------------------------+
 #include <Object.mqh>
 //+------------------------------------------------------------------+
@@ -97,7 +97,7 @@ void CFile::SetCommon(const bool common)
 //+------------------------------------------------------------------+
 //| Open the file                                                    |
 //+------------------------------------------------------------------+
-int CFile::Open(const string file_name,int open_flags,const short delimiter_)
+int CFile::Open(const string file_name,int open_flags,const short delimiter)
   {
 //--- check handle
    if(m_handle!=INVALID_HANDLE)
@@ -106,7 +106,7 @@ int CFile::Open(const string file_name,int open_flags,const short delimiter_)
    if((open_flags &(FILE_BIN|FILE_CSV))==0)
       open_flags|=FILE_TXT;
 //--- open
-   m_handle=FileOpen(file_name,open_flags|m_flags,delimiter_);
+   m_handle=FileOpen(file_name,open_flags|m_flags,delimiter);
    if(m_handle!=INVALID_HANDLE)
      {
       //--- store options of the opened file
@@ -173,11 +173,11 @@ ulong CFile::Tell(void)
 //+------------------------------------------------------------------+
 //| Set position of pointer in file                                  |
 //+------------------------------------------------------------------+
-void CFile::Seek(const long offset1,const ENUM_FILE_POSITION origin)
+void CFile::Seek(const long offset,const ENUM_FILE_POSITION origin)
   {
 //--- check handle
    if(m_handle!=INVALID_HANDLE)
-      FileSeek(m_handle,offset1,origin);
+      FileSeek(m_handle,offset,origin);
   }
 //+------------------------------------------------------------------+
 //| Flush data from the file buffer of input-output to disk          |

@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit, urlunsplit
 
+from src.app_paths import runtime_settings_path, signal_model_path
+
 
 def coerce_bool(value: Any, default: bool = False) -> bool:
     if isinstance(value, bool):
@@ -55,8 +57,8 @@ def mask_database_url(value: str) -> str:
 
 
 class RuntimeSettingsStore:
-    def __init__(self, path: Path | str = "logs/runtime_settings.json") -> None:
-        self.path = Path(path)
+    def __init__(self, path: Path | str | None = None) -> None:
+        self.path = Path(path) if path is not None else runtime_settings_path()
 
     def load(self) -> dict[str, Any]:
         if not self.path.exists():
@@ -73,8 +75,8 @@ class RuntimeSettingsStore:
 
 
 class SignalModelService:
-    def __init__(self, path: Path | str = "logs/signal_model.json") -> None:
-        self.path = Path(path)
+    def __init__(self, path: Path | str | None = None) -> None:
+        self.path = Path(path) if path is not None else signal_model_path()
 
     def load_model(self) -> dict[str, Any]:
         if not self.path.exists():

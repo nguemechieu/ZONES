@@ -1,7 +1,7 @@
 //+------------------------------------------------------------------+
 //|                                                  ArrayString.mqh |
-//|                   Copyright 2009-2015, MetaQuotes Software Corp. |
-//|                                              http://www.mql4.com |
+//|                             Copyright 2000-2026, MetaQuotes Ltd. |
+//|                                              http://www.mql5.com |
 //+------------------------------------------------------------------+
 #include "Array.mqh"
 //+------------------------------------------------------------------+
@@ -406,18 +406,18 @@ bool CArrayString::Delete(const int index)
 //+------------------------------------------------------------------+
 //| Deleting range of elements                                       |
 //+------------------------------------------------------------------+
-bool CArrayString::DeleteRange(int fromx,int tox)
+bool CArrayString::DeleteRange(int from,int to)
   {
 //--- check
-   if(fromx<0 || tox<0)
+   if(from<0 || to<0)
       return(false);
-   if(fromx>tox || fromx>=m_data_total)
+   if(from>to || from>=m_data_total)
       return(false);
 //--- delete
-   if(tox>=m_data_total-1)
-      tox=m_data_total-1;
-   MemMove(fromx,tox+1,m_data_total-tox-1);
-   m_data_total-=tox-fromx+1;
+   if(to>=m_data_total-1)
+      to=m_data_total-1;
+   MemMove(from,to+1,m_data_total-to-1);
+   m_data_total-=to-from+1;
 //--- successful
    return(true);
   }

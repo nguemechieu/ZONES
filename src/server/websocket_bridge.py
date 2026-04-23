@@ -209,6 +209,7 @@ class WebSocketBridgeServer:
                 raise ValueError("post_snapshot requires 'payload' to be a JSON object")
 
             result = self.feed_service.ingest_payload(inner_payload)
+            ai_response = dict(result.get("ai_response", {}) or {})
             COMMANDS_TOTAL.labels(action, "ok").inc()
             return {
                 "status": "ok",
@@ -216,6 +217,14 @@ class WebSocketBridgeServer:
                 "symbol": result["symbol"],
                 "created_at": result["report"]["created_at"],
                 "execution_allowed": result["report"]["execution_decision"]["allowed"],
+                "execution_direction": result["report"]["execution_decision"].get("direction", "neutral"),
+                "ai_prediction": ai_response.get("prediction", "HOLD"),
+                "ai_confidence": ai_response.get("confidence", 0.0),
+                "ai_reason": ai_response.get("reason", ""),
+                "ai_zone_confirmation": ai_response.get("zone_confirmation", "pending"),
+                "ai_execution_hint": ai_response.get("execution_hint", ""),
+                "ai_risk_hint": ai_response.get("risk_hint", ""),
+                "ai_model_status": ai_response.get("model_status", "warming_up"),
             }
 
         if action in {"fetch_command", "fetch_next_command"}:

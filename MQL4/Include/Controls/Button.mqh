@@ -1,6 +1,6 @@
 //+------------------------------------------------------------------+
 //|                                                       Button.mqh |
-//|                   Copyright 2009-2013, MetaQuotes Software Corp. |
+//|                             Copyright 2000-2026, MetaQuotes Ltd. |
 //|                                              http://www.mql5.com |
 //+------------------------------------------------------------------+
 #include "WndObj.mqh"

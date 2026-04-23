@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
+from src.app_paths import default_database_url
+
 
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -30,7 +32,7 @@ def _from_json(value: str | None, default: Any) -> Any:
 def _normalize_sqlite_url(database_url: str) -> Path:
     raw = (database_url or "").strip()
     if not raw:
-        raw = "sqlite:///data/zones.db"
+        raw = default_database_url()
 
     if raw.startswith("sqlite:///"):
         relative = raw[len("sqlite:///") :]
@@ -74,9 +76,9 @@ class LearningRepository:
     - optional command/result audit storage
     """
 
-    def __init__(self, database_url: str = "sqlite:///data/zones.db") -> None:
-        self.database_url = database_url
-        self.db_path = _normalize_sqlite_url(database_url)
+    def __init__(self, database_url: str | None = None) -> None:
+        self.database_url = str(database_url or default_database_url())
+        self.db_path = _normalize_sqlite_url(self.database_url)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 
         self._lock = threading.RLock()

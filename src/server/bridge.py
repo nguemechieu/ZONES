@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from src.db.repository.learning_repository import LearningRepository
+from src.execution.system_state import SignalModelService
 from src.server.engine_config import EngineConfig
 
 
@@ -38,9 +39,15 @@ def _normalize_timeframe(value: str) -> str:
 
 
 class LiveFeedService:
-    def __init__(self, config: EngineConfig, repository: LearningRepository) -> None:
+    def __init__(
+        self,
+        config: EngineConfig,
+        repository: LearningRepository,
+        signal_service: SignalModelService | None = None,
+    ) -> None:
         self.config = config
         self.repository = repository
+        self.signal_service = signal_service or SignalModelService()
         self._latest: dict[tuple[str, str], dict[str, Any]] = {}
         self._commands: list[dict[str, Any]] = []
         self._command_counter = 0
@@ -118,6 +125,11 @@ class LiveFeedService:
             raise ValueError("Ingest payload must be a JSON object.")
 
         report = self._normalize_payload(payload)
+        report["ai_signal"] = self.signal_service.score_report(
+            report,
+            self._config_dict(),
+        )
+        report["ai_response"] = self._build_ai_response(report)
         account_id = str(report["account"]["account_id"])
         symbol = str(report["symbol"]).upper()
 
@@ -129,6 +141,7 @@ class LiveFeedService:
             "account_id": account_id,
             "symbol": symbol,
             "report": report,
+            "ai_response": dict(report["ai_response"]),
         }
 
     def waiting_payload(
@@ -192,12 +205,32 @@ class LiveFeedService:
                 "stop_loss": "",
                 "take_profit": "",
             },
+            "execution_context": {
+                "supported_styles": ["instant", "advanced"],
+                "configured_style": "advanced",
+                "confirmation_timeframe": "1M",
+                "rrr_state": "none",
+                "bos_direction": "none",
+                "local_prediction": "HOLD",
+                "local_allowed": False,
+                "reason": "Waiting for MT4 ingest.",
+            },
+            "market_structure": {
+                "checkpoint_timeframe": "1H",
+                "refinement_timeframe": "5M",
+                "bias": "neutral",
+                "labels": ["WAITING"],
+                "swings": [],
+                "events": [],
+            },
             "chart_data": {
                 "1H": candles[::5],
                 "5M": candles,
                 "1M": candles[-45:],
             },
-            "phase_outputs": self._phase_outputs(),
+            "indicator_values": {},
+            "bridge": {"transport": "waiting"},
+            "phase_outputs": self._phase_outputs({"swings": [], "events": []}),
         }
 
     def sample_ingest_schema(self) -> dict[str, Any]:
@@ -222,7 +255,56 @@ class LiveFeedService:
                 }
             ],
             "positions": [],
-            "zones": [],
+            "chart_data": {
+                "1H": [],
+                "5M": [],
+                "1M": [],
+            },
+            "market_structure": {
+                "checkpoint_timeframe": "1H",
+                "refinement_timeframe": "5M",
+                "bias": "bullish",
+                "labels": ["HH", "HL", "BOS"],
+                "swings": [],
+                "events": [],
+            },
+            "zones": [
+                {
+                    "id": "demand_1",
+                    "timeframe": "5M",
+                    "anchor_timeframe": "1H",
+                    "kind": "demand",
+                    "family": "main",
+                    "strength": 2,
+                    "strength_label": "S2",
+                    "lower": 1.0795,
+                    "upper": 1.0804,
+                    "zigzag_count": 2,
+                    "fractal_count": 1,
+                    "touch_count": 3,
+                    "retest_count": 1,
+                    "status": "respected",
+                    "mode_bias": "buying",
+                }
+            ],
+            "execution_context": {
+                "supported_styles": ["instant", "advanced"],
+                "configured_style": "advanced",
+                "confirmation_timeframe": "1M",
+                "rrr_state": "reject",
+                "bos_direction": "bullish",
+                "local_prediction": "BUY",
+                "local_allowed": True,
+            },
+            "execution_decision": {
+                "allowed": True,
+                "direction": "long",
+                "timeframe": "1M",
+                "score": 3.4,
+                "rationale": "Main demand zone respected after BOS.",
+            },
+            "indicator_values": {"atr_h1": 0.0012, "atr_m5": 0.0004, "spread_points": 12},
+            "bridge": {"transport": "websocket", "bridge_enabled": True},
             "news": {"trading_blocked": False, "reason": "clear"},
         }
 
@@ -371,10 +453,11 @@ class LiveFeedService:
         execution = dict(payload.get("execution_decision", {}) or {})
         zones = list(payload.get("zones", []) or [])
         liquidity_map = list(payload.get("liquidity_map", []) or [])
+        structure = dict(payload.get("market_structure", {}) or {})
         phase_outputs = dict(payload.get("phase_outputs", {}) or {})
 
-        swings = list(phase_outputs.get("swings", []) or [])
-        events = list(phase_outputs.get("events", []) or [])
+        swings = list(phase_outputs.get("swings", []) or structure.get("swings", []) or [])
+        events = list(phase_outputs.get("events", []) or structure.get("events", []) or [])
 
         filtered_zones = [
             zone for zone in [*zones, *liquidity_map]
@@ -419,9 +502,9 @@ class LiveFeedService:
                 "|".join(
                     [
                         "swing",
-                        f"origin_shift={swing.get('origin_shift', 0)}",
-                        f"kind={swing.get('kind', '')}",
-                        f"source={swing.get('source', 'fractal')}",
+                        f"origin_shift={swing.get('origin_shift', swing.get('shift', 0))}",
+                        f"kind={swing.get('kind', 'high' if swing.get('is_high') else 'low')}",
+                        f"source={swing.get('source', 'zigzag')}",
                         f"label={swing.get('label', '')}",
                         f"price={swing.get('price', '')}",
                     ]
@@ -447,25 +530,36 @@ class LiveFeedService:
     # Normalization
     # ============================================================
 
+    def _config_dict(self) -> dict[str, Any]:
+        return self.config.to_dict() if hasattr(self.config, "to_dict") else dict(self.config.__dict__)
+
     def _normalize_payload(self, raw: dict[str, Any]) -> dict[str, Any]:
         symbol = str(raw.get("symbol") or raw.get("instrument") or self.config.symbol).upper()
         timeframe = _normalize_timeframe(
             str(raw.get("timeframe") or raw.get("time_frame") or "5M")
         )
 
-        candles = self._normalize_candles(
-            raw.get("candles") or raw.get("rates") or raw.get("chart_data") or []
+        raw_chart_data = (
+            raw.get("chart_data")
+            or raw.get("timeframes")
+            or raw.get("candles")
+            or raw.get("rates")
+            or []
         )
+        candles = self._normalize_candles(raw_chart_data)
         if not candles:
             candles = self._demo_candles(1.085)
 
+        chart_data = self._chart_data(raw_chart_data, candles, timeframe)
         zones = self._normalize_zones(
             raw.get("zones") or raw.get("supply_demand_zones") or [],
             timeframe,
             candles,
-            )
-        ideas = self._build_trade_ideas(zones, candles, timeframe)
-        decision = self._execution_decision(ideas)
+        )
+        ideas = raw.get("trade_ideas") or self._build_trade_ideas(zones, candles, timeframe)
+        decision = dict(raw.get("execution_decision") or self._execution_decision(ideas))
+        structure = self._market_structure(raw.get("market_structure"), raw.get("phase_outputs"))
+        execution_context = self._execution_context(raw.get("execution_context"), decision)
 
         positions = raw.get("positions")
         if not isinstance(positions, list):
@@ -478,26 +572,31 @@ class LiveFeedService:
             "positions": positions,
             "metadata": {
                 "ingest": {
-                    "source": "live",
+                    "source": str(raw.get("source") or "live"),
                     "message": "Live payload accepted.",
                 },
                 "custom_inputs": dict(
                     raw.get("custom_inputs")
-                    or (self.config.to_dict() if hasattr(self.config, "to_dict") else self.config.__dict__)
+                    or self._config_dict()
                 ),
+                "bridge": dict(raw.get("bridge") or {}),
             },
             "ai_summary": str(
                 raw.get("ai_summary")
-                or "Live report normalized. AI signal score is calculated from the current execution setup."
+                or "Live MT4 report normalized. Python scoring remains advisory while MT4 owns zone and execution logic."
             ),
             "price_action": raw.get("price_action") or self._price_action(candles, timeframe),
             "trade_ideas": raw.get("trade_ideas") or ideas,
             "zones": zones,
             "liquidity_map": raw.get("liquidity_map") or [],
             "news_filter": self._news_filter(raw.get("news") or raw.get("news_filter") or {}),
-            "execution_decision": raw.get("execution_decision") or decision,
-            "chart_data": self._chart_data(raw.get("chart_data"), candles, timeframe),
-            "phase_outputs": raw.get("phase_outputs") or self._phase_outputs(),
+            "execution_decision": decision,
+            "execution_context": execution_context,
+            "market_structure": structure,
+            "chart_data": chart_data,
+            "indicator_values": dict(raw.get("indicator_values") or {}),
+            "bridge": dict(raw.get("bridge") or {}),
+            "phase_outputs": raw.get("phase_outputs") or self._phase_outputs(structure),
         }
         return payload
 
@@ -621,16 +720,27 @@ class LiveFeedService:
 
             normalized.append(
                 {
+                    "id": str(zone.get("id") or f"zone-{index}"),
                     "timeframe": _normalize_timeframe(str(zone.get("timeframe") or timeframe)),
+                    "anchor_timeframe": str(zone.get("anchor_timeframe") or zone.get("structure_timeframe") or "1H"),
                     "kind": str(zone.get("kind") or zone.get("type") or "demand").lower(),
                     "family": str(zone.get("family") or "main").lower(),
                     "strength": int(_number(zone.get("strength"), 1)),
-                    "strength_label": str(zone.get("strength_label") or "S1"),
+                    "strength_label": str(zone.get("strength_label") or f"S{int(_number(zone.get('strength'), 1))}"),
                     "lower": min(lower, upper),
                     "upper": max(lower, upper),
+                    "body_start": _number(zone.get("body_start"), max(lower, upper)),
                     "status": str(zone.get("status") or "fresh"),
                     "mode_bias": str(zone.get("mode_bias") or "neutral"),
                     "origin_index": int(_number(zone.get("origin_index"), index)),
+                    "origin_time": str(zone.get("origin_time") or zone.get("timestamp") or ""),
+                    "origin_price": _number(zone.get("origin_price"), _number(zone.get("body_start"), max(lower, upper))),
+                    "zigzag_count": int(_number(zone.get("zigzag_count"), 0)),
+                    "fractal_count": int(_number(zone.get("fractal_count"), 0)),
+                    "touch_count": int(_number(zone.get("touch_count"), 0)),
+                    "retest_count": int(_number(zone.get("retest_count"), 0)),
+                    "price_relation": str(zone.get("price_relation") or "unknown"),
+                    "structure_label": str(zone.get("structure_label") or ""),
                 }
             )
 
@@ -647,23 +757,85 @@ class LiveFeedService:
                 "strength_label": "S2",
                 "lower": round(last_close - 0.002, 5),
                 "upper": round(last_close - 0.001, 5),
+                "body_start": round(last_close - 0.001, 5),
                 "status": "fresh",
                 "mode_bias": "bullish",
                 "origin_index": max(0, len(candles) - 30),
+                "origin_time": candles[max(0, len(candles) - 30)].get("timestamp", ""),
+                "origin_price": round(last_close - 0.001, 5),
+                "zigzag_count": 2,
+                "fractal_count": 1,
+                "touch_count": 3,
+                "retest_count": 1,
+                "price_relation": "above",
+                "structure_label": "bullish",
             },
             {
+                "id": "fallback-supply",
                 "timeframe": timeframe,
+                "anchor_timeframe": "1H",
                 "kind": "supply",
                 "family": "main",
                 "strength": 2,
                 "strength_label": "S2",
                 "lower": round(last_close + 0.001, 5),
                 "upper": round(last_close + 0.002, 5),
+                "body_start": round(last_close + 0.001, 5),
                 "status": "fresh",
                 "mode_bias": "bearish",
                 "origin_index": max(0, len(candles) - 25),
+                "origin_time": candles[max(0, len(candles) - 25)].get("timestamp", ""),
+                "origin_price": round(last_close + 0.001, 5),
+                "zigzag_count": 2,
+                "fractal_count": 1,
+                "touch_count": 3,
+                "retest_count": 1,
+                "price_relation": "below",
+                "structure_label": "bearish",
             },
         ]
+
+    def _market_structure(
+            self,
+            raw_structure: Any,
+            raw_phase_outputs: Any,
+    ) -> dict[str, Any]:
+        phase_outputs = dict(raw_phase_outputs or {}) if isinstance(raw_phase_outputs, dict) else {}
+        structure = dict(raw_structure or {}) if isinstance(raw_structure, dict) else {}
+        return {
+            "checkpoint_timeframe": str(structure.get("checkpoint_timeframe") or "1H"),
+            "refinement_timeframe": str(structure.get("refinement_timeframe") or "5M"),
+            "bias": str(structure.get("bias") or "neutral"),
+            "labels": list(structure.get("labels") or []),
+            "swings": list(structure.get("swings") or phase_outputs.get("swings") or []),
+            "events": list(structure.get("events") or phase_outputs.get("events") or []),
+        }
+
+    def _execution_context(
+            self,
+            raw_context: Any,
+            execution_decision: dict[str, Any],
+    ) -> dict[str, Any]:
+        context = dict(raw_context or {}) if isinstance(raw_context, dict) else {}
+        return {
+            "supported_styles": list(context.get("supported_styles") or ["instant", "advanced"]),
+            "configured_style": str(context.get("configured_style") or execution_decision.get("style") or "advanced"),
+            "confirmation_timeframe": str(context.get("confirmation_timeframe") or execution_decision.get("timeframe") or "1M"),
+            "retest_limit": int(_number(context.get("retest_limit"), 0)),
+            "retest_entry_mode": str(context.get("retest_entry_mode") or "close"),
+            "rrr_state": str(context.get("rrr_state") or execution_decision.get("rrr_state") or "none"),
+            "bos_direction": str(context.get("bos_direction") or execution_decision.get("bos_direction") or "none"),
+            "local_prediction": str(context.get("local_prediction") or "HOLD"),
+            "local_allowed": bool(context.get("local_allowed", execution_decision.get("allowed", False))),
+            "reason": str(context.get("reason") or execution_decision.get("rationale") or ""),
+            "active_zone_id": str(context.get("active_zone_id") or execution_decision.get("active_zone_id") or ""),
+            "active_zone_kind": str(context.get("active_zone_kind") or execution_decision.get("active_zone_kind") or ""),
+            "zone_state": str(context.get("zone_state") or "pending"),
+            "retest_count": int(_number(context.get("retest_count"), 0)),
+            "entry": _number(context.get("entry"), _number(execution_decision.get("entry"), 0.0)),
+            "stop_loss": _number(context.get("stop_loss"), _number(execution_decision.get("stop_loss"), 0.0)),
+            "take_profit": _number(context.get("take_profit"), _number(execution_decision.get("take_profit"), 0.0)),
+        }
 
     def _price_action(self, candles: list[dict[str, Any]], timeframe: str) -> list[dict[str, Any]]:
         first = _number(candles[0]["close"], 0.0)
@@ -750,6 +922,68 @@ class LiveFeedService:
             "take_profit": idea.get("take_profit", ""),
         }
 
+    def _build_ai_response(self, payload: dict[str, Any]) -> dict[str, Any]:
+        execution = dict(payload.get("execution_decision", {}) or {})
+        context = dict(payload.get("execution_context", {}) or {})
+        ai_signal = dict(payload.get("ai_signal", {}) or {})
+        account = dict(payload.get("account", {}) or {})
+
+        direction = str(execution.get("direction") or "neutral")
+        prediction = "HOLD"
+        if direction == "long":
+            prediction = "BUY"
+        elif direction == "short":
+            prediction = "SELL"
+
+        signal = str(ai_signal.get("signal") or "").lower()
+        if signal == "long":
+            prediction = "BUY"
+        elif signal == "short":
+            prediction = "SELL"
+        elif signal in {"neutral", "disabled"} and not bool(execution.get("allowed", False)):
+            prediction = "HOLD"
+
+        confidence = max(
+            _number(ai_signal.get("confidence"), 0.0),
+            min(_number(execution.get("score"), 0.0) / 5.0, 1.0),
+        )
+        zone_state = str(context.get("zone_state") or "pending")
+        if not bool(execution.get("allowed", False)):
+            zone_confirmation = "rejected" if zone_state in {"invalidated", "deleted", "rejected"} else "pending"
+        else:
+            zone_confirmation = "confirmed"
+
+        execution_hint = str(context.get("configured_style") or execution.get("style") or "advanced")
+        rrr_state = str(context.get("rrr_state") or "none")
+        if rrr_state not in {"", "none"}:
+            execution_hint = f"{execution_hint}:{rrr_state}"
+
+        spread = _number(payload.get("indicator_values", {}).get("spread_points"), 0.0)
+        exposure = _number(account.get("risk_exposure_pct"), 0.0)
+        risk_hint = "normal"
+        if exposure >= 25.0:
+            risk_hint = "account exposure is elevated; reduce size or wait."
+        elif spread >= 30.0:
+            risk_hint = "spread is elevated; prefer waiting for tighter execution."
+
+        reasons = [
+            str(execution.get("rationale") or "").strip(),
+            str(ai_signal.get("summary") or "").strip(),
+            str(context.get("reason") or "").strip(),
+        ]
+        reason = " ".join(part for part in reasons if part)
+
+        return {
+            "prediction": prediction,
+            "confidence": round(confidence, 3),
+            "reason": reason or "No actionable setup.",
+            "zone_confirmation": zone_confirmation,
+            "execution_hint": execution_hint,
+            "risk_hint": risk_hint,
+            "model_status": str(ai_signal.get("status") or "warming_up"),
+            "signal_training_mode": str(ai_signal.get("training_mode") or "heuristic"),
+        }
+
     def _news_filter(self, news: dict[str, Any]) -> dict[str, Any]:
         return {
             "trading_blocked": bool(news.get("trading_blocked", False)),
@@ -757,7 +991,8 @@ class LiveFeedService:
             "upcoming_events": list(news.get("upcoming_events") or news.get("events") or []),
         }
 
-    def _phase_outputs(self) -> dict[str, Any]:
+    def _phase_outputs(self, market_structure: dict[str, Any] | None = None) -> dict[str, Any]:
+        market_structure = dict(market_structure or {})
         return {
             "phase_2": {
                 "status": "Collecting",
@@ -765,6 +1000,8 @@ class LiveFeedService:
                 "feature_row_count": 0,
                 "covered_phases": ["structure", "zones", "execution"],
             },
+            "swings": list(market_structure.get("swings") or []),
+            "events": list(market_structure.get("events") or []),
             "phase_3": {"fib_setups": []},
             "phase_4": {"imbalances": []},
             "phase_5": {"candlestick_patterns": []},

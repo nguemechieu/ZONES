@@ -24,6 +24,7 @@ import logging
 import os
 from pathlib import Path
 
+from src.app_paths import audit_log_path
 
 # ---------------------------
 # SERVER CONTROLLER
@@ -107,7 +108,7 @@ class ServerController(QObject):
         }
 
         kill_switch = GlobalKillSwitch()
-        audit_logger = AuditLogger(os.getenv("ZONES_AUDIT_LOG", "logs/ai_decisions.jsonl"))
+        audit_logger = AuditLogger(os.getenv("ZONES_AUDIT_LOG", str(audit_log_path())))
 
         pipe_server = NamedPipeBridgeServer(
             feed_service=feed_service,

@@ -6,10 +6,12 @@ import time
 from pathlib import Path
 from typing import Any
 
+from src.app_paths import audit_log_path
+
 
 class AuditLogger:
-    def __init__(self, path: str = "logs/ai_decisions.jsonl") -> None:
-        self.path = Path(path)
+    def __init__(self, path: str | Path | None = None) -> None:
+        self.path = Path(path) if path is not None else audit_log_path()
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
 

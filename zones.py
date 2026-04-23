@@ -5,6 +5,7 @@ from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QRect
 from PySide6.QtGui import QColor, QPalette, QIcon, QPixmap
 from PySide6.QtWidgets import QGraphicsOpacityEffect
 from src.server.server_controller import ServerController
+from src.version import __version__
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame
 )
@@ -74,7 +75,7 @@ class MainWindow(QWidget):
         self.controller = ServerController()
         self.controller.server_stopped.connect(self.on_server_stopped)
 
-        self.setWindowTitle("Zones")
+        self.setWindowTitle(f"Zones {__version__}")
         self.setWindowIcon(QIcon(str(ICON_PATH)))
         self.setMinimumSize(600, 500)
 

@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zones"
-version = "1.0.0"
+dynamic = ["version"]
 description = "ZONES - Market Structure, Supply & Demand, Execution Engine"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -76,6 +76,10 @@ dev = [
     "mypy"
 ]
 
+build = [
+    "pyinstaller>=6.10"
+]
+
 
 # ============================================================
 # ENTRY POINT (CLI)
@@ -117,6 +121,9 @@ include = ["src*"]
 [tool.setuptools]
 include-package-data = true
 py-modules = ["zones"]
+
+[tool.setuptools.dynamic]
+version = { attr = "src.version.__version__" }
 
 [tool.setuptools.package-data]
 src = ["assets/*.png", "assets/*.ico"]

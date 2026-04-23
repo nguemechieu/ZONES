@@ -29,7 +29,7 @@ Current foundation in this repo includes:
 - hedge fund style portfolio analysis with exposure, leverage, concentration, VaR proxy, and PnL attribution metrics
 - system status page for runtime settings, remote DB control, AI training, and feedback capture
 - editable allowed-session control on the system page for the execution gate
-- local MT4 bridge using `ZonesBridge.dll` and Windows named pipes
+- local MT4 bridge using a localhost WebSocket as the primary transport, with the named-pipe path kept for legacy compatibility
 - local SQLite by default, with optional remote PostgreSQL support
 
 ## Architecture
@@ -37,7 +37,7 @@ Current foundation in this repo includes:
 The repo currently uses this flow:
 
 1. `MT4 EA` collects candles, account data, and symbol context.
-2. `ZonesBridge.dll` sends requests through a local named pipe.
+2. `ZONES.mq4` sends requests through the local WebSocket bridge, while the named-pipe server remains available for legacy clients.
 3. `zones.py` runs the Python service and dashboard.
 4. `supply_demand_ea` analyzes structure, zones, execution filters, and phase outputs.
 5. The dashboard renders readable HTML views for live monitoring.
@@ -71,6 +71,7 @@ The Python engine has been refactored around the provided PDF requirements and n
 
 Supporting docs:
 
+- `docs/mt4-python-architecture.md`
 - `docs/zones_pdf_rulebook.md`
 - `docs/supply_demand_ea_phase1.md`
 - `docs/live_mt4_bridge.md`
@@ -79,6 +80,10 @@ Supporting docs:
 - `docs/backtesting.md`
 - `docs/runtime_settings.md`
 - `docs/installation_package.md`
+- `docs/INSTALL.md`
+- `docs/RELEASE.md`
+- `docs/TROUBLESHOOTING.md`
+- `docs/GITHUB_RELEASE_CHECKLIST.md`
 
 ## Run The App
 

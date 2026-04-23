@@ -1,0 +1,1496 @@
+#property strict
+
+#include <websocket.mqh>
+
+const string WebSocketUrl = "ws://127.0.0.1:8090/ws";
+input bool PostAllMarketWatchSymbols = false;
+input bool DrawZonesOnChart = true;
+input int TimerSeconds = 60;
+input int MaxSlippage = 5;
+input int MagicNumber = 20260316;
+input int BarsH1 = 60;
+input int BarsM5 = 80;
+input int BarsM1 = 120;
+input int MaxMarketWatchSymbols = 0;
+input int SwingLookback = 3;
+input int ScanBars = 180;
+input int ZoneProjectionBars = 80;
+input int SupportResistanceLookback = 80;
+input int MaxSupplyZones = 3;
+input int MaxDemandZones = 3;
+input int MaxLiquidityZones = 2;
+input double ZonePaddingPoints = 60.0;
+input double LiquidityTolerancePoints = 45.0;
+input color SupplyColor = clrTomato;
+input color DemandColor = clrDeepSkyBlue;
+input color LiquidityColor = clrGold;
+input color ResistanceColor = clrOrangeRed;
+input color SupportColor = clrDodgerBlue;
+
+input double MaxSpreadPoints = 35.0;
+input double MaxRiskPerTradePct = 1.00;
+input double MaxTotalExposurePct = 30.0;
+input int MaxOpenTradesPerSymbol = 2;
+input int MaxCommandsPerPoll = 10;
+input int TradeCooldownSeconds = 10;
+input bool RejectIfStopsTooClose = true;
+input bool RejectIfTradingDisabled = true;
+input bool RejectDuplicateCommandIds = true;
+input bool IncludeOnlyMagicPositionsInPayload = false;
+
+const string ZonePrefix = "ZONES_WS_";
+
+CWebSocket g_ws;
+datetime g_lastTradeTime = 0;
+string g_lastCommandIds[128];
+int g_lastCommandIndex = 0;
+
+// ============================================================
+// HELPERS
+// ============================================================
+
+string StringRepeat(string value, int count)
+{
+   if(count <= 0 || value == "")
+      return "";
+
+   string result = "";
+   for(int i = 0; i < count; i++)
+      result += value;
+
+   return result;
+}
+
+string TerminalAccountId()
+{
+   return IntegerToString(AccountNumber());
+}
+
+string EscapeJson(string value)
+{
+   StringReplace(value, "\\", "\\\\");
+   StringReplace(value, "\"", "\\\"");
+   StringReplace(value, "\r", "\\r");
+   StringReplace(value, "\n", "\\n");
+   return value;
+}
+
+string CommandValue(string commandText, string key)
+{
+   string parts[];
+   int total = StringSplit(commandText, '|', parts);
+   string prefix = key + "=";
+
+   for(int index = 0; index < total; index++)
+   {
+      if(StringFind(parts[index], prefix, 0) == 0)
+         return StringSubstr(parts[index], StringLen(prefix));
+   }
+
+   return "";
+}
+
+string JsonValue(string json, string key)
+{
+   string token = "\"" + key + "\":";
+   int p = StringFind(json, token, 0);
+   if(p < 0)
+      return "";
+
+   p += StringLen(token);
+
+   while(p < StringLen(json) && (StringGetChar(json, p) == ' ' || StringGetChar(json, p) == 9))
+      p++;
+
+   if(p >= StringLen(json))
+      return "";
+
+   if(StringGetChar(json, p) == '"')
+   {
+      p++;
+      int end = p;
+      while(end < StringLen(json))
+      {
+         if(StringGetChar(json, end) == '"' && StringGetChar(json, end - 1) != '\\')
+            break;
+         end++;
+      }
+      if(end <= StringLen(json))
+         return StringSubstr(json, p, end - p);
+      return "";
+   }
+
+   int end2 = p;
+   while(end2 < StringLen(json))
+   {
+      int ch = StringGetChar(json, end2);
+      if(ch == ',' || ch == '}' || ch == '\r' || ch == '\n')
+         break;
+      end2++;
+   }
+
+   return StringTrim(StringSubstr(json, p, end2 - p));
+}
+string StringTrim(string text)
+{
+   StringTrimLeft(text);
+   StringTrimRight(text);
+   return text;
+}
+bool EnsureWebSocket()
+{
+   if(g_ws.IsConnected())
+      return true;
+
+   if(!g_ws.Connect(WebSocketUrl))
+   {
+      Print("WebSocket connect failed: ", g_ws.LastError(), " url=", WebSocketUrl);
+      return false;
+   }
+
+   Print("WebSocket connected: ", WebSocketUrl);
+   return true;
+}
+
+bool WsRequest(string requestJson, string &replyJson)
+{
+   replyJson = "";
+
+   if(!EnsureWebSocket())
+      return false;
+
+   if(!g_ws.SendText(requestJson))
+   {
+      Print("WebSocket send failed: ", g_ws.LastError());
+      g_ws.Close();
+      return false;
+   }
+
+   if(!g_ws.ReceiveText(replyJson))
+   {
+      Print("WebSocket receive failed: ", g_ws.LastError());
+      g_ws.Close();
+      return false;
+   }
+
+   return true;
+}
+
+bool SendCommandAck(string commandId, string status, string message)
+{
+   string req =
+      "{"
+      "\"action\":\"command_ack\","
+      "\"account_id\":\"" + EscapeJson(TerminalAccountId()) + "\","
+      "\"id\":\"" + EscapeJson(commandId) + "\","
+      "\"status\":\"" + EscapeJson(status) + "\","
+      "\"message\":\"" + EscapeJson(message) + "\""
+      "}";
+
+   string reply = "";
+   if(!WsRequest(req, reply))
+      return false;
+
+   return JsonValue(reply, "status") == "ok";
+}
+
+bool SelectTicket(int ticket)
+{
+   return OrderSelect(ticket, SELECT_BY_TICKET);
+}
+
+int OrderTypeFromCommand(string commandType)
+{
+   if(commandType == "buy_limit")  return OP_BUYLIMIT;
+   if(commandType == "sell_limit") return OP_SELLLIMIT;
+   if(commandType == "buy_stop")   return OP_BUYSTOP;
+   if(commandType == "sell_stop")  return OP_SELLSTOP;
+   return -1;
+}
+
+bool IsPendingOrderType(int orderType)
+{
+   return orderType == OP_BUYLIMIT || orderType == OP_SELLLIMIT || orderType == OP_BUYSTOP || orderType == OP_SELLSTOP;
+}
+
+bool IsMarketOrderType(int orderType)
+{
+   return orderType == OP_BUY || orderType == OP_SELL;
+}
+
+string ErrorDescriptionEx(int code)
+{
+   switch(code)
+   {
+      case 0:   return "No error";
+      case 1:   return "No error returned";
+      case 2:   return "Common error";
+      case 3:   return "Invalid trade parameters";
+      case 4:   return "Trade server busy";
+      case 5:   return "Old terminal version";
+      case 6:   return "No connection";
+      case 8:   return "Too frequent requests";
+      case 64:  return "Account disabled";
+      case 65:  return "Invalid account";
+      case 128: return "Trade timeout";
+      case 129: return "Invalid price";
+      case 130: return "Invalid stops";
+      case 131: return "Invalid trade volume";
+      case 132: return "Market closed";
+      case 133: return "Trade disabled";
+      case 134: return "Not enough money";
+      case 135: return "Price changed";
+      case 136: return "Off quotes";
+      case 137: return "Broker busy";
+      case 138: return "Requote";
+      case 139: return "Order locked";
+      case 140: return "Long positions only allowed";
+      case 141: return "Too many requests";
+      case 145: return "Modification denied";
+      case 146: return "Trade context busy";
+      case 147: return "Expirations denied";
+      case 148: return "Too many orders";
+      case 149: return "Hedge prohibited";
+      case 150: return "FIFO rule";
+      default:  return "Unknown trade error";
+   }
+}
+
+bool SendTradeErrorAck(string commandId, string stage, string extra)
+{
+   int code = GetLastError();
+   string message = stage + " failed | code=" + IntegerToString(code) + " | " + ErrorDescriptionEx(code);
+   if(extra != "")
+      message += " | " + extra;
+   ResetLastError();
+   return SendCommandAck(commandId, "error", message);
+}
+
+// ============================================================
+// EXECUTION SAFETY
+// ============================================================
+
+bool SeenCommandId(string commandId)
+{
+   if(commandId == "")
+      return false;
+
+   for(int i = 0; i < ArraySize(g_lastCommandIds); i++)
+   {
+      if(g_lastCommandIds[i] == commandId)
+         return true;
+   }
+   return false;
+}
+
+void RememberCommandId(string commandId)
+{
+   if(commandId == "")
+      return;
+
+   g_lastCommandIds[g_lastCommandIndex] = commandId;
+   g_lastCommandIndex++;
+
+   if(g_lastCommandIndex >= ArraySize(g_lastCommandIds))
+      g_lastCommandIndex = 0;
+}
+
+double NormalizeLotsForSymbol(string symbolName, double lots)
+{
+   double minLot = MarketInfo(symbolName, MODE_MINLOT);
+   double maxLot = MarketInfo(symbolName, MODE_MAXLOT);
+   double lotStep = MarketInfo(symbolName, MODE_LOTSTEP);
+
+   if(lotStep <= 0.0)
+      lotStep = 0.01;
+
+   lots = MathMax(minLot, MathMin(maxLot, lots));
+   lots = MathFloor(lots / lotStep) * lotStep;
+
+   if(lots < minLot)
+      lots = minLot;
+
+   return NormalizeDouble(lots, 2);
+}
+
+double NormalizePriceForSymbol(string symbolName, double price)
+{
+   int digits = (int)MarketInfo(symbolName, MODE_DIGITS);
+   return NormalizeDouble(price, digits);
+}
+
+double SymbolPointValue(string symbolName)
+{
+   double point = MarketInfo(symbolName, MODE_POINT);
+   if(point <= 0.0)
+      point = Point;
+   return point;
+}
+
+int SymbolDigitsValue(string symbolName)
+{
+   int digits = (int)MarketInfo(symbolName, MODE_DIGITS);
+   if(digits < 0)
+      digits = Digits;
+   return digits;
+}
+
+double CurrentSpreadPoints(string symbolName)
+{
+   return MarketInfo(symbolName, MODE_SPREAD);
+}
+
+bool TradingAllowedForSymbol(string symbolName)
+{
+   if(!IsConnected())
+      return false;
+
+   if(IsTradeContextBusy())
+      return false;
+
+   if(!IsTradeAllowed())
+      return false;
+
+   if(MarketInfo(symbolName, MODE_TRADEALLOWED) == 0)
+      return false;
+
+   return true;
+}
+
+bool SymbolHasFreshQuotes(string symbolName)
+{
+   double bid = MarketInfo(symbolName, MODE_BID);
+   double ask = MarketInfo(symbolName, MODE_ASK);
+   return (bid > 0.0 && ask > 0.0 && ask >= bid);
+}
+
+int CountOpenTradesForSymbol(string symbolName)
+{
+   int total = 0;
+
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
+   {
+      if(!OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
+         continue;
+      if(OrderSymbol() != symbolName)
+         continue;
+      if(OrderMagicNumber() != MagicNumber)
+         continue;
+      if(OrderType() <= OP_SELL)
+         total++;
+   }
+
+   return total;
+}
+
+double CurrentExposurePct()
+{
+   if(AccountEquity() <= 0.0)
+      return 0.0;
+   return (AccountMargin() / AccountEquity()) * 100.0;
+}
+
+bool InTradeCooldown()
+{
+   if(g_lastTradeTime <= 0)
+      return false;
+   return (TimeCurrent() - g_lastTradeTime) < TradeCooldownSeconds;
+}
+
+bool HasEnoughMargin(string symbolName, int orderType, double lots)
+{
+   double marginRequired = MarketInfo(symbolName, MODE_MARGINREQUIRED) * lots;
+
+   if(marginRequired <= 0.0)
+      return AccountFreeMarginCheck(symbolName, orderType, lots) > 0.0;
+
+   return AccountFreeMargin() > marginRequired;
+}
+
+bool PendingPriceValid(string symbolName, int orderType, double price, string &reason)
+{
+   double bid = MarketInfo(symbolName, MODE_BID);
+   double ask = MarketInfo(symbolName, MODE_ASK);
+
+   if(orderType == OP_BUYLIMIT && price >= ask)
+   {
+      reason = "Buy limit must be below ask";
+      return false;
+   }
+
+   if(orderType == OP_SELLLIMIT && price <= bid)
+   {
+      reason = "Sell limit must be above bid";
+      return false;
+   }
+
+   if(orderType == OP_BUYSTOP && price <= ask)
+   {
+      reason = "Buy stop must be above ask";
+      return false;
+   }
+
+   if(orderType == OP_SELLSTOP && price >= bid)
+   {
+      reason = "Sell stop must be below bid";
+      return false;
+   }
+
+   return true;
+}
+
+bool StopsValid(string symbolName, int orderType, double price, double sl, double tp, string &reason)
+{
+   double point = SymbolPointValue(symbolName);
+   int stopLevel = (int)MarketInfo(symbolName, MODE_STOPLEVEL);
+   double minDistance = stopLevel * point;
+
+   if(!RejectIfStopsTooClose)
+      return true;
+
+   if(sl > 0.0)
+   {
+      if(orderType == OP_BUY || orderType == OP_BUYLIMIT || orderType == OP_BUYSTOP)
+      {
+         if((price - sl) < minDistance)
+         {
+            reason = "SL too close";
+            return false;
+         }
+      }
+      else
+      {
+         if((sl - price) < minDistance)
+         {
+            reason = "SL too close";
+            return false;
+         }
+      }
+   }
+
+   if(tp > 0.0)
+   {
+      if(orderType == OP_BUY || orderType == OP_BUYLIMIT || orderType == OP_BUYSTOP)
+      {
+         if((tp - price) < minDistance)
+         {
+            reason = "TP too close";
+            return false;
+         }
+      }
+      else
+      {
+         if((price - tp) < minDistance)
+         {
+            reason = "TP too close";
+            return false;
+         }
+      }
+   }
+
+   return true;
+}
+
+bool RiskWithinLimit(string symbolName, int orderType, double lots, double price, double sl)
+{
+   if(sl <= 0.0 || AccountEquity() <= 0.0)
+      return true;
+
+   double tickValue = MarketInfo(symbolName, MODE_TICKVALUE);
+   double tickSize  = MarketInfo(symbolName, MODE_TICKSIZE);
+   double point     = SymbolPointValue(symbolName);
+
+   if(tickValue <= 0.0 || tickSize <= 0.0 || point <= 0.0)
+      return true;
+
+   double distance = MathAbs(price - sl);
+   double pointsDistance = distance / point;
+   double valuePerPointPerLot = tickValue * (point / tickSize);
+   double riskMoney = pointsDistance * valuePerPointPerLot * lots;
+   double riskPct = (riskMoney / AccountEquity()) * 100.0;
+
+   return riskPct <= MaxRiskPerTradePct;
+}
+
+bool PreTradeCheck(
+   string commandId,
+   string symbolName,
+   int orderType,
+   double &lots,
+   double &price,
+   double &sl,
+   double &tp,
+   string &reason
+)
+{
+   if(RejectDuplicateCommandIds && SeenCommandId(commandId))
+   {
+      reason = "Duplicate command id";
+      return false;
+   }
+
+   if(symbolName == "")
+   {
+      reason = "Empty symbol";
+      return false;
+   }
+
+   if(RejectIfTradingDisabled && !TradingAllowedForSymbol(symbolName))
+   {
+      reason = "Trading not allowed";
+      return false;
+   }
+
+   if(!SymbolHasFreshQuotes(symbolName))
+   {
+      reason = "No fresh quotes";
+      return false;
+   }
+
+   if(CurrentSpreadPoints(symbolName) > MaxSpreadPoints)
+   {
+      reason = "Spread too high";
+      return false;
+   }
+
+   if(InTradeCooldown() && IsMarketOrderType(orderType))
+   {
+      reason = "Trade cooldown active";
+      return false;
+   }
+
+   if(CountOpenTradesForSymbol(symbolName) >= MaxOpenTradesPerSymbol && IsMarketOrderType(orderType))
+   {
+      reason = "Max open trades per symbol reached";
+      return false;
+   }
+
+   if(CurrentExposurePct() >= MaxTotalExposurePct)
+   {
+      reason = "Total exposure limit reached";
+      return false;
+   }
+
+   lots = NormalizeLotsForSymbol(symbolName, lots);
+   if(lots <= 0.0)
+   {
+      reason = "Invalid lot size";
+      return false;
+   }
+
+   price = NormalizePriceForSymbol(symbolName, price);
+   if(sl > 0.0)
+      sl = NormalizePriceForSymbol(symbolName, sl);
+   if(tp > 0.0)
+      tp = NormalizePriceForSymbol(symbolName, tp);
+
+   if(IsPendingOrderType(orderType))
+   {
+      if(price <= 0.0)
+      {
+         reason = "Pending order price is required";
+         return false;
+      }
+
+      if(!PendingPriceValid(symbolName, orderType, price, reason))
+         return false;
+   }
+
+   if(!HasEnoughMargin(symbolName, IsPendingOrderType(orderType) ? OP_BUY : orderType, lots))
+   {
+      reason = "Insufficient margin";
+      return false;
+   }
+
+   if(!StopsValid(symbolName, orderType, price, sl, tp, reason))
+      return false;
+
+   if(!RiskWithinLimit(symbolName, orderType, lots, price, sl))
+   {
+      reason = "Risk per trade exceeds configured limit";
+      return false;
+   }
+
+   return true;
+}
+
+// ============================================================
+// COMMAND EXECUTION
+// ============================================================
+
+bool ExecuteCommand(string commandText)
+{
+   string commandId = CommandValue(commandText, "id");
+   string commandType = CommandValue(commandText, "type");
+   string symbolName = CommandValue(commandText, "symbol");
+
+   if(symbolName == "")
+      symbolName = Symbol();
+
+   RefreshRates();
+
+   if(commandType == "")
+   {
+      SendCommandAck(commandId, "error", "Missing command type");
+      return false;
+   }
+
+   if(commandType == "alert")
+   {
+      string message = CommandValue(commandText, "message");
+      Alert("ZONES: ", message);
+      SendCommandAck(commandId, "ok", "Alert executed");
+      RememberCommandId(commandId);
+      return true;
+   }
+
+   if(commandType == "market_buy" || commandType == "market_sell")
+   {
+      double lots = StrToDouble(CommandValue(commandText, "lot"));
+      double sl = StrToDouble(CommandValue(commandText, "sl"));
+      double tp = StrToDouble(CommandValue(commandText, "tp"));
+      string comment = CommandValue(commandText, "comment");
+
+      int orderType = (commandType == "market_buy") ? OP_BUY : OP_SELL;
+      double price = (commandType == "market_buy")
+         ? MarketInfo(symbolName, MODE_ASK)
+         : MarketInfo(symbolName, MODE_BID);
+
+      string rejectReason = "";
+      if(!PreTradeCheck(commandId, symbolName, orderType, lots, price, sl, tp, rejectReason))
+      {
+         SendCommandAck(commandId, "rejected", rejectReason);
+         return false;
+      }
+
+      RefreshRates();
+      price = (commandType == "market_buy")
+         ? NormalizePriceForSymbol(symbolName, MarketInfo(symbolName, MODE_ASK))
+         : NormalizePriceForSymbol(symbolName, MarketInfo(symbolName, MODE_BID));
+
+      int ticket = OrderSend(symbolName, orderType, lots, price, MaxSlippage, sl, tp, comment, MagicNumber, 0, clrNONE);
+
+      if(ticket < 0)
+         return SendTradeErrorAck(commandId, "Market OrderSend", "symbol=" + symbolName);
+
+      g_lastTradeTime = TimeCurrent();
+      RememberCommandId(commandId);
+      SendCommandAck(commandId, "ok", "ticket=" + IntegerToString(ticket) + "|symbol=" + symbolName);
+      return true;
+   }
+
+   if(commandType == "buy_limit" || commandType == "sell_limit" || commandType == "buy_stop" || commandType == "sell_stop")
+   {
+      double lots = StrToDouble(CommandValue(commandText, "lot"));
+      double price = StrToDouble(CommandValue(commandText, "price"));
+      double sl = StrToDouble(CommandValue(commandText, "sl"));
+      double tp = StrToDouble(CommandValue(commandText, "tp"));
+      string comment = CommandValue(commandText, "comment");
+      int orderType = OrderTypeFromCommand(commandType);
+
+      string rejectReason = "";
+      if(!PreTradeCheck(commandId, symbolName, orderType, lots, price, sl, tp, rejectReason))
+      {
+         SendCommandAck(commandId, "rejected", rejectReason);
+         return false;
+      }
+
+      int ticket = OrderSend(symbolName, orderType, lots, price, MaxSlippage, sl, tp, comment, MagicNumber, 0, clrNONE);
+
+      if(ticket < 0)
+         return SendTradeErrorAck(commandId, "Pending OrderSend", "symbol=" + symbolName);
+
+      RememberCommandId(commandId);
+      SendCommandAck(commandId, "ok", "ticket=" + IntegerToString(ticket) + "|symbol=" + symbolName);
+      return true;
+   }
+
+   if(commandType == "close_ticket")
+   {
+      int ticket = StrToInteger(CommandValue(commandText, "ticket"));
+
+      if(!SelectTicket(ticket))
+      {
+         SendCommandAck(commandId, "error", "Ticket not found");
+         return false;
+      }
+
+      int orderType = OrderType();
+      if(orderType > OP_SELL)
+      {
+         SendCommandAck(commandId, "error", "Ticket is not an open market position");
+         return false;
+      }
+
+      double closePrice = (orderType == OP_BUY)
+         ? NormalizePriceForSymbol(OrderSymbol(), MarketInfo(OrderSymbol(), MODE_BID))
+         : NormalizePriceForSymbol(OrderSymbol(), MarketInfo(OrderSymbol(), MODE_ASK));
+
+      if(!OrderClose(ticket, OrderLots(), closePrice, MaxSlippage, clrNONE))
+         return SendTradeErrorAck(commandId, "OrderClose", "ticket=" + IntegerToString(ticket));
+
+      RememberCommandId(commandId);
+      SendCommandAck(commandId, "ok", "Closed ticket=" + IntegerToString(ticket));
+      return true;
+   }
+
+   if(commandType == "delete_ticket")
+   {
+      int ticket = StrToInteger(CommandValue(commandText, "ticket"));
+
+      if(!SelectTicket(ticket))
+      {
+         SendCommandAck(commandId, "error", "Ticket not found");
+         return false;
+      }
+
+      if(OrderType() <= OP_SELL)
+      {
+         SendCommandAck(commandId, "error", "Ticket is not a pending order");
+         return false;
+      }
+
+      if(!OrderDelete(ticket, clrNONE))
+         return SendTradeErrorAck(commandId, "OrderDelete", "ticket=" + IntegerToString(ticket));
+
+      RememberCommandId(commandId);
+      SendCommandAck(commandId, "ok", "Deleted pending ticket=" + IntegerToString(ticket));
+      return true;
+   }
+
+   if(commandType == "modify_ticket")
+   {
+      int ticket = StrToInteger(CommandValue(commandText, "ticket"));
+      double price = StrToDouble(CommandValue(commandText, "price"));
+      double sl = StrToDouble(CommandValue(commandText, "sl"));
+      double tp = StrToDouble(CommandValue(commandText, "tp"));
+
+      if(!SelectTicket(ticket))
+      {
+         SendCommandAck(commandId, "error", "Ticket not found");
+         return false;
+      }
+
+      string orderSymbol = OrderSymbol();
+      int orderType = OrderType();
+
+      if(price <= 0.0)
+         price = OrderOpenPrice();
+
+      price = NormalizePriceForSymbol(orderSymbol, price);
+      if(sl > 0.0)
+         sl = NormalizePriceForSymbol(orderSymbol, sl);
+      if(tp > 0.0)
+         tp = NormalizePriceForSymbol(orderSymbol, tp);
+
+      string rejectReason = "";
+      if(!StopsValid(orderSymbol, orderType, price, sl, tp, rejectReason))
+      {
+         SendCommandAck(commandId, "rejected", rejectReason);
+         return false;
+      }
+
+      if(!OrderModify(ticket, price, sl, tp, OrderExpiration(), clrNONE))
+         return SendTradeErrorAck(commandId, "OrderModify", "ticket=" + IntegerToString(ticket));
+
+      RememberCommandId(commandId);
+      SendCommandAck(commandId, "ok", "Modified ticket=" + IntegerToString(ticket));
+      return true;
+   }
+
+   if(commandType == "close_all")
+   {
+      string filterSymbol = CommandValue(commandText, "filter_symbol");
+      int closed = 0;
+
+      for(int index = OrdersTotal() - 1; index >= 0; index--)
+      {
+         if(!OrderSelect(index, SELECT_BY_POS, MODE_TRADES))
+            continue;
+
+         if(filterSymbol != "" && OrderSymbol() != filterSymbol)
+            continue;
+
+         if(OrderType() > OP_SELL)
+            continue;
+
+         double closePrice = (OrderType() == OP_BUY)
+            ? NormalizePriceForSymbol(OrderSymbol(), MarketInfo(OrderSymbol(), MODE_BID))
+            : NormalizePriceForSymbol(OrderSymbol(), MarketInfo(OrderSymbol(), MODE_ASK));
+
+         if(OrderClose(OrderTicket(), OrderLots(), closePrice, MaxSlippage, clrNONE))
+            closed++;
+      }
+
+      RememberCommandId(commandId);
+      SendCommandAck(commandId, "ok", "closed=" + IntegerToString(closed));
+      return true;
+   }
+
+   SendCommandAck(commandId, "error", "Unsupported command type: " + commandType);
+   return false;
+}
+
+void PollCommandQueueForSymbol(string symbolName)
+{
+   int processed = 0;
+
+   while(processed < MaxCommandsPerPoll)
+   {
+      string request =
+         "{"
+         "\"action\":\"fetch_command\","
+         "\"account_id\":\"" + EscapeJson(TerminalAccountId()) + "\","
+         "\"symbol\":\"" + EscapeJson(symbolName) + "\""
+         "}";
+
+      string reply = "";
+      if(!WsRequest(request, reply))
+         return;
+
+      string status = JsonValue(reply, "status");
+      if(status != "ok")
+         return;
+
+      string response = JsonValue(reply, "command");
+      if(response == "")
+         return;
+
+      ExecuteCommand(response);
+      processed++;
+   }
+}
+
+void PollCommands()
+{
+   if(!PostAllMarketWatchSymbols)
+   {
+      PollCommandQueueForSymbol(Symbol());
+      return;
+   }
+
+   int totalSymbols = SymbolsTotal(true);
+   int processed = 0;
+
+   for(int index = 0; index < totalSymbols; index++)
+   {
+      string symbolName = SymbolName(index, true);
+      if(symbolName == "")
+         continue;
+
+      PollCommandQueueForSymbol(symbolName);
+      processed++;
+
+      if(MaxMarketWatchSymbols > 0 && processed >= MaxMarketWatchSymbols)
+         break;
+   }
+}
+
+// ============================================================
+// ZONE DRAWING / VISUALS
+// ============================================================
+
+int TimeframeSeconds(int timeframe)
+{
+   switch(timeframe)
+   {
+      case PERIOD_M1:  return 60;
+      case PERIOD_M5:  return 300;
+      case PERIOD_M15: return 900;
+      case PERIOD_M30: return 1800;
+      case PERIOD_H1:  return 3600;
+      case PERIOD_H4:  return 14400;
+      case PERIOD_D1:  return 86400;
+      default:         return 60;
+   }
+}
+
+void ClearZoneObjects()
+{
+   for(int index = ObjectsTotal() - 1; index >= 0; index--)
+   {
+      string name = ObjectName(index);
+      if(StringFind(name, ZonePrefix, 0) == 0)
+         ObjectDelete(name);
+   }
+}
+
+void DrawZoneRectangle(string name, datetime leftTime, datetime rightTime, double upper, double lower, color zoneColor, string label)
+{
+   if(ObjectFind(name) == -1)
+      ObjectCreate(name, OBJ_RECTANGLE, 0, leftTime, upper, rightTime, lower);
+   else
+   {
+      ObjectMove(name, 0, leftTime, upper);
+      ObjectMove(name, 1, rightTime, lower);
+   }
+
+   ObjectSet(name, OBJPROP_COLOR, zoneColor);
+   ObjectSet(name, OBJPROP_WIDTH, 1);
+   ObjectSet(name, OBJPROP_STYLE, STYLE_SOLID);
+   ObjectSet(name, OBJPROP_BACK, true);
+
+   string labelName = name + "_LABEL";
+   if(ObjectFind(labelName) == -1)
+      ObjectCreate(labelName, OBJ_TEXT, 0, leftTime, upper);
+   else
+      ObjectMove(labelName, 0, leftTime, upper);
+
+   ObjectSetText(labelName, label, 8, "Arial", zoneColor);
+}
+
+string LineType(string wireLine)
+{
+   int separator = StringFind(wireLine, "|", 0);
+   if(separator < 0)
+      return wireLine;
+   return StringSubstr(wireLine, 0, separator);
+}
+
+string CurrentTimeframeLabel()
+{
+   int chartPeriod = Period();
+   if(chartPeriod <= PERIOD_M1)
+      return "1M";
+   if(chartPeriod <= PERIOD_M5)
+      return "5M";
+   return "1H";
+}
+
+bool WireBool(string value)
+{
+   return value == "true" || value == "1" || value == "yes";
+}
+
+datetime TimeFromOriginShift(int originShift)
+{
+   if(Bars <= 0)
+      return TimeCurrent();
+
+   if(originShift < 0)
+      originShift = 0;
+   if(originShift > Bars - 1)
+      originShift = Bars - 1;
+
+   return Time[originShift];
+}
+
+color ZoneColorForLine(string kind, string family, string status)
+{
+   if(status == "deleted")
+      return clrSilver;
+   if(kind == "liquidity")
+      return LiquidityColor;
+   if(kind == "support")
+      return SupportColor;
+   if(kind == "resistance")
+      return ResistanceColor;
+   if(kind == "supply")
+      return family == "main" ? ResistanceColor : SupplyColor;
+   if(kind == "demand")
+      return family == "main" ? SupportColor : DemandColor;
+   return clrSilver;
+}
+
+int ZoneWidthForLine(string family, string status)
+{
+   if(status == "deleted")
+      return 1;
+   if(family == "main" || family == "support_resistance")
+      return 2;
+   return 1;
+}
+
+color SwingColorForLine(string source, string kind)
+{
+   if(kind == "high")
+      return source == "fractal" ? ResistanceColor : SupplyColor;
+   return source == "fractal" ? SupportColor : DemandColor;
+}
+
+string ZoneLabelForLine(string timeframeLabel, string family, string kind, string strength, string status, string modeBias)
+{
+   string label = timeframeLabel + " ";
+
+   if(family == "main")
+      label += "MAIN ";
+   else if(family == "temp")
+      label += "TEMP ";
+   else if(family == "support_resistance")
+      label += "SR ";
+   else if(family == "liquidity")
+      label += "LIQ ";
+
+   if(strength != "")
+      label += strength + " ";
+
+   if(kind != "")
+      label += kind + " ";
+
+   if(status == "deleted")
+      label += "deleted";
+   else if(modeBias != "")
+      label += "[" + modeBias + "]";
+
+   return label;
+}
+
+string SwingLabelForLine(string source, string label)
+{
+   return (source == "fractal" ? "FR " : "ZZ ") + label;
+}
+
+void DrawTextMarker(string name, datetime markerTime, double markerPrice, string label, color markerColor, int fontSize)
+{
+   if(ObjectFind(name) == -1)
+      ObjectCreate(name, OBJ_TEXT, 0, markerTime, markerPrice);
+   else
+      ObjectMove(name, 0, markerTime, markerPrice);
+
+   ObjectSetText(name, label, fontSize, "Arial", markerColor);
+}
+
+void DrawCornerLabel(string name, string label, color labelColor)
+{
+   if(ObjectFind(name) == -1)
+      ObjectCreate(name, OBJ_LABEL, 0, 0, 0);
+
+   ObjectSet(name, OBJPROP_CORNER, 0);
+   ObjectSet(name, OBJPROP_XDISTANCE, 10);
+   ObjectSet(name, OBJPROP_YDISTANCE, 15);
+   ObjectSetText(name, label, 9, "Arial", labelColor);
+}
+
+bool FetchChartSnapshot(string accountId, string symbolName, string timeframeLabel, string &response)
+{
+   string request =
+      "{"
+      "\"action\":\"fetch_chart_snapshot\","
+      "\"account_id\":\"" + EscapeJson(accountId) + "\","
+      "\"symbol\":\"" + EscapeJson(symbolName) + "\","
+      "\"timeframe\":\"" + EscapeJson(timeframeLabel) + "\""
+      "}";
+
+   string reply = "";
+   if(!WsRequest(request, reply))
+      return false;
+
+   if(JsonValue(reply, "status") != "ok")
+      return false;
+
+   response = JsonValue(reply, "snapshot");
+   return response != "";
+}
+
+void DrawBridgeSnapshotZone(string timeframeLabel, datetime rightTime, string line, int zoneIndex)
+{
+   double upper = StrToDouble(CommandValue(line, "upper"));
+   double lower = StrToDouble(CommandValue(line, "lower"));
+   int originShift = StrToInteger(CommandValue(line, "origin_shift"));
+   string kind = CommandValue(line, "kind");
+   string family = CommandValue(line, "family");
+   string status = CommandValue(line, "status");
+   string strength = CommandValue(line, "strength");
+   string modeBias = CommandValue(line, "mode");
+   color zoneColor = ZoneColorForLine(kind, family, status);
+   string objectName = ZonePrefix + "ZONE_" + IntegerToString(zoneIndex);
+   datetime leftTime = TimeFromOriginShift(originShift);
+
+   if(lower > upper)
+   {
+      double swapValue = lower;
+      lower = upper;
+      upper = swapValue;
+   }
+
+   DrawZoneRectangle(
+      objectName,
+      leftTime,
+      rightTime,
+      upper,
+      lower,
+      zoneColor,
+      ZoneLabelForLine(timeframeLabel, family, kind, strength, status, modeBias)
+   );
+
+   ObjectSet(objectName, OBJPROP_WIDTH, ZoneWidthForLine(family, status));
+   ObjectSet(objectName, OBJPROP_STYLE, status == "deleted" ? STYLE_DOT : STYLE_SOLID);
+   ObjectSet(objectName, OBJPROP_BACK, status != "deleted");
+}
+
+void DrawBridgeSnapshotSwing(string line, int swingIndex)
+{
+   int originShift = StrToInteger(CommandValue(line, "origin_shift"));
+   string kind = CommandValue(line, "kind");
+   string source = CommandValue(line, "source");
+   string label = CommandValue(line, "label");
+   double price = StrToDouble(CommandValue(line, "price"));
+   double offset = MathMax(Point * 10.0, ZonePaddingPoints * Point * 0.12);
+   datetime markerTime = TimeFromOriginShift(originShift);
+   string objectName = ZonePrefix + "SWING_" + IntegerToString(swingIndex);
+
+   if(kind == "high")
+      price += offset;
+   else
+      price -= offset;
+
+   DrawTextMarker(objectName, markerTime, price, SwingLabelForLine(source, label), SwingColorForLine(source, kind), 8);
+}
+
+void DrawBridgeSnapshotEvent(datetime rightTime, string line, int eventIndex)
+{
+   string eventName = CommandValue(line, "event");
+   string structureLabel = CommandValue(line, "structure_label");
+   string direction = CommandValue(line, "direction");
+   double level = StrToDouble(CommandValue(line, "level"));
+   color markerColor = direction == "short" ? SupplyColor : direction == "long" ? DemandColor : clrSilver;
+   string label = eventName;
+
+   if(structureLabel != "")
+      label += " " + structureLabel;
+
+   string objectName = ZonePrefix + "EVENT_" + IntegerToString(eventIndex);
+
+   if(level <= 0.0)
+      level = Bid;
+
+   DrawTextMarker(objectName, rightTime, level, label, markerColor, 8);
+}
+
+void DrawChartZones()
+{
+   if(!DrawZonesOnChart)
+      return;
+
+   ClearZoneObjects();
+
+   string timeframeLabel = CurrentTimeframeLabel();
+   string response = "";
+   string summaryObject = ZonePrefix + "SUMMARY";
+
+   if(!FetchChartSnapshot(TerminalAccountId(), Symbol(), timeframeLabel, response))
+   {
+      DrawCornerLabel(summaryObject, "ZONES waiting for Python chart snapshot...", clrSilver);
+      ChartRedraw();
+      return;
+   }
+
+   ushort newline = 10;
+   string lines[];
+   int lineCount = StringSplit(response, newline, lines);
+
+   if(lineCount <= 0)
+   {
+      DrawCornerLabel(summaryObject, "ZONES snapshot was empty.", clrSilver);
+      ChartRedraw();
+      return;
+   }
+
+   int chartSeconds = TimeframeSeconds(Period());
+   datetime rightTime = Time[0] + (chartSeconds * ZoneProjectionBars);
+   int zoneIndex = 0;
+   int swingIndex = 0;
+   int eventIndex = 0;
+
+   string header = lines[0];
+   StringReplace(header, "\r", "");
+
+   string snapshotStatus = CommandValue(header, "status");
+   string resolvedTimeframe = CommandValue(header, "resolved_timeframe");
+   string executionAllowed = CommandValue(header, "execution_allowed");
+   string executionDirection = CommandValue(header, "execution_direction");
+   string zoneCountText = CommandValue(header, "zone_count");
+   string swingCountText = CommandValue(header, "swing_count");
+   string message = CommandValue(header, "message");
+
+   for(int index = 1; index < lineCount; index++)
+   {
+      string line = lines[index];
+      StringReplace(line, "\r", "");
+
+      if(line == "")
+         continue;
+
+      string recordType = LineType(line);
+
+      if(recordType == "zone")
+      {
+         DrawBridgeSnapshotZone(resolvedTimeframe, rightTime, line, zoneIndex);
+         zoneIndex++;
+         continue;
+      }
+
+      if(recordType == "swing")
+      {
+         DrawBridgeSnapshotSwing(line, swingIndex);
+         swingIndex++;
+         continue;
+      }
+
+      if(recordType == "event")
+      {
+         DrawBridgeSnapshotEvent(rightTime, line, eventIndex);
+         eventIndex++;
+      }
+   }
+
+   string summary = "ZONES " + Symbol() + " " + resolvedTimeframe + " | zones " + zoneCountText + " | swings " + swingCountText;
+
+   if(snapshotStatus != "ok")
+      summary += " | " + message;
+   else if(WireBool(executionAllowed))
+      summary += " | execution ON " + executionDirection;
+   else
+      summary += " | execution OFF " + executionDirection;
+
+   color summaryColor = snapshotStatus == "ok" ? clrWhite : clrSilver;
+   DrawCornerLabel(summaryObject, summary, summaryColor);
+
+   ChartRedraw();
+}
+
+// ============================================================
+// PAYLOAD BUILDING
+// ============================================================
+
+string CandleJsonForSymbol(string symbolName, int timeframe, int shift)
+{
+   int digits = SymbolDigitsValue(symbolName);
+   datetime barTime = iTime(symbolName, timeframe, shift);
+
+   return StringFormat(
+      "{\"timestamp\":\"%s\",\"open\":%s,\"high\":%s,\"low\":%s,\"close\":%s,\"volume\":%.2f}",
+      TimeToString(barTime, TIME_DATE | TIME_MINUTES | TIME_SECONDS),
+      DoubleToString(iOpen(symbolName, timeframe, shift), digits),
+      DoubleToString(iHigh(symbolName, timeframe, shift), digits),
+      DoubleToString(iLow(symbolName, timeframe, shift), digits),
+      DoubleToString(iClose(symbolName, timeframe, shift), digits),
+      iVolume(symbolName, timeframe, shift)
+   );
+}
+
+string TimeframeSeriesForSymbol(string symbolName, string label, int timeframe, int bars)
+{
+   string result = "\"" + label + "\":[";
+   bool first = true;
+
+   for(int shift = bars - 1; shift >= 0; shift--)
+   {
+      if(iTime(symbolName, timeframe, shift) == 0)
+         continue;
+
+      if(!first)
+         result += ",";
+
+      result += CandleJsonForSymbol(symbolName, timeframe, shift);
+      first = false;
+   }
+
+   result += "]";
+   return result;
+}
+
+string BuildAccountJson()
+{
+   string account = "{";
+   account += "\"account_id\":\"" + IntegerToString(AccountNumber()) + "\",";
+   account += "\"name\":\"" + EscapeJson(AccountName()) + "\",";
+   account += "\"server\":\"" + EscapeJson(AccountServer()) + "\",";
+   account += "\"company\":\"" + EscapeJson(AccountCompany()) + "\",";
+   account += "\"currency\":\"" + EscapeJson(AccountCurrency()) + "\",";
+   account += "\"leverage\":" + IntegerToString(AccountLeverage()) + ",";
+   account += "\"balance\":" + DoubleToString(AccountBalance(), 2) + ",";
+   account += "\"equity\":" + DoubleToString(AccountEquity(), 2) + ",";
+   account += "\"free_margin\":" + DoubleToString(AccountFreeMargin(), 2) + ",";
+   account += "\"margin\":" + DoubleToString(AccountMargin(), 2) + ",";
+   account += "\"daily_pnl\":" + DoubleToString(AccountProfit(), 2) + ",";
+   account += "\"open_positions\":" + IntegerToString(OrdersTotal()) + ",";
+   account += "\"risk_exposure_pct\":" + DoubleToString(AccountEquity() > 0 ? (AccountMargin() / AccountEquity()) * 100.0 : 0.0, 2) + ",";
+   account += "\"status\":\"live-feed\"";
+   account += "}";
+   return account;
+}
+
+string BuildPositionsJson()
+{
+   string json = "[";
+   bool first = true;
+
+   for(int i = OrdersTotal() - 1; i >= 0; i--)
+   {
+      if(!OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
+         continue;
+
+      if(IncludeOnlyMagicPositionsInPayload && OrderMagicNumber() != MagicNumber)
+         continue;
+
+      string orderSymbol = OrderSymbol();
+      int digits = SymbolDigitsValue(orderSymbol);
+
+      if(!first)
+         json += ",";
+
+      json += "{";
+      json += "\"ticket\":" + IntegerToString(OrderTicket()) + ",";
+      json += "\"symbol\":\"" + EscapeJson(orderSymbol) + "\",";
+      json += "\"type\":" + IntegerToString(OrderType()) + ",";
+      json += "\"lots\":" + DoubleToString(OrderLots(), 2) + ",";
+      json += "\"open_price\":" + DoubleToString(OrderOpenPrice(), digits) + ",";
+      json += "\"sl\":" + DoubleToString(OrderStopLoss(), digits) + ",";
+      json += "\"tp\":" + DoubleToString(OrderTakeProfit(), digits) + ",";
+      json += "\"profit\":" + DoubleToString(OrderProfit(), 2) + ",";
+      json += "\"magic\":" + IntegerToString(OrderMagicNumber());
+      json += "}";
+
+      first = false;
+   }
+
+   json += "]";
+   return json;
+}
+
+bool SymbolHasRequiredHistory(string symbolName)
+{
+   if(iBars(symbolName, PERIOD_H1) < BarsH1)
+      return false;
+   if(iBars(symbolName, PERIOD_M5) < BarsM5)
+      return false;
+   if(iBars(symbolName, PERIOD_M1) < BarsM1)
+      return false;
+   return true;
+}
+
+string BuildPayloadForSymbol(string symbolName)
+{
+   string account = BuildAccountJson();
+
+   string timeframes = "{"
+      + TimeframeSeriesForSymbol(symbolName, "1H", PERIOD_H1, BarsH1) + ","
+      + TimeframeSeriesForSymbol(symbolName, "5M", PERIOD_M5, BarsM5) + ","
+      + TimeframeSeriesForSymbol(symbolName, "1M", PERIOD_M1, BarsM1)
+      + "}";
+
+   string payload = "{";
+   payload += "\"source\":\"mt4-websocket\",";
+   payload += "\"symbol\":\"" + EscapeJson(symbolName) + "\",";
+   payload += "\"broker\":\"" + EscapeJson(AccountCompany()) + "\",";
+   payload += "\"terminal_time\":\"" + TimeToString(TimeCurrent(), TIME_DATE | TIME_MINUTES | TIME_SECONDS) + "\",";
+   payload += "\"spread_points\":" + IntegerToString((int)MarketInfo(symbolName, MODE_SPREAD)) + ",";
+   payload += "\"account\":" + account + ",";
+   payload += "\"positions\":" + BuildPositionsJson() + ",";
+   payload += "\"news\":[],";
+   payload += "\"timeframes\":" + timeframes;
+   payload += "}";
+
+   return payload;
+}
+
+void PostSnapshotForSymbol(string symbolName)
+{
+   if(!SymbolHasRequiredHistory(symbolName))
+   {
+      Print("ZONES WS skipped ", symbolName, " because timeframe history is not loaded yet.");
+      return;
+   }
+
+   string payload = BuildPayloadForSymbol(symbolName);
+
+   string request =
+      "{"
+      "\"action\":\"post_snapshot\","
+      "\"account_id\":\"" + EscapeJson(TerminalAccountId()) + "\","
+      "\"symbol\":\"" + EscapeJson(symbolName) + "\","
+      "\"payload\":" + payload +
+      "}";
+
+   string reply = "";
+   if(!WsRequest(request, reply))
+   {
+      Print("ZONES WS post failed for ", symbolName);
+      return;
+   }
+
+   if(JsonValue(reply, "status") != "ok")
+      Print("ZONES WS server rejected snapshot for ", symbolName, " reply=", reply);
+}
+
+void PostSnapshots()
+{
+   if(!PostAllMarketWatchSymbols)
+   {
+      PostSnapshotForSymbol(Symbol());
+      return;
+   }
+
+   int totalSymbols = SymbolsTotal(true);
+   int processed = 0;
+
+   for(int index = 0; index < totalSymbols; index++)
+   {
+      string symbolName = SymbolName(index, true);
+      if(symbolName == "")
+         continue;
+
+      PostSnapshotForSymbol(symbolName);
+      processed++;
+
+      if(MaxMarketWatchSymbols > 0 && processed >= MaxMarketWatchSymbols)
+         break;
+   }
+}
+
+// ============================================================
+// LIFECYCLE
+// ============================================================
+
+void RunBridgeCycle(bool includeAllSymbols)
+{
+   if(includeAllSymbols)
+      PostSnapshots();
+   else
+      PostSnapshotForSymbol(Symbol());
+
+   DrawChartZones();
+   PollCommands();
+}
+
+int OnInit()
+{
+   EventSetTimer(TimerSeconds);
+
+   if(!EnsureWebSocket())
+      return(INIT_FAILED);
+
+   string healthReq = "{\"action\":\"health\"}";
+   string healthReply = "";
+   if(WsRequest(healthReq, healthReply))
+      Print("ZONES WS bridge started. Health=", healthReply);
+   else
+      Print("ZONES WS health check failed.");
+
+   RunBridgeCycle(false);
+   return(INIT_SUCCEEDED);
+}
+
+void OnDeinit(const int reason)
+{
+   EventKillTimer();
+   ClearZoneObjects();
+   g_ws.Close();
+}
+
+void OnTimer()
+{
+   RunBridgeCycle(true);
+}
+
+void OnTick()
+{
+   static datetime lastBarTime = 0;
+
+   if(Time[0] != lastBarTime)
+   {
+      lastBarTime = Time[0];
+      RunBridgeCycle(false);
+   }
+}

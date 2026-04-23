@@ -1,9 +1,9 @@
 //+------------------------------------------------------------------+
 //|                                                       Object.mqh |
-//|                   Copyright 2009-2013, MetaQuotes Software Corp. |
-//|                                              http://www.mql4.com |
+//|                             Copyright 2000-2026, MetaQuotes Ltd. |
+//|                                              http://www.mql5.com |
 //+------------------------------------------------------------------+
-#include <DiscordTelegram/StdLibErr.mqh>
+#include "StdLibErr.mqh"
 //+------------------------------------------------------------------+
 //| Class CObject.                                                   |
 //| Purpose: Base class for storing elements.                        |

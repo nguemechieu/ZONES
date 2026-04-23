@@ -12,7 +12,7 @@ It lets the user configure database credentials, Telegram notifications, and the
 
 Use the database section to enter:
 
-- Database URL or host, for example `sqlite:///data/zones.db` or `postgresql://host:5432/zones`
+- Database URL or host, for example `sqlite:///C:/ProgramData/ZONES/data/zones.db` or `postgresql://host:5432/zones`
 - Database username
 - Database password
 

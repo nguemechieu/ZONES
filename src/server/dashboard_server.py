@@ -315,6 +315,21 @@ def _tradingview_symbol(symbol: str, override: str = "") -> str:
     return candidate
 
 
+def _local_symbol_from_tradingview(value: str) -> str:
+    candidate = str(value or "").strip().upper()
+    if not candidate:
+        return ""
+    if ":" in candidate:
+        candidate = candidate.split(":")[-1]
+    return candidate.strip()
+
+
+def _resolve_chart_symbol(symbol: str | None, tv_symbol_override: str = "") -> str:
+    tv_symbol = _local_symbol_from_tradingview(tv_symbol_override)
+    explicit_symbol = _local_symbol_from_tradingview(symbol or "")
+    return tv_symbol or explicit_symbol
+
+
 def _tradingview_interval(timeframe: str) -> str:
     mapping = {
         "1M": "1",
@@ -540,7 +555,7 @@ def _base_css() -> str:
         linear-gradient(180deg, #08111e 0%, #0b1930 100%);
       min-height: 100vh;
     }
-    .shell { max-width: 1360px; margin: 0 auto; padding: 28px; }
+    .shell { max-width: 1480px; margin: 0 auto; padding: 28px; }
     .nav {
       display: flex;
       flex-wrap: wrap;
@@ -667,12 +682,12 @@ def _base_css() -> str:
     .terminal-shell svg {
       display: block;
       width: 100%;
-      min-width: 900px;
+      min-width: 1080px;
       height: auto;
     }
     .tradingview-stage {
       width: 100%;
-      min-height: 640px;
+      min-height: 720px;
       border: 1px solid var(--line);
       border-radius: 18px;
       overflow: hidden;
@@ -680,7 +695,7 @@ def _base_css() -> str:
     }
     .tradingview-widget-container__widget {
       width: 100%;
-      height: 600px;
+      height: 680px;
     }
     .tradingview-widget-copyright {
       padding: 8px 12px 10px;
@@ -710,8 +725,52 @@ def _base_css() -> str:
     .chart-toolbar {
       display: grid;
       gap: 12px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       margin-top: 14px;
+    }
+    .dashboard-symbol-picker {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      margin-top: 14px;
+    }
+    .chart-hero {
+      grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.85fr);
+    }
+    .chart-summary-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-top: 14px;
+    }
+    .summary-stat {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: rgba(17, 37, 59, 0.7);
+    }
+    .summary-stat strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 1.15rem;
+    }
+    .chart-command-card {
+      margin-bottom: 18px;
+    }
+    .chart-command-meta {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-bottom: 14px;
+    }
+    .chart-command-form {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: end;
+    }
+    .chart-command-form .full-span {
+      grid-column: 1 / -1;
     }
     .timeframe-tabs {
       display: flex;
@@ -747,6 +806,7 @@ def _base_css() -> str:
       .hero { grid-template-columns: 1fr; }
       .shell { padding: 18px; }
       .terminal-header { display: block; }
+      .chart-command-form { grid-template-columns: 1fr; }
     }
     """
 
@@ -756,6 +816,30 @@ def _html_template(title: str, payload: dict[str, Any]) -> str:
     execution = payload.get("execution_decision", {})
     ai_signal = payload.get("ai_signal", {})
     tracked = payload.get("tracked_symbols", [])
+    account_id = str(account.get("account_id", ""))
+    current_symbol = str(payload.get("symbol", "")).upper()
+    chart_data = payload.get("chart_data", {})
+    available_timeframes = (
+        sorted([str(item) for item in chart_data.keys()], key=_timeframe_sort_key)
+        if isinstance(chart_data, dict)
+        else []
+    )
+    selected_timeframe = "5M" if "5M" in available_timeframes else (available_timeframes[0] if available_timeframes else "5M")
+    symbol_options = sorted(
+        {
+            str(item.get("symbol", "")).upper()
+            for item in tracked
+            if isinstance(item, dict) and item.get("symbol")
+        }
+        | ({current_symbol} if current_symbol else set())
+    )
+    if not symbol_options:
+        symbol_options = [current_symbol or "EURUSD"]
+    symbol_options_html = "".join(
+        f"<option value='{escape(item, quote=True)}' {'selected' if item == current_symbol else ''}>"
+        f"{escape(item)}</option>"
+        for item in symbol_options
+    )
     tracked_html = "".join(
         f"<span class='pill'>{escape(str(item.get('symbol', '')))}</span>"
         for item in tracked if isinstance(item, dict) and item.get("symbol")
@@ -821,14 +905,28 @@ def _html_template(title: str, payload: dict[str, Any]) -> str:
           </div>
         </div>
         <div style="margin-top:14px;">
-          <span class="pill">Symbol: {escape(str(payload.get("symbol", "-")))}</span>
-          <span class="pill">Account: {escape(str(account.get("account_id", "-")))}</span>
+          <span class="pill">Symbol: {escape(current_symbol or "-")}</span>
+          <span class="pill">Account: {escape(account_id or "-")}</span>
           <span class="pill">Created: {escape(str(payload.get("created_at", "-")))}</span>
         </div>
         <div style="margin-top:8px;">{tracked_html}</div>
+        <div class="dashboard-symbol-picker">
+          <form method="get" action="/">
+            <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
+            <label>Tracked Symbol
+              <select name="symbol">{symbol_options_html}</select>
+            </label>
+            <button type="submit">Load Dashboard Symbol</button>
+          </form>
+          <form method="get" action="/">
+            <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
+            <label>Custom Symbol<input type="text" name="symbol" value="{escape(current_symbol, quote=True)}" placeholder="EURUSD"></label>
+            <button type="submit">Open Custom Symbol</button>
+          </form>
+        </div>
         <div style="margin-top:10px;">
-          <a class="button" href="/chart">Open Chart</a>
-          <a class="button" href="/system">Open System</a>
+          <a class="button" href="{escape(_chart_href(account_id=account_id, symbol=current_symbol or 'EURUSD', timeframe=selected_timeframe), quote=True)}">Open Chart</a>
+          <a class="button" href="/system?{escape(urlencode({'account_id': account_id, 'symbol': current_symbol or 'EURUSD'}), quote=True)}">Open System</a>
         </div>
       </div>
       <div class="card">
@@ -978,6 +1076,7 @@ def _chart_page_html(
     ) or "<tr><td colspan='5'>No candle data</td></tr>"
 
     pending = command_snapshot.get("pending", [])
+    pending_count = len(pending) if isinstance(pending, list) else 0
     pending_rows = "".join(
         "<tr>"
         f"<td>{escape(str(item.get('type', '-')))}</td>"
@@ -1017,10 +1116,10 @@ def _chart_page_html(
     {message_html}
     {error_html}
 
-    <section class="hero">
+    <section class="hero chart-hero">
       <div class="card">
         <h1 style="margin-top:0;">Chart</h1>
-        <div class="muted">Selected symbol and timeframe drive the candle terminal and ZONES overlay.</div>
+        <div class="muted">Selected symbol and timeframe drive the candle terminal, ZONES overlay, and trading queue target.</div>
         <div style="margin-top:8px;">
           <span class="pill">Symbol: {escape(current_symbol or "-")}</span>
           <span class="pill">Timeframe: {escape(selected_timeframe)}</span>
@@ -1031,7 +1130,6 @@ def _chart_page_html(
           <form method="get" action="/chart">
             <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
             <input type="hidden" name="timeframe" value="{escape(selected_timeframe, quote=True)}">
-            <input type="hidden" name="tv_symbol" value="{escape(tv_symbol_override, quote=True)}">
             <label>Tracked Symbol
               <select name="symbol">{symbol_options_html}</select>
             </label>
@@ -1041,54 +1139,88 @@ def _chart_page_html(
             <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
             <input type="hidden" name="timeframe" value="{escape(selected_timeframe, quote=True)}">
             <label>Custom Symbol<input type="text" name="symbol" value="{escape(current_symbol, quote=True)}" placeholder="EURUSD"></label>
-            <label>TradingView Symbol<input type="text" name="tv_symbol" value="{escape(tv_symbol_override or current_symbol, quote=True)}" placeholder="FX:EURUSD"></label>
-            <button type="submit">Open Custom Chart</button>
+            <label>TradingView Symbol<input type="text" name="tv_symbol" value="{escape(tv_symbol_override or resolved_tv_symbol, quote=True)}" placeholder="FX:EURUSD"></label>
+            <button type="submit">Sync Chart Symbols</button>
           </form>
         </div>
         <div class="timeframe-tabs">{timeframe_tabs}</div>
       </div>
       <div class="card">
-        <h2 style="margin-top:0;">Queue Command</h2>
-        <form method="post" action="/api/commands">
-          <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
-          <input type="hidden" name="symbol" value="{escape(current_symbol, quote=True)}">
-          <input type="hidden" name="timeframe" value="{escape(selected_timeframe, quote=True)}">
-          <input type="hidden" name="tv_symbol" value="{escape(tv_symbol_override, quote=True)}">
-          <label>Account ID<input type="text" value="{escape(account_id)}" disabled></label>
-          <label>Symbol<input type="text" value="{escape(current_symbol)}" disabled></label>
-          <label>Command Type
-            <select name="command_type">
-              <option value="alert">alert</option>
-              <option value="market_buy">market_buy</option>
-              <option value="market_sell">market_sell</option>
-              <option value="buy_limit">buy_limit</option>
-              <option value="sell_limit">sell_limit</option>
-              <option value="buy_stop">buy_stop</option>
-              <option value="sell_stop">sell_stop</option>
-              <option value="close_ticket">close_ticket</option>
-              <option value="delete_ticket">delete_ticket</option>
-              <option value="modify_ticket">modify_ticket</option>
-              <option value="close_all">close_all</option>
-            </select>
-          </label>
-          <label>Lot<input type="text" name="lot"></label>
-          <label>Price<input type="text" name="price"></label>
-          <label>SL<input type="text" name="sl"></label>
-          <label>TP<input type="text" name="tp"></label>
-          <label>Ticket<input type="text" name="ticket"></label>
-          <label>Filter Symbol<input type="text" name="filter_symbol"></label>
-          <label>Comment<input type="text" name="comment"></label>
-          <label>Message<textarea name="message" rows="3"></textarea></label>
-          <button type="submit">Queue Command</button>
-        </form>
+        <h2 style="margin-top:0;">Live Trading Context</h2>
+        <div class="muted">Loading a tracked symbol now updates the local ZONES terminal and TradingView together. Entering a TradingView symbol also updates the local symbol target.</div>
+        <div class="chart-summary-grid">
+          <div class="summary-stat">
+            <span class="muted">Local feed symbol</span>
+            <strong>{escape(current_symbol or "-")}</strong>
+          </div>
+          <div class="summary-stat">
+            <span class="muted">TradingView symbol</span>
+            <strong>{escape(resolved_tv_symbol)}</strong>
+          </div>
+          <div class="summary-stat">
+            <span class="muted">Pending commands</span>
+            <strong>{pending_count}</strong>
+          </div>
+          <div class="summary-stat">
+            <span class="muted">Visible candles</span>
+            <strong>{len(candles[-30:]) if isinstance(candles, list) else 0}</strong>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <section class="card chart-command-card">
+      <div class="terminal-header">
+        <div>
+          <h2 style="margin:0 0 6px;">Queue Command</h2>
+          <div class="muted">The trade panel is expanded so chart trading fields stay readable on larger screens and still collapse cleanly on smaller ones.</div>
+        </div>
+        <span class="pill">Account {escape(account_id or "-")}</span>
+      </div>
+      <div class="chart-command-meta">
+        <span class="pill">Trade Symbol: {escape(current_symbol or "-")}</span>
+        <span class="pill">Execution TF: {escape(selected_timeframe)}</span>
+        <span class="pill">TV Source: {escape(resolved_tv_symbol)}</span>
+      </div>
+      <form method="post" action="/api/commands" class="chart-command-form">
+        <input type="hidden" name="account_id" value="{escape(account_id, quote=True)}">
+        <input type="hidden" name="symbol" value="{escape(current_symbol, quote=True)}">
+        <input type="hidden" name="timeframe" value="{escape(selected_timeframe, quote=True)}">
+        <input type="hidden" name="tv_symbol" value="{escape(resolved_tv_symbol, quote=True)}">
+        <label>Account ID<input type="text" value="{escape(account_id)}" disabled></label>
+        <label>Symbol<input type="text" value="{escape(current_symbol)}" disabled></label>
+        <label>Command Type
+          <select name="command_type">
+            <option value="alert">alert</option>
+            <option value="market_buy">market_buy</option>
+            <option value="market_sell">market_sell</option>
+            <option value="buy_limit">buy_limit</option>
+            <option value="sell_limit">sell_limit</option>
+            <option value="buy_stop">buy_stop</option>
+            <option value="sell_stop">sell_stop</option>
+            <option value="close_ticket">close_ticket</option>
+            <option value="delete_ticket">delete_ticket</option>
+            <option value="modify_ticket">modify_ticket</option>
+            <option value="close_all">close_all</option>
+          </select>
+        </label>
+        <label>Lot<input type="text" name="lot"></label>
+        <label>Price<input type="text" name="price"></label>
+        <label>SL<input type="text" name="sl"></label>
+        <label>TP<input type="text" name="tp"></label>
+        <label>Ticket<input type="text" name="ticket"></label>
+        <label>Filter Symbol<input type="text" name="filter_symbol" value="{escape(current_symbol, quote=True)}"></label>
+        <label class="full-span">Comment<input type="text" name="comment"></label>
+        <label class="full-span">Message<textarea name="message" rows="3"></textarea></label>
+        <div class="full-span"><button type="submit">Queue Command</button></div>
+      </form>
     </section>
 
     <section class="card" style="margin-bottom:18px;">
       <div class="terminal-header">
         <div>
           <h2 style="margin:0 0 6px;">TradingView Market Chart</h2>
-          <div class="muted">External TradingView chart for the selected symbol, with public drawing tools and studies.</div>
+          <div class="muted">External TradingView chart for the active chart symbol, with public drawing tools and studies.</div>
         </div>
         <span class="pill">{escape(resolved_tv_symbol)}</span>
       </div>
@@ -1099,7 +1231,7 @@ def _chart_page_html(
       <div class="terminal-header">
         <div>
           <h2 style="margin:0 0 6px;">ZONES Candle Terminal</h2>
-          <div class="muted">Candles and overlays come from the selected symbol payload served by the local ZONES engine.</div>
+          <div class="muted">Candles and overlays now follow the active chart symbol selected from tracked symbols or derived from the TradingView symbol.</div>
         </div>
         <div>
           <span class="pill">Demand</span>
@@ -1214,7 +1346,7 @@ def _system_page_html(status: dict[str, Any], message: str = "", error: str = ""
         <form method="post" action="/api/system/settings">
           <h3 style="margin:0;">Database</h3>
           <label>Database URL or Host
-            <input type="text" name="database_url" value="{escape(str(runtime.get('database_url_input', runtime.get('database_url', ''))), quote=True)}" placeholder="sqlite:///data/zones.db or postgresql://host:5432/zones">
+            <input type="text" name="database_url" value="{escape(str(runtime.get('database_url_input', runtime.get('database_url', ''))), quote=True)}" placeholder="sqlite:///C:/ProgramData/ZONES/data/zones.db or postgresql://host:5432/zones">
           </label>
           <label>Database Username
             <input type="text" name="database_username" value="{escape(str(runtime.get('database_username', '')), quote=True)}">
@@ -1991,7 +2123,8 @@ class DashboardServer:
                 if parsed.path == "/chart":
                     timeframe = query.get("timeframe", ["5M"])[0]
                     tv_symbol_override = query.get("tv_symbol", [""])[0]
-                    payload = server._build_payload(account_id, symbol)
+                    chart_symbol = _resolve_chart_symbol(symbol, tv_symbol_override)
+                    payload = server._build_payload(account_id, chart_symbol or symbol)
                     command_snapshot = server.feed_service.command_snapshot(
                         payload.get("account", {}).get("account_id"),
                         payload.get("symbol"),
@@ -2044,7 +2177,9 @@ class DashboardServer:
 
                 if parsed.path == "/api/chart":
                     timeframe = query.get("timeframe", ["5M"])[0]
-                    payload = server._build_payload(account_id, symbol)
+                    tv_symbol_override = query.get("tv_symbol", [""])[0]
+                    chart_symbol = _resolve_chart_symbol(symbol, tv_symbol_override)
+                    payload = server._build_payload(account_id, chart_symbol or symbol)
                     chart_payload = {
                         "symbol": payload.get("symbol"),
                         "account_id": payload.get("account", {}).get("account_id"),
