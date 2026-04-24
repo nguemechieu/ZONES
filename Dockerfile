@@ -44,7 +44,7 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
 
 # Optional: copy local MQL4 folder into the image.
 # Put your MQL4 folder beside this Dockerfile before building.
-COPY MQL4 /zones/MQL4
+COPY /app/MQL4 zones/MQL4
 
 # Copy startup script
 COPY docker-start.sh /usr/local/bin/docker-start.sh
