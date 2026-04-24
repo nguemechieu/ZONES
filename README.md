@@ -8,6 +8,8 @@
   MT4 trading system with a Python dashboard, named-pipe DLL bridge, and customer-specific SMC / ICT market structure logic.
 </p>
 
+[image source](./zones_image.png)
+
 ## What ZONES Is
 
 ZONES is a hybrid MT4 + Python trading application built around customer-defined market structure rules.
