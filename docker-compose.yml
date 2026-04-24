@@ -1,12 +1,71 @@
 services:
   zones:
-    image: bigbossmanager/zones
-  db:
-    image: mysql
+    image: bigbossmanager/zones:latest
+    container_name: zones-app
+    restart: unless-stopped
+
     ports:
-    - "3307:3306"
+      # noVNC desktop/browser
+      - "6080:6080"
+
+      # ZONES dashboard
+      - "8787:8787"
+
+      # ZONES WebSocket bridge
+      - "8090:8090"
+
+      # Prometheus metrics
+      - "9108:9108"
+
     environment:
-      - MYSQLROOT_PASSWORD=password
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
-      - MYSQL_DATABASE=db
+      ZONES_DB_HOST: db
+      ZONES_DB_PORT: 3306
+      ZONES_DB_NAME: db
+      ZONES_DB_USER: user
+      ZONES_DB_PASSWORD: password
+
+      # Important for Docker networking
+      ZONES_HOST: 0.0.0.0
+      ZONES_DASHBOARD_PORT: 8787
+      ZONES_WEBSOCKET_PORT: 8090
+      ZONES_METRICS_PORT: 9108
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    networks:
+      - zones-network
+
+  db:
+    image: mysql:8.4
+    container_name: zones-db
+    restart: unless-stopped
+
+    ports:
+      - "3307:3306"
+
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: db
+
+    volumes:
+      - zones_mysql_data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+    networks:
+      - zones-network
+
+volumes:
+  zones_mysql_data:
+
+networks:
+  zones-network:
+    driver: bridge
