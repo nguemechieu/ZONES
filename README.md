@@ -1,10 +1,10 @@
 # ZONES
 
-<p >
-  <img src="./app/src/assets/Zones.png" alt="ZONES logo" width="720">
+<p  align="center" >
+  <img src="./app/src/assets/Zones.png" alt="ZONES logo" width="480" height="480">
 </p>
 
-<p >
+<p align="center" >
   MT4 trading system with a Python dashboard, named-pipe DLL bridge, and customer-specific SMC / ICT market structure logic.
 </p>
 
