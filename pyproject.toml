@@ -86,7 +86,7 @@ build = [
 # ============================================================
 
 [project.scripts]
-zones = "zones:main"
+ZONES = "ZONES:main"
 
 
 # ============================================================
@@ -116,14 +116,14 @@ ignore_missing_imports = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src*"]
+include = ["app*"]
 
 [tool.setuptools]
 include-package-data = true
-py-modules = ["zones"]
+py-modules = ["ZONES"]
 
 [tool.setuptools.dynamic]
-version = { attr = "src.version.__version__" }
+version = { attr = "app.src.version.__version__" }
 
 [tool.setuptools.package-data]
 src = ["assets/*.png", "assets/*.ico"]

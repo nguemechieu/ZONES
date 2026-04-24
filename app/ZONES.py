@@ -6,9 +6,7 @@ from PySide6.QtGui import QColor, QPalette, QIcon, QPixmap
 from PySide6.QtWidgets import QGraphicsOpacityEffect
 from src.server.server_controller import ServerController
 from src.version import __version__
-from PySide6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame
-)
+from PySide6.QtWidgets import ( QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame)
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
