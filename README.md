@@ -1,7 +1,7 @@
 # ZONES
 
 <p >
-  <img src="./src/assets/Zones.png" alt="ZONES logo" width="720">
+  <img src="./app/src/assets/Zones.png" alt="ZONES logo" width="720">
 </p>
 
 <p >
